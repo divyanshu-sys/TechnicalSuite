@@ -361,3 +361,15 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Ts.Application/AppConstants/DataProtectionPurposeStringConstant.cs
+/Ts.Application/AppConstants/EnDecryptionConstant.cs
+/Ts.Application.Client/AppConstants/GoogleCaptchaConstant.cs
+/Ts.AdminApp/appsettings.Production.json
+/Ts.AdminApp/appsettings.Azure.json
+/Ts.PublicApp/appsettings.Production.json
+/Ts.PublicComApp/appsettings.Production.json
+/Ts.ShopApp/appsettings.Production.json
+/Ts.SrcApi/appsettings.Production.json
+/Ts.WebApi/appsettings.Production.json
+/Ts.WebApi/appsettings.Azure.json
+/Ts.SrcApi/appsettings.Azure.json
