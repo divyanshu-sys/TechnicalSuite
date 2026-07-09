@@ -1,0 +1,99 @@
+﻿@page
+@model Ts.AdminApp.Pages.Story.StoryDotIn.AddModel
+@{
+    ViewBag.Title = "Create Story";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            Story DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-book-open"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label" asp-for="Model.Title"></label>
+                                <input class="form-control" asp-for="Model.Title">
+                                <span asp-validation-for="Model.Title" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.SubCategoryId"></label>
+                                <select asp-for="Model.SubCategoryId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="CategoryId_Hidden" value="@Model.Model?.SubCategoryId" />
+                                <span asp-validation-for="Model.SubCategoryId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-10">
+                                <label class="form-label" asp-for="Model.StoryLink"></label>
+                                <input class="form-control" placeholder="samsung_galaxy_s21_plus-review-india" asp-for="Model.StoryLink">
+                                <span asp-validation-for="Model.StoryLink" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label" asp-for="Model.MetaDescription"></label>
+                                <input class="form-control" asp-for="Model.MetaDescription">
+                                <span asp-validation-for="Model.MetaDescription" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-info small">Specify Keywords</div>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword1"></label>
+                                <input class="form-control" asp-for="Model.Keyword1">
+                                <span asp-validation-for="Model.Keyword1" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword2"></label>
+                                <input class="form-control" asp-for="Model.Keyword2">
+                                <span asp-validation-for="Model.Keyword2" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword3"></label>
+                                <input class="form-control" asp-for="Model.Keyword3">
+                                <span asp-validation-for="Model.Keyword3" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword4"></label>
+                                <input class="form-control" asp-for="Model.Keyword4">
+                                <span asp-validation-for="Model.Keyword4" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword5"></label>
+                                <input class="form-control" asp-for="Model.Keyword5">
+                                <span asp-validation-for="Model.Keyword5" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.StorySource"></label>
+                                <input class="form-control" asp-for="Model.StorySource">
+                                <span asp-validation-for="Model.StorySource" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary submitLoader"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            $("#Model_SubCategoryId").select2({
+                theme: "classic"
+            });
+
+            let subCategoryServerRequest = new ServerRequest('/story/storydotin?handler=subcategorydropdown', '#Model_SubCategoryId', '#SubCategoryId_Hidden');
+            subCategoryServerRequest.loadDropDown();
+        });
+    </script>
+}

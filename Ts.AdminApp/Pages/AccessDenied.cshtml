@@ -1,0 +1,39 @@
+﻿@page "/accessdenied"
+@model Ts.AdminApp.Pages.AccessDeniedModel
+@{
+    Layout = null;
+    ViewBag.Title = ViewBag.StatusCode;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <environment include="Development">
+        <link href="~/css/error.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/error.min.css" rel="stylesheet" />
+    </environment>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="page vertical-align text-center">
+            <div class="page-content vertical-align-middle">
+                <header>
+                    <h1 class="animation-slide-top">@ViewBag.StatusCode</h1>
+                    <p>@ViewBag.TagLine</p>
+                </header>
+                <p class="error-advise">@ViewBag.HeadLine</p>
+                <a class="btn btn-primary btn-round mb-5" asp-page="/index">GO TO HOME PAGE</a>
+                <form method="post" asp-page="/account/logout">
+                    <button type="submit" class="btn btn-secondary shadow-2 mb-4">Relogin</button>
+                </form>
+                <footer class="page-copyright">
+                    <p>&copy; @DateTime.Now.Year. All RIGHT RESERVED.</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

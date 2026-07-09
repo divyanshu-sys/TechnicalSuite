@@ -1,0 +1,45 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.Master.Country.EditModel
+@{
+    ViewBag.Title = "Edit Country";
+}
+
+<div class="container col-lg-6">
+    <div class="page-title">
+        <h3>
+            Country
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Name"></label>
+                                <input class="form-control" asp-for="Model.Name">
+                                <span asp-validation-for="Model.Name" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Code2"></label>
+                                <input class="form-control" placeholder="Enter Country Code i.e. IN" asp-for="Model.Code2">
+                                <span asp-validation-for="Model.Code2" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Code3"></label>
+                                <input class="form-control" placeholder="Enter Country Code i.e. IND" asp-for="Model.Code3">
+                                <span asp-validation-for="Model.Code3" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submitLoader"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

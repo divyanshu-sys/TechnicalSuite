@@ -1,0 +1,90 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn.UpdateProductDetailImageModel
+@{
+    ViewBag.Title = "Update ProductDetail Image";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            ProductDetail DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <b>@Html.DisplayNameFor(m => m.ModelVm.Title):</b> @Model.ModelVm.Title
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-danger small">Note: @Model.ImageFileExtensionInValidMsg @Model.ImageFileSizeInvalidMsg</div>
+                                <div class="text-success small">Recommended: Note : Image dimension should be (1010x780).</div>
+                            </div>
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label" asp-for="Model.ImageFile"></label>
+                                <input class="form-control" asp-for="Model.ImageFile">
+                                <span asp-validation-for="Model.ImageFile" id="ImageError" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="SubmitButton"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Image Name</th>
+                        <th>Img Tag</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ModelVm.ProductDetailImage != null && Model.ModelVm.ProductDetailImage.ProductDetailImageHelpers.Any())
+                    {
+                        foreach (var image in Model.ModelVm.ProductDetailImage.ProductDetailImageHelpers)
+                        {
+                            var imgTag = $"<img src=\"#[ProductDetail-Image-Url]/{@image.Name}\" alt=\"Product Image\">";
+                            <tr>
+                                <td><img src="@Model.ModelVm.ProductDetailImage.ImageBaseUrl/@image.Name" alt="Image" width="150" class="max-w-100" /></td>
+                                <td class="copyText" title="Click to copy image name">@image.Name</td>
+                                <td class="copyText" title="Click to copy img tag">@imgTag</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-danger btn-rounded" onClick="showConfirmation('Delete', 'Confirm Delete', 'Are you sure you want to delete?', '/productdetail/productdetaildotin/deleteproductdetailimage/@Model.Id/@image.Name')"><i class="fas fa-trash"></i> </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            let dataTable = initTable("#DataTable", [], [0, 1, 2, 3]);
+        });
+
+        $(document).on('click', '#SubmitButton', function (event) {
+            validateImage(this, 'Model_ImageFile', 'ImageError', event);
+        });
+
+        $('.copyText').click(function () {
+            let copyText = $(this);
+            copyText.select();
+            navigator.clipboard.writeText(copyText.text());
+        });
+    </script>
+}

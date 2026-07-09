@@ -1,0 +1,210 @@
+﻿@page "/web-stories/{subCategoryName}/{storyLink}"
+@model Ts.PublicApp.Pages.WebStory.ViewModel
+@{
+    Layout = null;
+    var title = configuration["SiteTitle"];
+    var homeUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+    var pageUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+    var logoUrl = $"{homeUrl}/images/static-images/logo.png";
+
+    var subCategoryName = Model.SubCategoryName.ToUpperFirstLetterAndAfterHyphen();
+    var itemCount = Model.Model.StoryDescriptionHelperVms.Count;
+    var randomAdPosition = new Random().Next(4, 6);
+
+    ViewBag.Keywords = @Model.Keywords;
+    ViewBag.Description = @Model.Model.MetaDescription;
+    ViewBag.Title = @Model.Model.Title;
+    ViewBag.Canonical = @pageUrl;
+    ViewBag.OgImage = @Model.Model.MainImageUrl;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_CommonHeadTagPartial" />
+
+    <meta name="robots" content="index, follow">
+
+    @if (Model.Model.StoryRelative != null && Model.Model.StoryRelative.StoryRelativeHelpers.Any())
+    {
+        foreach (var item in Model.Model.StoryRelative.StoryRelativeHelpers)
+        {
+            <link rel="alternate" hreflang="@item.HrefLang" href="@item.Href" />
+        }
+    }
+
+    <environment include="Development">
+        <link href="~/css/webstory.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/webstory-in.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/webstory.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/webstory-in.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+
+    <script type="application/ld+json">
+        {
+          "@@context": "http://schema.org",
+          "@@type": "NewsArticle",
+          "headline": "@Model.Model.Title",
+          "image": [
+            "@Model.Model.MainImageUrl"
+          ],
+          "datePublished": "@Model.Model.PublishedOn?.ToDateTimeUtcString()",
+          "dateModified": "@Model.Model.UpdatedOn?.ToDateTimeUtcString()",
+          "author": {
+            "@@type": "Person",
+            "name": "@title",
+            "url": "@homeUrl"
+          },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "@title",
+            "logo": {
+              "@@type": "ImageObject",
+              "url": "@logoUrl"
+            }
+          },
+          "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "@pageUrl"
+          },
+          "description": "@Model.Model.MetaDescription",
+          "articleBody": "@Model.Model.MetaDescription",
+          "articleSection": "@subCategoryName",
+          "keywords": "@Model.Keywords",
+          "thumbnailUrl": "@Model.Model.MainImageUrl",
+          "isAccessibleForFree": "True",
+          "hasPart": [
+              {
+                "@@type": "WebPageElement",
+                "isPartOf": "@pageUrl#page-0",
+                "name": "@Model.Model.Title",
+                "image": "@Model.Model.MainImageUrl",
+                "isAccessibleForFree": "True",
+                "cssSelector": ".story-page#page-0"
+              }
+        @for (var i = 0; i < itemCount; i++)
+        {
+                @:,{
+                @:"@@type": "WebPageElement",
+                @:"isPartOf": "@pageUrl#page-@(i + 1)",
+                @:"name": "@Model.Model.StoryDescriptionHelperVms[i].Title",
+                @:"image": "@Model.Model.ImageBaseUrl/@Model.Model.StoryDescriptionHelperVms[i].Image",
+                @:"isAccessibleForFree": "True",
+                @:"cssSelector": ".story-page#page-@(i + 1)"
+                @:}
+        }
+          ],
+          "breadcrumb": {
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@@type": "ListItem",
+                "position": 1,
+                "name": "@title",
+                "item": "@homeUrl"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 2,
+                "name": "@CategoryConstant.WebStories",
+                "item": "@homeUrl/@CategoryConstant.WebStories.ToLower()"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 3,
+                "name": "@subCategoryName",
+                "item": "@homeUrl/@CategoryConstant.WebStories.ToLower()/@Model.SubCategoryName"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 4,
+                "name": "@Model.Model.Title",
+                "item": "@pageUrl"
+              }
+            ]
+          }
+        }
+    </script>
+</head>
+<body>
+    <partial name="_GtmBodyPartial" />
+    <div class="story-wrapper">
+        <div class="story-container">
+            <button id="share-btn" class="share-btn">Share</button>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-0"></div>
+                @for (var i = 0; i < itemCount; i++)
+                {
+                    <div class="progress-bar" id="progress-bar-@(i + 1)"></div>
+                }
+                <div class="progress-bar" id="progress-bar-@itemCount"></div>
+            </div>
+            <button id="prev-btn" class="nav-btn">❮</button>
+            <div class="story-page active-page" id="page-0">
+                <img src="~/images/static-images/logo.png" alt="Logo" class="logo" asp-append-version="true" />
+                <img src="@Model.Model.MainImageUrl" alt="@Model.Model.Title" class="story-image" />
+                <div class="text-content">
+                    <h1>@Model.Model.Title</h1>
+                    <p>@Model.Model.MainDescription</p>
+                </div>
+                <div class="text-bottom">
+                    @Model.Model.PublishedOnIst
+                    @(!string.IsNullOrEmpty(Model.Model.StorySource) ? " | Source: " + Model.Model.StorySource : "")
+                    @(!string.IsNullOrEmpty(Model.Model.MainImageSource) ? " | Image: " + Model.Model.MainImageSource : "")
+                </div>
+            </div>
+            @for (var i = 0; i < itemCount; i++)
+            {
+                if (itemCount >= 7 && i == randomAdPosition)
+                {
+                    <div class="story-page" style="display:flex; z-index:0">
+                        <p>Ad</p>
+                        <div class="adsense-ad">
+                            <partial name="AdsPartials/_StoryResponsiveAd1Partial" />
+                        </div>
+                    </div>
+                }
+                <div class="story-page" id="page-@(i + 1)">
+                    <img data-src="@Model.Model.ImageBaseUrl/@Model.Model.StoryDescriptionHelperVms[i].Image" alt="@Model.Model.StoryDescriptionHelperVms[i].Title" class="story-image" />
+                    <div class="text-content">
+                        <h2>@Model.Model.StoryDescriptionHelperVms[i].Title</h2>
+                        <p>@Model.Model.StoryDescriptionHelperVms[i].Description</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Model.StoryDescriptionHelperVms[i].ImageSource))
+                    {
+                        <div class="text-bottom">
+                            Image: @Model.Model.StoryDescriptionHelperVms[i].ImageSource
+                        </div>
+                    }
+                </div>
+            }
+            <div class="story-page" id="page-@itemCount">
+                <img data-src="/images/story-images/thanks-for-reading.jpg" alt="Thanks For Reading!" class="story-image">
+                <div class="text-content">
+                    <h2>Thanks For Reading!</h2>
+                </div>
+                <a class="story-btn" asp-page="/webstory/list">View all Stories</a>
+            </div>
+            <button id="next-btn" class="nav-btn">❯</button>
+        </div>
+    </div>
+    <environment include="Development">
+        <script src="~/js/webstory.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/webstory.min.js" asp-append-version="true"></script>
+    </environment>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function saveCount() {
+            let storyId = @Model.Model.Id;
+            let saveCountRequest = new ServerRequest(`/ajaxwork?handler=updatestoryforviewcount&storyid=${storyId}`);
+            saveCountRequest.saveCountData();
+        }
+        setTimeout(saveCount, 2000);
+    </script>
+    <partial name="AdsPartials/_AllowAdPartial" />
+</body>
+</html>

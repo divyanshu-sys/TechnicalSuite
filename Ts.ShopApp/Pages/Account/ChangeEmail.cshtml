@@ -1,0 +1,42 @@
+﻿@page "/change-email"
+@model Ts.ShopApp.Pages.Account.ChangeEmailModel
+@{
+    ViewBag.Title = "Change Email";
+    ViewBag.Description = "Change Email";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>We will send an email verification link to your new email. Please check spam folder if not found in inbox.</p>
+    <div class="form-box">
+        <div class="form-border">
+            <form method="post" autocomplete="off">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label asp-for="Model.Email"></label>
+                        <input class="form-control" asp-for="Model.Email" />
+                        <span asp-validation-for="Model.Email"></span>
+                    </div>
+                    <div class="form-col">
+                        <label asp-for="Model.ConfirmEmail"></label>
+                        <input class="form-control" asp-for="Model.ConfirmEmail" />
+                        <span asp-validation-for="Model.ConfirmEmail"></span>
+                    </div>
+                </div>
+                <div class="form-col-100per">
+                    <button type="submit" class="btn submitLoader" title="Change Email">Change Email</button>
+                </div>
+                <div class="form-col-100per">
+                    <a asp-page="/account/profile">Return to Profile</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

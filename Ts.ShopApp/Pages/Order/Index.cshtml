@@ -1,0 +1,52 @@
+﻿@page "/orders"
+@model Ts.ShopApp.Pages.Order.IndexModel
+@{
+    ViewBag.Title = "My Orders";
+    ViewBag.Description = "My orders";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <div id="append"></div>
+    <div class="load-more">
+        <button class="btn" id="load-btn">Load More</button>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        let start = 0;
+        let length = 5;
+        let callAgain = true;
+
+        $(function () {
+            loadData();
+        });
+
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                loadData();
+            }
+        });
+        callBack = (response) => {
+            if (response == true) {
+                start += length;
+            }
+            else if (response == false) {
+                callAgain = false;
+            }
+        };
+
+        function loadData() {
+            let serverRequest = new ServerRequest(`/orders?start=${start}&length=${length}`, '#load-btn', '#append', null, callBack);
+            serverRequest.loadMoreData();
+        }
+
+        $(document).on('click', '.DownloadBtn', function (event) {
+            let orderDetailId = $(this).attr('orderDetailId');
+            let serverRequest = new ServerRequest('/orders?handler=documentdetail&orderdetailid=' + orderDetailId, this);
+            serverRequest.downloadDocument();
+        });
+    </script>
+}

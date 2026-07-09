@@ -1,0 +1,70 @@
+﻿@using Ts.ShopIn.Client.ViewModels.OrderVms
+@model IEnumerable<OrderVm>
+@if (Model != null)
+    foreach (var order in Model)
+    {
+        <div class="form-box mb-1">
+            <div class="form-border">
+                <div class="form-col-100per">
+                    <b><i class="fas fa-angle-double-right"></i> Order Number:</b> @order.OrderNumber <b>| Total Qty:</b> @order.TotalItemCount <b>| Total Amt:</b> @order.CurrencyType.Symbol@order.TotalAmount <b>| Ordered On:</b> @order.OrderedOnIst
+                    @if (order.RefundedAmount > 0)
+                    {
+                        <b>| Refunded Amt:</b>
+                        @order.CurrencyType.Symbol
+                        @order.RefundedAmount
+                    }
+                </div>
+                @foreach (var orderDetail in order.OrderDetailsForView)
+                {
+                    <div class="form-box mb-1">
+                        <div class="form-border">
+                            <div class="form-col-100per">
+                                @if (@orderDetail.ProductDetailForView != null)
+                                {
+                                    <div class="cart-title-flex">
+                                        <div>
+                                            <img width="90" height="60" src="@orderDetail.ProductDetailForView.MainImageUrl" />
+                                        </div>
+                                        <div>
+                                            <a asp-page="/product/view" asp-route-shopCategoryName="@orderDetail.ProductDetailForView.ShopCategoryName" asp-route-productDetailLink="@orderDetail.ProductDetailForView.ProductDetailLink" title="@orderDetail.Title">@orderDetail.Title</a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @orderDetail.Title
+                                }
+                            </div>
+                            <div class="form-col">
+                                <b>Qty:</b> @orderDetail.ItemCount
+                            </div>
+                            <div class="form-col">
+                                <b>Total Price:</b> @orderDetail.CurrencyType.Symbol@orderDetail.TotalPrice
+                            </div>
+                            <div class="form-col">
+                                <b>Status:</b> <span class="color-green">@orderDetail.OrderStatus.Name</span>
+                            </div>
+                            @if (orderDetail.OrderStatus.Name == OrderStatusConstant.OrderCompleted || orderDetail.OrderStatus.Name == OrderStatusConstant.OrderPaymentRefundFailed)
+                            {
+                                <div class="form-col">
+                                    <span class="color-darkred">@orderDetail.DeliveryPolicy.Title</span>
+                                </div>
+                                @if (orderDetail.IsDownloadable)
+                                {
+                                    <div class="form-col">
+                                        <b>Remaining Days:</b> <span class="color-darkred">@orderDetail.IsDownloadableRemainingDays</span>
+                                    </div>
+                                    @if (orderDetail.IsDownloadableRemainingDays > 0)
+                                    {
+                                        <div class="form-col">
+                                            <button type="button" orderDetailId="@orderDetail.Id" class="btn DownloadBtn"><i class="fas fa-download"></i> Download</button>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }

@@ -1,0 +1,61 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn.UpdateMainImageModel
+@{
+    ViewBag.Title = "Update Main Image";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            ProductDetail DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <b>@Html.DisplayNameFor(m => m.Model.Title):</b> @Model.Model.Title
+                                <input type="hidden" asp-for="Model.Title" />
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-center">
+                                    <input type="hidden" asp-for="Model.MainImageUrl" />
+                                    @if (!string.IsNullOrEmpty(Model.Model.MainImageUrl))
+                                    {
+                                        <img width="800" class="max-w-100" src="@Model.Model.MainImageUrl" alt="Main Image" />
+                                    }
+                                    else
+                                    {
+                                        <b>No Image</b>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label" asp-for="Model.MainImage"></label>
+                                <input class="form-control" asp-for="Model.MainImage">
+                                <span asp-validation-for="Model.MainImage" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-1 submitLoader"><i class="fas fa-save"></i> Save</button>
+                        @if (Model.Model.DeliveryPolicy.Name == DeliveryPolicyConstant.Downloadable15Days)
+                        {
+                            <a asp-page="updateproductdetaildocument" asp-route-id="@Model.Id" class="btn btn-secondary mb-1 float-end"><i class="fas fa-angle-double-right"></i> Upload Document</a>
+                        }
+                        else if (User.HasClaim(x => x.Type == ProductPolicy.CanPublish))
+                        {
+                            <a asp-page="publish" asp-route-id="@Model.Id" class="btn btn-secondary mb-1 float-end"><i class="fas fa-angle-double-right"></i> Publish ProductDetail</a>
+                        }
+                        <a asp-page="updatedescription" asp-route-id="@Model.Id" class="btn btn-secondary me-2 mb-1 float-end"><i class="fas fa-angle-double-left"></i> Description</a>
+                        <a asp-page="updateproductdetailimage" target="_blank" asp-route-id="@Model.Id" class="btn btn-warning me-4 mb-1 float-end"><i class="fas fa-images"></i> Image</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

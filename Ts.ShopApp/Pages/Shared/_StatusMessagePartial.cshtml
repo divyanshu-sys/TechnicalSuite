@@ -1,0 +1,20 @@
+﻿@if (TempData.ContainsKey("success"))
+{
+    string successMsg = TempData["success"] as string;
+    if (successMsg != null)
+    {
+        <script>
+            successAlert('@successMsg');
+        </script>
+    }
+}
+else if (TempData.ContainsKey("fail"))
+{
+    string failMsg = TempData["fail"] as string;
+    if (failMsg != null)
+    {
+        <script>
+            failAlert('@failMsg');
+        </script>
+    }
+}

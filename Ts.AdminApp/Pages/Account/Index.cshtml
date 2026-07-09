@@ -1,0 +1,43 @@
+﻿@page "/login"
+@model Ts.AdminApp.Pages.Account.IndexModel
+@{
+    ViewBag.Title = "Login";
+}
+
+<h6 class="mb-4 text-muted text-center">Login to your account</h6>
+<form method="post" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+    <div class="mb-3 text-start">
+        <label class="form-label" asp-for="Model.Email"></label>
+        <input class="form-control" asp-for="Model.Email">
+        <span asp-validation-for="Model.Email" class="text-danger small"></span>
+    </div>
+    <div class="mb-3 text-start">
+        <label class="form-label" asp-for="Model.Password"></label>
+        <input class="form-control" asp-for="Model.Password">
+        <span asp-validation-for="Model.Password" class="text-danger small"></span>
+    </div>
+    <div class="mb-3 text-start">
+        <div class="form-check">
+            <input type="hidden" id="ReCaptcha" name="ReCaptcha" />
+            <input class="form-check-input" asp-for="Model.RememberMe" checked>
+            <label class="form-check-label" asp-for="Model.RememberMe"></label>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary shadow-2 mb-4" id="SubmitButton">Login</button>
+    </div>
+</form>
+<div class="text-center">
+    <p class="mb-2 text-muted">Forgot password? <a asp-page="forgotpassword">Reset</a></p>
+</div>
+@section Scripts {
+    <environment exclude="Development">
+        <script src="@GoogleCaptchaConstant.GoogleCaptchaAdminAppSiteUrl"></script>
+        <script>
+            $("#SubmitButton").on('click', function (event) {
+                reCaptcha(this, '@GoogleCaptchaConstant.GoogleCaptchaAdminAppSiteKey', '@GoogleCaptchaConstant.GoogleCaptchaLogin', '#ReCaptcha', event);
+            });
+        </script>
+    </environment>
+}

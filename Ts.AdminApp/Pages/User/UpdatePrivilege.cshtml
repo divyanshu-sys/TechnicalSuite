@@ -1,0 +1,173 @@
+﻿@page "{id?}"
+@model Ts.AdminApp.Pages.User.UpdatePrivilegeModel
+@{
+    ViewBag.Title = "User Privileges";
+}
+
+<div class="container">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="mb-3">
+                <label class="form-label text-uppercase"><small>User Detail</small></label>
+                <div class="row g-2">
+                    <div class="mb-3 col-md-6">
+                        <b>First Name:</b> @Model.Model.FirstName
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <b>Last Name:</b> @Model.Model.LastName
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <b>Username:</b> @Model.Model.UserName
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <b>Email:</b> @Model.Model.Email
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <form method="post">
+            <div class="box-body">
+                <div class="mb-2">
+                    <div class="text-danger small">NOTE: Super Administrator must have all Policies.</div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                <div class="mb-3">
+                    <label class="form-label text-uppercase"><b>Roles</b></label>
+                </div>
+                <div class="mb-3">
+                    <span asp-validation-for="Model.UserRoles" class="text-danger small"></span>
+                    @for (var i = 0; i < Model.Model.UserRoles.Count; i++)
+                    {
+                        <div class="form-check form-switch">
+                            <input type="hidden" asp-for="Model.UserRoles[i].Name" />
+                            <input class="form-check-input user-role-check" type="checkbox" user-role-name="@Model.Model.UserRoles[i].Name" asp-for="Model.UserRoles[i].IsSelected" checked="@(Model.Model.UserRoles[i].IsSelected ? "checked" : null)" />
+                            <label class="form-check-label" asp-for="Model.UserRoles[i].IsSelected">@Model.Model.UserRoles[i].Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" id="user-policies-check-all" type="checkbox" />
+                        <label class="text-uppercase"><b>Policies</b></label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <span asp-validation-for="Model.UserClaims" class="text-danger small"></span>
+                    @for (var i = 0; i < Model.Model.UserClaims.Count; i++)
+                    {
+                        <div class="mb-3 user-policies user-role-box-@Model.Model.UserClaims[i].RoleName">
+                            @for (var j = 0; j < Model.Model.UserClaims[i].Policies.Count; j++)
+                            {
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input user-policy-name" user-policy-name="user-@Model.Model.UserClaims[i].Policies[j].PolicyName" type="checkbox" />
+                                    <label class="text-decoration-underline"><b>@Model.Model.UserClaims[i].Policies[j].PolicyName</b></label>
+                                </div>
+                                <div class="mb-3">
+                                    @for (var k = 0; k < Model.Model.UserClaims[i].Policies[j].Claims.Count; k++)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" asp-for="Model.UserClaims[i].Policies[j].Claims[k].ClaimType" />
+                                            <input class="form-check-input user-policy-item user-@Model.Model.UserClaims[i].Policies[j].PolicyName user-role-item-@Model.Model.UserClaims[i].RoleName" user-policy-name="user-@Model.Model.UserClaims[i].Policies[j].PolicyName" type="checkbox" asp-for="Model.UserClaims[i].Policies[j].Claims[k].IsSelected" checked="@(Model.Model.UserClaims[i].Policies[j].Claims[k].IsSelected ? "checked" : null)" />
+                                            <label class="form-check-label" asp-for="Model.UserClaims[i].Policies[j].Claims[k].IsSelected">@(Model.Model.UserClaims[i].Policies[j].Claims[k].ClaimType?.ToSpaceAfterEveryCapitalLetter())...</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="box-footer">
+                <button type="submit" id="submit-button" class="btn btn-success submitLoader"><i class="fas fa-check"></i> Save</button>
+                <a asp-page="index" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $('.user-role-check').each(function () {
+                userRoleCheckOperation(this);
+            });
+        });
+
+        $('.user-policy-name').change(function () {
+            let policyName = $(this).attr('user-policy-name');
+            let isChecked = $(this).prop('checked');
+            $('.' + policyName).prop('checked', isChecked);
+        });
+
+        $('.user-policy-item').change(function () {
+            let policyName = $(this).attr('user-policy-name');
+            if ($('.' + policyName).length == $('.' + policyName + ':checked').length) {
+                $('.user-policy-name[user-policy-name="' + policyName + '"]').prop('checked', true);
+            }
+            else {
+                $('.user-policy-name[user-policy-name="' + policyName + '"]').prop('checked', false);
+            }
+
+            if ($('.user-policy-item').length == $('.user-policy-item:checked').length) {
+                $('#user-policies-check-all').prop('checked', true);
+            }
+            else {
+                $('#user-policies-check-all').prop('checked', false);
+            }
+        });
+
+        $('#user-policies-check-all').change(function () {
+            let isChecked = $(this).prop('checked');
+            $('.user-policy-item').prop('checked', isChecked);
+            $('.user-policy-name').prop('checked', isChecked);
+        });
+
+        $('.user-policy-name').change(function () {
+            if ($('.user-policy-name').length == $('.user-policy-name:checked').length) {
+                $('#user-policies-check-all').prop('checked', true);
+            }
+            else {
+                $('#user-policies-check-all').prop('checked', false);
+            }
+        });
+
+        $('.user-role-check').change(function () {
+            userRoleCheckOperation(this);
+        });
+
+        function userRoleCheckOperation(classProperty) {
+            let roleName = $(classProperty).attr('user-role-name');
+            let isChecked = $(classProperty).prop('checked');
+            if (isChecked) {
+                if (roleName == RoleConstant.Administrator) {
+                    $('.user-policies').show();
+                    $('.user-policy-item').prop('disabled', !isChecked);
+                }
+                else {
+                    $('.user-role-box-' + roleName).show();
+                    $('.user-role-item-' + roleName).prop('disabled', !isChecked);
+                }
+            }
+            else {
+                var isAdminChecked = $('.user-role-check[user-role-name="' + '@RoleConstant.Administrator' + '"]').prop('checked');
+                if ($('.user-role-check:checked').length == 0) {
+                    $('.user-policies').hide();
+                    $('.user-policy-item').prop('disabled', !isChecked);
+                }
+                else if (!isAdminChecked) {
+                    $('.user-role-box-' + roleName).hide();
+                    $('.user-role-item-' + roleName).prop('disabled', !isChecked);
+                }
+            }
+        }
+    </script>
+}

@@ -1,0 +1,185 @@
+﻿@page "/blog/blogdotin"
+@model Ts.AdminApp.Pages.Blog.BlogDotIn.IndexModel
+@{
+    ViewBag.Title = "Blogs DotIn";
+}
+
+<div class="container">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            @if (User.HasClaim(x => x.Type == BlogPolicy.CanCreate))
+            {
+                <a asp-page="add" class="btn btn-sm btn-outline-primary float-end"><i class="fas fa-plus-circle"></i> Add Blog</a>
+            }
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-filter"></i> Filter <button title="Click to expand for filter" id="ExpandFilter" type="button" class="btn btn-outline-danger btn-rounded float-end"><i class="fas fa-expand-arrows-alt"></i></button></div>
+                <div class="card-body" style="display:none;" id="FilterBox">
+                    <form method="dialog">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.BlogWorkerId"></label>
+                                <select asp-for="Model.BlogWorkerId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <span asp-validation-for="Model.BlogWorkerId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary float-end" id="FilterBtn"><i class="fas fa-filter"></i> Filter</button>
+                        <button type="submit" class="btn btn-success float-end me-2" id="ClearFilter"><i class="fas fa-filter"></i> Clear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Blog Link</th>
+                        <th>Sub Category</th>
+                        <th>Is Published</th>
+                        <th>Published On</th>
+                        <th>Published By</th>
+                        <th>Blog Worker</th>
+                        <th>Total Views</th>
+                        <th>Last Viewed On</th>
+                        <th>Created On</th>
+                        <th>Updated On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    var canUpdate = User.HasClaim(x => x.Type == BlogPolicy.CanUpdate);
+    var canDelete = User.HasClaim(x => x.Type == BlogPolicy.CanDelete);
+    var canPublish = User.HasClaim(x => x.Type == BlogPolicy.CanPublish);
+    var canChangeWorker = User.HasClaim(x => x.Type == BlogPolicy.CanChangeWorker);
+}
+
+@section Scripts {
+    <script>
+        let table;
+        $(function () {
+            var columns = [
+                { data: 'title' },
+                { data: 'blogLink' },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.subCategory?.name ?? "";
+                    }
+                },
+                {
+                    data: 'isPublished',
+                    render: function (data, type, row, meta) {
+                        let canPublish = @canPublish.ToString().ToLower();
+                        if (data) {
+                            data = '<b class="text-success">True</b>';
+                            if (canPublish)
+                                data += ` <button title="Unpublish" type="button" class="btn btn-outline-danger btn-rounded" onClick="showConfirmation('Unpublish', 'Confirm Unpublish', 'Are you sure you want to Unpublish?', '/blog/blogdotin/publish/${row.id}')"><i class="fas fa-undo"></i></button>`;
+                        }
+                        else if (!data) {
+                            data = '<b class="text-danger">False</b>';
+                            if (canPublish)
+                                data += ` <a title="Publish" href="/blog/blogdotin/publish/${row.id}" class="btn btn-outline-info btn-rounded"><i class="fas fa-undo"></i></a>`;
+                        }
+                        return data;
+                    },
+                    className: 'text-center'
+                },
+                {
+                    data: 'publishedOnIst',
+                    className: 'text-end'
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return $.trim(`${row.publishedBy?.firstName ?? ""} ${row.publishedBy?.lastName ?? ""}`);
+                    }
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        let canChangeWorker = @canChangeWorker.ToString().ToLower();
+                        let name = $.trim(`${row.blogWorker?.firstName ?? ""} ${row.blogWorker?.lastName ?? ""}`);
+                        if (canChangeWorker)
+                            name += ` <a title="Change Worker" href="/blog/blogdotin/updateblogworker/${row.id}" class="btn btn-outline-danger btn-rounded"><i class="fas fa-exchange"></i></a>`;
+                        return name;
+                    },
+                    className: 'text-center'
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.blogView?.totalViews ?? "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.blogView?.lastViewedOnIst ?? "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    data: 'createdOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'updatedOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        let link = '';
+                        let canDelete = @canDelete.ToString().ToLower();
+                        let canUpdate = @canUpdate.ToString().ToLower();
+                        if(canUpdate)
+                            link += `<a href="/blog/blogdotin/edit/${data}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>`;
+                        if (canDelete)
+                            link += ` <button type="button" class="btn btn-outline-danger btn-rounded" onClick="showConfirmation('Delete', 'Confirm Delete', 'Are you sure you want to delete?', '/blog/blogdotin/delete/${data}')"><i class="fas fa-trash"></i></button>`;
+
+                        return link;
+                    },
+                    className: 'text-end'
+                }
+            ];
+
+            function getDynamicData() {
+                return {
+                    blogWorkerId: $('#Model_BlogWorkerId').val()
+                };
+            }
+            table = initAjaxTable("#DataTable", [[9, 'desc']], [0, 1, 2, 5, 6, 11], '/blog/blogdotin', columns, getDynamicData);
+        });
+
+        $('#ClearFilter').click(function (event) {
+            $(this).closest("form").get(0).reset();
+            $("#Model_BlogWorkerId").trigger("change");
+            table.ajax.reload();
+        });
+
+        $('#FilterBtn').click(function (event) {
+            table.ajax.reload();
+        });
+
+        $('#ExpandFilter').click(function (event) {
+            $('#FilterBox').show();
+            $("#Model_BlogWorkerId").select2({
+                theme: "classic"
+            });
+            let serverRequest = new ServerRequest('/blog/blogdotin?handler=applicationuserdropdown', '#Model_BlogWorkerId', null);
+            serverRequest.loadDropDown();
+            $(this).remove();
+        });
+    </script>
+}

@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.2.0",
+      "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "jquery-validate@1.19.5",
+      "destination": "wwwroot/lib/jquery-validate/"
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
+    },
+    {
+      "library": "font-awesome@6.1.2",
+      "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "library": "Chart.js@3.9.1",
+      "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "library": "jqueryui@1.13.2",
+      "destination": "wwwroot/lib/jqueryui/"
+    },
+    {
+      "library": "flag-icon-css@6.6.4",
+      "destination": "wwwroot/lib/flag-icon-css/"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables/"
+    },
+    {
+      "library": "lato-font@3.0.0",
+      "destination": "wwwroot/lib/lato-font/"
+    },
+    {
+      "library": "select2@4.1.0-rc.0",
+      "destination": "wwwroot/lib/select2/"
+    },
+    {
+      "library": "jszip@3.10.1",
+      "destination": "wwwroot/lib/jszip/"
+    },
+    {
+      "library": "pdfmake@0.2.10",
+      "destination": "wwwroot/lib/pdfmake/"
+    },
+    {
+      "library": "datatables-buttons@2.4.2",
+      "destination": "wwwroot/lib/datatables-buttons/"
+    },
+    {
+      "library": "datatables.net-buttons-dt@2.4.2",
+      "destination": "wwwroot/lib/datatables.net-buttons-dt/"
+    }
+  ]
+}

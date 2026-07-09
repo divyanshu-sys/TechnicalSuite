@@ -1,0 +1,40 @@
+﻿@page "/profile"
+@model Ts.ShopApp.Pages.Account.ProfileModel
+@{
+    ViewBag.Title = "Profile";
+    ViewBag.Description = "Profile";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <div class="form-box">
+        <div class="form-border">
+            <div class="form-col">
+                <b><label asp-for="Model.FirstName"></label>:</b> @Model.Model.FirstName
+            </div>
+            <div class="form-col">
+                <b><label asp-for="Model.LastName"></label>:</b> @Model.Model.LastName
+            </div>
+            <div class="form-col">
+                <b><label asp-for="Model.UserName"></label>:</b> @Model.Model.UserName
+            </div>
+            <div class="form-col">
+                <b><label asp-for="Model.Email"></label>:</b> @Model.Model.Email
+            </div>
+            <div class="form-col">
+                <a asp-page="/account/editprofile">Edit Profile</a>
+            </div>
+            <div class="form-col">
+                <a asp-page="/account/changeemail">Update Email</a>
+            </div>
+            <div class="form-col">
+                <a asp-page="/account/changepassword">Update Password</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+}

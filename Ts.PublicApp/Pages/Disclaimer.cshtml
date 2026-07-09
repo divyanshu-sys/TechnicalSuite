@@ -1,0 +1,20 @@
+﻿@page
+@model Ts.PublicApp.Pages.DisclaimerModel
+@{
+    ViewBag.Title = "Data Disclaimer";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some data disclaimer information about {title}.";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>We go to extraordinary efforts here at @title to ensure that the data within our pages is accurate and up-to-date.</p>
+    <p>Even given our herculean efforts we can not guarantee that the information on our pages is 100% correct.</p>
+    <p>If a particular content is vital to you, we always recommend checking with the <b>post source</b> and the best way to start is by visiting their website directly.</p>
+    <p>If you think that any information on the page is wrong or missing, please <a asp-page="feedback">contact us here</a>.</p>
+    <p>Now for the legalese.</p>
+    <p><b>@title is not responsible for any errors or omissions, or for the results obtained from the use of this information. All information on this site is provided “as is,” with no guarantee of completeness, accuracy, timeliness or the results obtained from the use of this information.</b></p>
+</div>

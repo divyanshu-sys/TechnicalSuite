@@ -1,0 +1,15 @@
+﻿@model string
+
+@if (Model == CategoryConstant.Blogs)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/blog/list" asp-route-subCategoryName="@SubCategoryConstant.IgnouBooks" title="View all @SubCategoryConstant.IgnouBooks">@SubCategoryConstant.IgnouBooks</a>
+        <a asp-page="/blog/list" asp-route-subCategoryName="@SubCategoryConstant.IgnouAssignments" title="View all @SubCategoryConstant.IgnouAssignments">@SubCategoryConstant.IgnouAssignments</a>
+    </div>
+}
+else if (Model == CategoryConstant.Products)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/product/list" asp-route-shopCategoryName="@ShopCategoryConstant.IGNOUAssignments" title="View all @ShopCategoryConstant.IGNOUAssignments">@ShopCategoryConstant.IGNOUAssignments</a>
+    </div>
+}

@@ -1,0 +1,73 @@
+﻿@page "{code}"
+@model Ts.PublicComApp.Pages.ErrorModel
+@{
+    Layout = null;
+    ViewBag.Title = ViewBag.StatusCode;
+    ViewBag.Description = "Error Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <meta name="robots" content="noindex, follow">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sub-wrapper">
+            <div class="error-page">
+                @if (ViewBag.StatusCode == 404)
+                {
+                    <img class="img-error" src="~/svg/error-404-monochrome.svg" asp-append-version=true />
+                }
+                else
+                {
+                    <h1>@ViewBag.StatusCode</h1>
+                }
+                <p>@ViewBag.HeadLine</p>
+                <p>@ViewBag.TagLine</p>
+                <i class="fa fa-arrow-left"></i> <a asp-page="/index">Return to Home</a>
+            </div>
+            <div class="wrapper">
+                <div class="width-left-100per">
+                    <h2 class="p-l-r-4">Recent</h2>
+                    <div id="append" class="width-left-100per"></div>
+                    <div class="width-left-100per load-more">
+                        <button class="btn" id="load-btn">Load More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <partial name="_ScriptTagPartial" />
+    <script>
+        let start = 0;
+        let length = 9;
+        let callAgain = true;
+
+        $(function () {
+            loadData();
+        });
+
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                loadData();
+            }
+        });
+        callBack = (response) => {
+            if (response == true) {
+                start += length;
+            }
+            else if (response == false) {
+                callAgain = false;
+            }
+        };
+
+        function loadData() {
+            let serverRequest = new ServerRequest(`/ajaxwork?start=${start}&length=${length}`, '#load-btn', '#append', null, callBack);
+            serverRequest.loadMoreData();
+        }
+    </script>
+</body>
+</html>

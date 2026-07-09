@@ -1,0 +1,38 @@
+﻿@page
+@model Ts.ShopApp.Pages.RefundPolicyModel
+
+@{
+    ViewBag.Title = "Refund & Cancellation Policy";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some information about {ViewBag.Title} of {title}.";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>Last Updated: 02-04-2026 IST</p>
+    <h2>1. Digital Products</h2>
+    <p>Since we sell digital products (PDFs/documents), all sales are generally final.</p>
+    <h2>2. Refund Policy</h2>
+    <p>Refunds will only be provided in the following cases:</p>
+    <ul>
+        <li>Duplicate payment</li>
+        <li>Payment made but product not delivered</li>
+        <li>Corrupted or inaccessible file</li>
+    </ul>
+    <h2>3. Refund Timeline</h2>
+    <p>If approved, refunds will be processed within 5-7 business days to the original payment method.</p>
+    <h2>4. Cancellation Policy</h2>
+    <p>Orders cannot be cancelled once the download has been initiated.</p>
+    <h2>5. Contact Us</h2>
+    <p>For refund requests, <a asp-page="/contact">contact us.</a>:</p>
+    <p>Include:</p>
+    <ul>
+        <li>Order ID</li>
+        <li>Payment details</li>
+        <li>Issue description</li>
+    </ul>
+    <p>We will review your request within 1-2 business days.</p>
+</div>

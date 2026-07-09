@@ -1,0 +1,20 @@
+﻿@using Ts.DotCom.Client.ViewModels.PostVms
+@model GetPostForListViewVm
+<div class="featured">
+    <div class="case-hover">
+        <div class="txt-top-left font-20">Featured</div>
+        <a asp-page="/post/view" asp-route-categoryName="@Model.CategoryName" asp-route-subCategoryName="@Model.SubCategoryName" asp-route-postLink="@Model.PostLink" title="@Model.Title">
+            @if (Model.MainImageUrl != null)
+            {
+                <img class="case-img f-height" src="@Model.MainImageUrl" alt="@Model.Title" onerror="loadAlternateImage(this);" />
+            }
+            else
+            {
+                <img class="case-img f-height" src="~/images/static-images/alternate-post.jpg" alt="@Model.Title" asp-append-version="true" />
+            }
+            <div class="txt-bottom-left">
+                <div class="case-link p-l-r-4">@Model.Title</div>
+            </div>
+        </a>
+    </div>
+</div>

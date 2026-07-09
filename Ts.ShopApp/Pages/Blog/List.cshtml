@@ -1,0 +1,64 @@
+﻿@page "/blogs/{subCategoryName?}"
+@model Ts.ShopApp.Pages.Blog.ListModel
+@{
+    ViewBag.Title = $"{CategoryConstant.Blogs}{(Model.SubCategoryName == null ? string.Empty : $" / {Model.SubCategoryName.ToUpperFirstLetterAndAfterHyphen()}")}";
+    ViewBag.Description = $"Here you will get all {ViewBag.Title} contents.";
+}
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+
+@section Submenu {
+    <partial name="_SubMenuPartial" model="CategoryConstant.Blogs" />
+}
+
+<partial name="AdsPartials/_ResponsiveAd1Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h1>@ViewBag.Title</h1>
+    </div>
+    @if (Model.Model.Count() > 0)
+    {
+        <div class="width-left-100per" id="append">
+            <partial name="_BlogGalleryCasePartial" model="Model.Model" />
+        </div>
+        <div class="width-left-100per load-more">
+            <button class="btn" id="load-btn">Load More</button>
+        </div>
+    }
+</div>
+<div class="clear-both"></div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+
+@section Scripts {
+    <script>
+        let subCategoryName = '@Model.SubCategoryName';
+        let start = 12;
+        let length = 9;
+
+        function getUrl() {
+            let url = `/ajaxwork?`;
+            if (subCategoryName != null && subCategoryName != '') {
+                url += `subCategoryName=${subCategoryName}`;
+            }
+            return url;
+        }
+
+        let callAgain = true;
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                let serverRequest = new ServerRequest(getUrl() + `&start=${start}&length=${length}`, this, '#append', null, callBack);
+                serverRequest.loadMoreData();
+            }
+        });
+        callBack = (response) => {
+            if (response) {
+                start += length;
+            }
+            if (!response) {
+                callAgain = false;
+            }
+        };
+    </script>
+}

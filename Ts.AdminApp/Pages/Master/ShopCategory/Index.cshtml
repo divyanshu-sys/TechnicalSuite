@@ -1,0 +1,66 @@
+﻿@page "/master/shopcategory"
+@model Ts.AdminApp.Pages.Master.ShopCategory.IndexModel
+@{
+    ViewBag.Title = "Shop Categories";
+}
+
+<div class="container">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            @if (User.HasClaim(x => x.Type == ShopCategoryPolicy.CanCreate))
+            {
+                <a asp-page="add" class="btn btn-sm btn-outline-primary float-end"><i class="fas fa-plus-circle"></i> Add Shop Category</a>
+            }
+        </h3>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created On</th>
+                        <th>Updated On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    var canUpdate = User.HasClaim(x => x.Type == ShopCategoryPolicy.CanUpdate);
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            var columns = [
+                { data: 'name' },
+                {
+                    data: 'createdOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'updatedOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        let link = '';
+                        let canUpdate = @canUpdate.ToString().ToLower();
+                        if (canUpdate)
+                            link += `<a href="/master/shopcategory/edit/${data}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>`;
+
+                        return link;
+                    },
+                    className: 'text-end'
+                }
+            ];
+            let table = initAjaxTable("#DataTable", [[1, 'desc']], [3], '/master/shopcategory', columns);
+        });
+    </script>
+}

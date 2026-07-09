@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link href="~/css/auth.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/auth.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    @await RenderSectionAsync("Heads", required: false)
+</head>
+<body>
+    <partial name="_StatusMessagePartial" />
+    <div class="wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-4 text-center">
+                        <img class="brand" style="height:100px;" src="~/images/static-images/logo.png" alt="ts logo" asp-append-version="true">
+                    </div>
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="_ScriptTagPartial" />
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            sessionNotification(@((User.Claims.GetRefreshTokenExpiryAt() - DateTime.UtcNow.AddMinutes(2)).Value.TotalMilliseconds));
+        </script>
+    }
+</body>
+</html>

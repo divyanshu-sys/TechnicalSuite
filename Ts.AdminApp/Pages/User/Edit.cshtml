@@ -1,0 +1,163 @@
+﻿@page "{id?}"
+@model Ts.AdminApp.Pages.User.EditModel
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<div class="container col-lg-6">
+    <div class="page-title">
+        <h3>
+            User
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-user-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.FirstName"></label>
+                                <input class="form-control" asp-for="Model.FirstName">
+                                <span asp-validation-for="Model.FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.LastName"></label>
+                                <input class="form-control" asp-for="Model.LastName">
+                                <span asp-validation-for="Model.LastName" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.Address1"></label>
+                                <input class="form-control" asp-for="Model.Address.Address1">
+                                <span asp-validation-for="Model.Address.Address1" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.Address2"></label>
+                                <input class="form-control" asp-for="Model.Address.Address2">
+                                <span asp-validation-for="Model.Address.Address2" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.CountryId"></label>
+                                <select asp-for="Model.Address.CountryId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="CountryId_Hidden" value="@Model.Model?.Address?.CountryId" />
+                                <span asp-validation-for="Model.Address.CountryId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.StateId"></label>
+                                <select asp-for="Model.Address.StateId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="StateId_Hidden" value="@Model.Model?.Address?.StateId" />
+                                <span asp-validation-for="Model.Address.StateId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.DistrictId"></label>
+                                <select asp-for="Model.Address.DistrictId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="DistrictId_Hidden" value="@Model.Model?.Address?.DistrictId" />
+                                <span asp-validation-for="Model.Address.DistrictId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Address.PostOfficeId"></label>
+                                <select asp-for="Model.Address.PostOfficeId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="PostOfficeId_Hidden" value="@Model.Model?.Address?.PostOfficeId" />
+                                <span asp-validation-for="Model.Address.PostOfficeId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submitLoader"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $("#Model_Address_CountryId").select2({
+                theme: "classic"
+            });
+
+            $("#Model_Address_StateId").select2({
+                theme: "classic"
+            });
+
+            $("#Model_Address_DistrictId").select2({
+                theme: "classic"
+            });
+
+            $("#Model_Address_PostOfficeId").select2({
+                theme: "classic"
+            });
+
+            let serverRequest = new ServerRequest('/user/edit?handler=countrydropdown', '#Model_Address_CountryId', '#CountryId_Hidden');
+            serverRequest.loadDropDown();
+
+            let countryId = $("#CountryId_Hidden").val();
+            if (countryId != '')
+                getStatesByCountryId(countryId);
+
+            let stateId = $("#StateId_Hidden").val();
+            if (stateId != '')
+                getDistrictsByStateId(stateId);
+
+            let districtId = $("#DistrictId_Hidden").val();
+            if (districtId != '')
+                getPostOfficesByDistrictId(districtId);
+        });
+
+        $("#Model_Address_CountryId").change(function () {
+            $("#StateId_Hidden").val('');
+            $("#Model_Address_StateId").empty();
+            $("#Model_Address_DistrictId").empty();
+            $("#Model_Address_PostOfficeId").empty();
+            let countryId = this.value;
+            if (countryId != '') {
+                getStatesByCountryId(countryId);
+            }
+        });
+
+        $("#Model_Address_StateId").change(function () {
+            $("#DistrictId_Hidden").val('');
+            $("#Model_Address_DistrictId").empty();
+            $("#Model_Address_PostOfficeId").empty();
+            let stateId = this.value;
+            if (stateId != '') {
+                getDistrictsByStateId(stateId);
+            }
+        });
+
+        $("#Model_Address_DistrictId").change(function () {
+            $("#PostOfficeId_Hidden").val('');
+            $("#Model_Address_PostOfficeId").empty();
+            let postOfficeId = this.value;
+            if (postOfficeId != '') {
+                getPostOfficesByDistrictId(postOfficeId);
+            }
+        });
+
+        function getStatesByCountryId(countryId) {
+            let serverRequest = new ServerRequest(`/user/edit?countryid=${countryId}&handler=statedropdownbycountryid`, '#Model_Address_StateId', '#StateId_Hidden');
+            serverRequest.loadDropDown();
+        }
+
+        function getDistrictsByStateId(stateId) {
+            let serverRequest = new ServerRequest(`/user/edit?stateid=${stateId}&handler=districtdropdownbystateid`, '#Model_Address_DistrictId', '#DistrictId_Hidden');
+            serverRequest.loadDropDown();
+        }
+
+        function getPostOfficesByDistrictId(districtId) {
+            let serverRequest = new ServerRequest(`/user/edit?districtId=${districtId}&handler=PostOfficeDropDownByDistrictId`, '#Model_Address_PostOfficeId', '#PostOfficeId_Hidden');
+            serverRequest.loadDropDown();
+        }
+    </script>
+}

@@ -1,0 +1,220 @@
+﻿@page "/cart"
+@model Ts.ShopApp.Pages.Cart.IndexModel
+@{
+    ViewBag.Title = "My Cart";
+    ViewBag.Description = "My cart";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title <a class="view-all" asp-page="/order/index" title="View all Orders">View all Orders <i class="fa fa-arrow-right"></i></a></h1>
+    @if (Model.ModelVm?.ProductDetails?.Count > 0)
+    {
+        <table class="no-table-border">
+            <tr>
+                <td align="right">
+                    @if (Model.ModelVm.TotalAvailableItemCount > 0)
+                    {
+                        <button title="Checkout" type="button" class="btn checkoutButton"><i class="fas fa-check"></i> Checkout</button>
+                    }
+                </td>
+            </tr>
+        </table>
+        @foreach (var item in Model.ModelVm.ProductDetails)
+        {
+            <div class="form-box mb-1">
+                <div class="form-border">
+                    <div class="form-col-100per">
+                        <div class="cart-title-flex">
+                            <div>
+                                <img width="90" height="60" src="@item.ProductDetail.MainImageUrl" />
+                            </div>
+                            <div><a asp-page="/product/view" asp-route-shopCategoryName="@item.ProductDetail.ShopCategoryName" asp-route-productDetailLink="@item.ProductDetail.ProductDetailLink" title="@item.ProductDetail.Title">@item.ProductDetail.Title</a></div>
+                        </div>
+                        @if (!item.ProductDetail.IsAvailable)
+                        {
+                            <span class="color-darkred"><b><i class="fas fa-info-circle"></i> This item is not available.</b></span>
+                        }
+                    </div>
+                    <div class="form-col">
+                        <form method="post" asp-page="/cart/delete" asp-route-productDetailId="@item.ProductDetail.Id">
+                            <b>Qty:</b> @item.ItemCount <button title="Delete item" type="submit" class="btn submitDeleteCart"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                    <div class="form-col">
+                        <b>Total:</b> @item.ProductDetail.Currency@item.TotalPrice
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="form-box">
+            <div class="form-border">
+                <table class="no-table-border">
+                    <tr>
+                        <td>
+                            <b>Total Qty:</b> @Model.ModelVm.TotalAvailableItemCount<br />
+                        </td>
+                        <td>
+                            <b>Total Amt:</b> @Model.ModelVm.Currency@Model.ModelVm.TotalAvailableItemAmount
+                        </td>
+                    </tr>
+                </table>
+                <table class="no-table-border">
+                    <tr>
+                        <td align="right">
+                            @if (Model.ModelVm.TotalAvailableItemCount > 0)
+                            {
+                                <button title="Checkout" type="button" class="btn checkoutButton"><i class="fas fa-check"></i> Checkout</button>
+                            }
+                            else
+                            {
+                                <b class="color-darkred"><b><i class="fas fa-info-circle"></i> Please add item to you cart.</b></b>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <table class="no-table-border">
+            <tr>
+                <td align="center">
+                    No items in your Cart.
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <a asp-page="/product/list" asp-route-shopCategoryName="@null"><b><i class="fas fa-shopping-basket"></i> Continue shopping.</b></a>
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+@section Scripts {
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        let isCheckoutClicked = false;
+
+        // UI State Handlers
+        function undoDisable() {
+            isCheckoutClicked = false;
+            $(".submitDeleteCart").attr('disabled', false);
+            hideBtnLoader($(".checkoutButton"));
+            hideLoader(0);
+        }
+
+        function doDisable() {
+            isCheckoutClicked = true;
+            showLoader(0);
+            $(".submitDeleteCart").attr('disabled', true);
+            showBtnLoader($(".checkoutButton"));
+        }
+
+        $(".submitDeleteCart").on('click', function (event) {
+            if(isCheckoutClicked){
+                event.preventDefault();
+            }
+            else{
+                showFormSubmitLoaderSimple(this);
+            }
+        });
+
+        $(".checkoutButton").on('click', async function (event) {
+            if (isCheckoutClicked) return;
+
+            $.ajax({
+                beforeSend: function (xhr) {
+                    doDisable();
+                },
+                type: "POST",
+                url: '/cart?handler=checkout',
+                success: function (data, status, xhr) {
+                    if(data.isPaymentRequired){
+                        var options = {
+                            "key": data.razorpayApiKey,
+                            "description": data.description,
+                            "order_id": data.order_Id,
+                            "prefill": {
+                                "name": data.clientName,
+                                "email": data.clientEmail,
+                                "contact": data.clientPhoneCodeNumber
+                            },
+                            "notes": {
+                                "orderNumber": data.orderNumber
+                            }
+                        }
+                        options.handler = async function (response) {
+                            // send to backend for verification
+                            try{
+                                const formData = new FormData();
+                                formData.append("Model.Razorpay_Payment_Id", response.razorpay_payment_id);
+                                formData.append("Model.Razorpay_Order_Id", response.razorpay_order_id);
+                                formData.append("Model.Razorpay_Signature", response.razorpay_signature);
+
+                                const verifyResponse = await fetch('/cart?handler=verifyorderpayment', {
+                                    method: 'POST',
+                                    body: formData
+                                });
+
+                                window.location.href = "/paymentstatus?paymentid="+response.razorpay_payment_id;
+                                return;
+                            }
+                            catch(error){
+                                if (!navigator.onLine) {
+                                    failAlert('There is a network problem. Please check your <a href="/orders" title="My Orders">orders</a> or contact admin.');
+                                }
+                                else{
+                                    failAlert('Something went wrong. Please check your <a href="/orders" title="My Orders">orders</a> or contact admin.');
+                                }
+                                undoDisable();
+                            }
+                        };
+                        options.modal = {
+                            ondismiss: function () {
+                                //This code runs when the popup is closed"
+                                undoDisable();
+                            },
+                            // Boolean indicating whether pressing escape key
+                            // should close the checkout form. (default: true)
+                            escape: false,
+                            // Boolean indicating whether clicking translucent blank
+                            // space outside checkout form should close the form. (default: false)
+                            backdropclose: false
+                        };
+
+                        try{
+                            var rzp = new Razorpay(options);
+                            // rzp.on('payment.failed', function (response) {
+                            //     undoDisable();
+                            // });
+                            rzp.open();
+                        }
+                        catch(error){
+                            if (!navigator.onLine) {
+                                failAlert('There is a network problem. Please try again.');
+                            }
+                            else{
+                                failAlert('Something went wrong.');
+                            }
+                            undoDisable();
+                        }
+                    }
+                    else{
+                        window.location.href = "/orders";
+                        return;
+                    }
+                },
+                complete: function (xhr, status) {
+                },
+                error: function (xhr, status, error) {
+                    handleErrorApiResponse(xhr);
+                    undoDisable();
+                }
+            });
+        });
+    </script>
+}

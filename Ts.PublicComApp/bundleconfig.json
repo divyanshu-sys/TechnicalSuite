@@ -1,0 +1,38 @@
+[
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site-com.min.css",
+    "inputFiles": [
+      "wwwroot/css/site-com.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/webstory.min.css",
+    "inputFiles": [
+      "wwwroot/css/webstory.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/webstory-com.min.css",
+    "inputFiles": [
+      "wwwroot/css/webstory-com.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/webstory.min.js",
+    "inputFiles": [
+      "wwwroot/js/webstory.js"
+    ]
+  }
+]

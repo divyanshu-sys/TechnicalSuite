@@ -1,0 +1,41 @@
+﻿@page "/edit-profile"
+@model Ts.ShopApp.Pages.Account.EditProfileModel
+@{
+    ViewBag.Title = "Edit Profile";
+    ViewBag.Description = "Edit Profile";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <div class="form-box">
+        <div class="form-border">
+            <form method="post" autocomplete="off">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label asp-for="Model.FirstName"></label>
+                        <input class="form-control" asp-for="Model.FirstName" />
+                        <span asp-validation-for="Model.FirstName"></span>
+                    </div>
+                    <div class="form-col">
+                        <label asp-for="Model.LastName"></label>
+                        <input class="form-control" asp-for="Model.LastName" />
+                        <span asp-validation-for="Model.LastName"></span>
+                    </div>
+                </div>
+                <div class="form-col-100per">
+                    <button type="submit" class="btn submitLoader" title="Edit Profile">Edit Profile</button>
+                </div>
+                <div class="form-col-100per">
+                    <a asp-page="/account/profile">Return to Profile</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

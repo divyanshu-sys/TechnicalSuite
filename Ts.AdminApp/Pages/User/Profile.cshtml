@@ -1,0 +1,55 @@
+﻿@page
+@model Ts.AdminApp.Pages.User.ProfileModel
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<div class="container col-lg-6">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            <a asp-page="/index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Dashboard</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-user"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.FirstName"></label>:</b> @Model.Model.FirstName
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.LastName"></label>:</b> @Model.Model.LastName
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.UserName"></label>:</b> @Model.Model.UserName
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Email"></label>:</b> @Model.Model.Email
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Address.Address1"></label>:</b> @Model.Model.Address?.Address1
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Address.Address2"></label>:</b> @Model.Model.Address?.Address2
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Address.DistrictId"></label>:</b> @Model.Model.Address?.PostOffice.District.Name
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Address.StateId"></label>:</b> @Model.Model.Address?.PostOffice.District.State.Name
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b><label asp-for="Model.Address.CountryId"></label>:</b> @Model.Model.Address?.PostOffice.District.State.Country.Name
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <b>Post Office:</b> @Model.Model.Address?.PostOffice.Name @Model.Model.Address?.PostOffice.Pincode
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

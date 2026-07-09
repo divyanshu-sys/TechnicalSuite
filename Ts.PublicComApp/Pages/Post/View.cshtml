@@ -1,0 +1,175 @@
+﻿@page "/{categoryName}/{subCategoryName}/{postLink}"
+@model ViewModel
+@{
+    var pageUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+    var homeUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+    var logoUrl = $"{homeUrl}/images/static-images/logo.png";
+    var title = configuration["SiteTitle"];
+    ViewBag.Title = Model.Model.Title;
+    ViewBag.Description = Model.Model.MetaDescription;
+    ViewBag.OgImage = Model.Model.MainImageUrl ?? $"{homeUrl}/images/static-images/alternate-post.jpg";
+    ViewBag.Canonical = pageUrl;
+
+    var categoryName = Model.CategoryName.ToUpperFirstLetterAndAfterHyphen();
+    var subCategoryName = Model.SubCategoryName.ToUpperFirstLetterAndAfterHyphen();
+}
+
+@section Heads {
+    <meta name="robots" content="index, follow">
+
+    @if (Model.Model.PostRelative != null && Model.Model.PostRelative.PostRelativeHelpers.Any())
+    {
+        foreach (var item in Model.Model.PostRelative.PostRelativeHelpers)
+        {
+            <link rel="alternate" hreflang="@item.HrefLang" href="@item.Href" />
+        }
+    }
+
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "NewsArticle",
+          "headline": "@Model.Model.Title",
+          "image": [
+            "@ViewBag.OgImage"
+          ],
+          "datePublished": "@Model.Model.PublishedOn?.ToDateTimeUtcString()",
+          "dateModified": "@Model.Model.UpdatedOn?.ToDateTimeUtcString()",
+          "author": {
+            "@@type": "Person",
+            "name": "@title",
+            "url": "@homeUrl"
+          },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "@title",
+            "logo": {
+              "@@type": "ImageObject",
+              "url": "@logoUrl"
+            }
+          },
+          "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "@pageUrl"
+          },
+          "description": "@Model.Model.MetaDescription",
+          "articleBody": "@Model.Model.Description",
+          "articleSection": "@subCategoryName",
+          "keywords": "@ViewBag.Keywords",
+          "thumbnailUrl": "@ViewBag.OgImage",
+          "isAccessibleForFree": "True",
+          "breadcrumb": {
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@@type": "ListItem",
+                "position": 1,
+                "name": "@title",
+                "item": "@homeUrl"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 2,
+                "name": "@categoryName",
+                "item": "@homeUrl/@Model.CategoryName"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 3,
+                "name": "@subCategoryName",
+                "item": "@homeUrl/@Model.CategoryName/@Model.SubCategoryName"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 4,
+                "name": "@Model.Model.Title",
+                "item": "@pageUrl"
+              }
+            ]
+          }
+        }
+    </script>
+}
+
+<div class="small-width">
+    <partial name="AdsPartials/_ViewPageAd1Partial" model="true" />
+    <h1>@Model.Model.Title</h1>
+    <div class="post-category">
+        <a asp-page="/post/list" asp-route-categoryName="@categoryName" title="View all @categoryName">@categoryName</a> / <a asp-page="/post/list" asp-route-categoryName="@categoryName" asp-route-subCategoryName="@subCategoryName" title="View all @subCategoryName">@subCategoryName</a>
+    </div>
+    <div class="font-15"><em><b>@Model.Model.PublishedOnCst</b></em></div>
+    @if (Model.Model.MainImageUrl != null)
+    {
+        <img class="width-100per" src="@Model.Model.MainImageUrl" alt="@Model.Model.Title" onerror="loadAlternateImage(this);" />
+        @if (!string.IsNullOrEmpty(Model.Model.MainImageSource))
+        {
+            <div class="txt-right font-15"><em>Image Source: @Html.Raw(Model.Model.MainImageSource)</em></div>
+        }
+    }
+    else
+    {
+        <img class="width-100per" src="~/images/static-images/alternate-post.jpg" alt="@Model.Model.Title" asp-append-version="true" />
+    }
+    <div class="data-description">
+        <p><em>@Model.Model.MetaDescription</em></p>
+        <article>
+            @Html.Raw(Model.Model.Description)
+        </article>
+        @if (!string.IsNullOrEmpty(Model.Model.PostSource))
+        {
+            <div class="txt-right"><em>Post Source: @Html.Raw(Model.Model.PostSource)</em></div>
+        }
+    </div>
+    <div class="disclaimer">
+        <b>*Disclaimer:</b>  <a target="_blank" asp-page="/disclaimer">Read more</a>
+    </div>
+    <partial name="AdsPartials/_ViewPageAd2Partial" model="true" />
+</div>
+<div class="width-left-100per">
+    <h2 class="p-l-r-4">Recent</h2>
+    <div id="append" class="width-left-100per"></div>
+    <div class="width-left-100per load-more">
+        <button class="btn" id="load-btn">Load More</button>
+    </div>
+</div>
+<div class="clear-both"></div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+
+@section Scripts {
+    <script>
+        let start = 0;
+        let length = 9;
+        let callAgain = true;
+
+        $(function () {
+            loadData();
+        });
+
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                loadData();
+            }
+        });
+        callBack = (response) => {
+            if (response == true) {
+                start += length;
+            }
+            else if (response == false) {
+                callAgain = false;
+            }
+        };
+
+        function loadData() {
+            let serverRequest = new ServerRequest(`/ajaxwork?start=${start}&length=${length}`, '#load-btn', '#append', null, callBack);
+            serverRequest.loadMoreData();
+        }
+
+        function saveCount() {
+            let postId = '@Model.Model.Id';
+            let saveCountRequest = new ServerRequest(`/ajaxwork?handler=updatepostforviewcount&postid=${postId}`);
+            saveCountRequest.saveCountData();
+        }
+        setTimeout(saveCount, 2000);
+    </script>
+}

@@ -1,0 +1,52 @@
+﻿@page
+@model Ts.ShopApp.Pages.ContactModel
+
+@{
+    ViewBag.Title = "Contact Us / FeedBack";
+    ViewBag.Description = "Give us a feedback or contact us.";
+}
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>We would love to hear from you. We value your opinions and suggestions and we encourage you to contact us!</p>
+    <p>Use our Contact Form or Email us on info@shop.technicalsuite.in</p>
+    <p>If you have order related query, please include:</p>
+    <ul>
+        <li>Order ID</li>
+        <li>Payment details</li>
+        <li>Issue description</li>
+    </ul>
+    <p><strong>Please check your spam folder once, if you didn't find email response in your inbox.</strong></p>
+    <div class="form-box">
+        <div class="form-border">
+            <form method="post" asp-page="/contact">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-col">
+                    <label asp-for="Model.Name"></label>
+                    <input type="text" class="form-control" asp-for="Model.Name" placeholder="Enter your Name" />
+                    <span asp-validation-for="Model.Name"></span>
+                </div>
+                <div class="form-col">
+                    <label asp-for="Model.Email"></label>
+                    <input type="text" class="form-control" asp-for="Model.Email" placeholder="Enter your Email" />
+                    <span asp-validation-for="Model.Email"></span>
+                </div>
+                <div class="form-textarea">
+                    <label asp-for="Model.Message"></label>
+                    <textarea rows="8" class="form-control" asp-for="Model.Message" placeholder="Write your message."></textarea>
+                    <span asp-validation-for="Model.Message"></span>
+                </div>
+                <div class="form-col-100per">
+                    <button type="submit" class="btn submitLoader" title="Submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,33 @@
+﻿@page
+@model Ts.ShopApp.Pages.TermModel
+
+@{
+    ViewBag.Title = "Terms & Conditions";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some information about {ViewBag.Title} of {title}.";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>Last Updated: 02-04-2026 IST</p>
+    <p>By accessing or using our website, you agree to be bound by these Terms and Conditions.</p>
+    <h2>1. Use of Website</h2>
+    <p>You agree to use this website only for lawful purposes. You must not misuse the website or attempt to access it using unauthorized methods.</p>
+    <h2>2. Digital Products</h2>
+    <p>We sell digital products such as PDFs and downloadable documents. Once purchased, these products will be available for download for limited duration.</p>
+    <h2>3. Intellectual Property</h2>
+    <p>All content, including PDFs, documents, text, and graphics, are the property of @title and are protected by copyright laws. You may not resell, distribute, or reproduce them.</p>
+    <h2>4. Payment</h2>
+    <p>All payments are processed securely via Razorpay. We do not store your payment details.</p>
+    <h2>5. Limitation of Liability</h2>
+    <p>We are not responsible for any indirect or consequential damages arising from the use of our products.</p>
+    <h2>6. Changes to Terms</h2>
+    <p>We may update these Terms at any time without prior notice.</p>
+    <h2>7. Contact Us</h2>
+    <p>For any queries, <a asp-page="/contact">contact us.</a></p>
+    <p>By using this website, you agree to these Terms and Conditions.</p>
+</div>
+

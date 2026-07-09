@@ -1,0 +1,15 @@
+﻿@page
+@model Ts.PublicApp.Pages.AboutModel
+@{
+    ViewBag.Title = "About Us";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some information about {title}.";
+}
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>@title shares Latest products and gadgets reviews, trending news and tech news etc.</p>
+</div>

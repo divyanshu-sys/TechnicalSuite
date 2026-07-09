@@ -1,0 +1,68 @@
+﻿@page "/register"
+@model Ts.ShopApp.Pages.Account.RegisterModel
+@{
+    ViewBag.Title = "Register";
+    ViewBag.Description = "Register";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>We will send an email verification link to your email. Please check spam folder if not found in inbox.</p>
+    <div class="form-box">
+        <div class="form-border">
+            <form method="post" autocomplete="off">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label asp-for="Model.FirstName"></label>
+                        <input class="form-control" asp-for="Model.FirstName" />
+                        <span asp-validation-for="Model.FirstName"></span>
+                    </div>
+                    <div class="form-col">
+                        <label asp-for="Model.LastName"></label>
+                        <input class="form-control" asp-for="Model.LastName" />
+                        <span asp-validation-for="Model.LastName"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label asp-for="Model.Email"></label>
+                        <input class="form-control" asp-for="Model.Email" />
+                        <span asp-validation-for="Model.Email"></span>
+                    </div>
+                    <div class="form-col">
+                        <label asp-for="Model.Password"></label>
+                        <input class="form-control" asp-for="Model.Password" />
+                        <span asp-validation-for="Model.Password"></span>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <input type="hidden" id="ReCaptcha" name="ReCaptcha" />
+                    <label asp-for="Model.ConfirmPassword"></label>
+                    <input class="form-control" asp-for="Model.ConfirmPassword" />
+                    <span asp-validation-for="Model.ConfirmPassword"></span>
+                </div>
+                <div class="form-col-100per">
+                    <button type="submit" class="btn" title="Register" id="SubmitButton">Register</button>
+                </div>
+                <div class="form-col-100per">
+                    <a asp-page="/account/index">Already Registered? Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <environment exclude="Development">
+        <script src="@GoogleCaptchaConstant.GoogleCaptchaShopInAppSiteUrl"></script>
+        <script>
+            $("#SubmitButton").on('click', function (event) {
+                reCaptcha(this, '@GoogleCaptchaConstant.GoogleCaptchaShopInAppSiteKey', '@GoogleCaptchaConstant.GoogleCaptchaRegister', '#ReCaptcha', event);
+            });
+        </script>
+    </environment>
+}

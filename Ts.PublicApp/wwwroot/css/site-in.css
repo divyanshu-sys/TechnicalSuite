@@ -1,0 +1,27 @@
+﻿.btn {
+    background-color: #323232;
+}
+
+.header {
+    background-color: #202020;
+}
+
+.menu, .sub-menu {
+    background-color: #202020;
+}
+
+.show-link {
+    background-color: #202020;
+}
+
+.footer {
+    background-color: #202020;
+}
+
+.case-img {
+    background-color: #f58282;
+}
+
+.active {
+    background-color: #b32626 !important;
+}

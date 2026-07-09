@@ -1,0 +1,47 @@
+﻿@page "/paymentstatus"
+@model Ts.ShopApp.Pages.Order.PaymentStatusModel
+@{
+    ViewBag.Title = "Payment Status";
+    ViewBag.Description = "Payment status";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <div class="form-box mb-1">
+        <div class="form-border">
+            <table class="no-table-border">
+                <tr>
+                    <td align="center">
+                        <a asp-page="/order/index" title="View my Orders"><b>Go to my Orders <i class="fa fa-arrow-right"></i></b></></a>
+                    </td>
+                </tr>
+            </table>
+            <div class="form-col-100per">
+                @if (Model.ModelVm != null)
+                {
+                    <h2>Order Number: @Model.ModelVm.OrderNumber</h2>
+                    <h3 class="color-green">@Model.ModelVm.PaymentStatus</h3>
+                }
+                @if (Model.ErrorsVm != null && Model.ErrorsVm.Count > 0)
+                {
+                    foreach (var item in Model.ErrorsVm)
+                    {
+                        <h3 class="color-darkred">@item</h3>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <table class="no-table-border">
+        <tr>
+            <td align="center">
+                <a asp-page="/product/list" asp-route-shopCategoryName="@null"><b><i class="fas fa-shopping-basket"></i> Continue shopping.</b></a>
+            </td>
+        </tr>
+    </table>
+</div>
+@section Scripts {
+}

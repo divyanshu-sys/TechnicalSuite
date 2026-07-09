@@ -1,0 +1,57 @@
+﻿@page "/"
+@model IndexModel
+
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+
+<h1 style="display:none;">Homepage</h1>
+@if (Model.Model?.Count() > 0)
+{
+    <div class="width-left-100per">
+        @foreach (var (item, index) in Model.Model.Select((item, index) => (item, index)))
+        {
+            <partial name="_FeaturedCasePartial" model="item" />
+            if (index == 1)
+                break;
+        }
+    </div>
+}
+@if (Model.Model?.Count() > 2)
+{
+    <partial name="AdsPartials/_ResponsiveAd1Partial" model="true" />
+    <div class="width-left-100per">
+        @foreach (var item in Model.Model.Skip(2))
+        {
+            <partial name="_FeaturedCasePartial" model="item" />
+        }
+    </div>
+}
+<partial name="AdsPartials/_ResponsiveAd2Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h2>@CategoryConstant.News <a class="view-all" asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" title="View all @CategoryConstant.News">View All <i class="fa fa-arrow-right"></i></a></h2>
+    </div>
+    <div id="@CategoryConstant.News" class="width-left-100per"></div>
+</div>
+<partial name="AdsPartials/_ResponsiveAd3Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h2>@CategoryConstant.Reviews <a class="view-all" asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Reviews" title="View all @CategoryConstant.Reviews">View All <i class="fa fa-arrow-right"></i></a></h2>
+    </div>
+    <div id="@CategoryConstant.Reviews" class="width-left-100per"></div>
+</div>
+<div class="clear-both"></div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+@section Scripts {
+    <script>
+        $(function () {
+            let reviewsServerRequest = new ServerRequest(`/ajaxwork?categoryname=@CategoryConstant.Reviews&start=0&length=12`, null, '#@CategoryConstant.Reviews');
+            reviewsServerRequest.loadGalleryData();
+
+            let newsServerRequest = new ServerRequest(`/ajaxwork?categoryname=@CategoryConstant.News&start=0&length=12`, null, '#@CategoryConstant.News');
+            newsServerRequest.loadGalleryData();
+        });
+    </script>
+}

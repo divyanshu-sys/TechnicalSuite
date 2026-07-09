@@ -1,0 +1,18 @@
+﻿@using Ts.DotCom.Client.ViewModels.StoryVms
+@model IEnumerable<GetStoryForListViewVm>
+@if (Model != null)
+    foreach (var item in Model)
+    {
+        <div class="s-case">
+            <div class="s-case-hover">
+                <div class="txt-top-left">@item.PublishedOnCst</div>
+                <div class="story-icon"><i class="fa fa-book-open"></i></div>
+                <a asp-page="/webstory/view" asp-route-subCategoryName="@item.SubCategoryName" asp-route-storyLink="@item.StoryLink" target="_blank" title="@item.Title">
+                    <img class="case-img s-height" src="@item.MainImageUrl" alt="@item.Title" />
+                    <div class="s-txt-bottom-left">
+                        <div class="s-case-link p-l-r-4">@item.Title</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }

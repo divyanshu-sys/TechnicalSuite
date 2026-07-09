@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /disclaimer
+Disallow: /search
+
+Sitemap: https://shop.technicalsuite.in/sitemap
+Sitemap: https://shop.technicalsuite.in/sitemapproduct

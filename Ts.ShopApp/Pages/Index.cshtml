@@ -1,0 +1,49 @@
+﻿@page "/"
+@model Ts.ShopApp.Pages.IndexModel
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+<h1 style="display:none;">Homepage</h1>
+@if (Model.Model?.ProductForListView?.Count() > 0)
+{
+    <div class="width-left-100per">
+        @foreach (var (item, index) in Model.Model.ProductForListView.Select((item, index) => (item, index)))
+        {
+            <partial name="_FeaturedCasePartial" model="item" />
+            if (index == 1)
+                break;
+        }
+    </div>
+}
+@if (Model.Model?.ProductForListView?.Count() > 2)
+{
+    <partial name="AdsPartials/_ResponsiveAd1Partial" model="true" />
+    <div class="width-left-100per">
+        @foreach (var item in Model.Model.ProductForListView.Skip(2))
+        {
+            <partial name="_FeaturedCasePartial" model="item" />
+        }
+    </div>
+}
+<partial name="AdsPartials/_ResponsiveAd2Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h2>@CategoryConstant.Products <a class="view-all" asp-page="/product/list" title="View all @CategoryConstant.Products">View All <i class="fa fa-arrow-right"></i></a></h2>
+    </div>
+    <div class="width-left-100per">
+        <partial name="_ProductDetailGalleryCasePartial" model="Model.Model.ProductDetailForListView" />
+    </div>
+</div>
+<partial name="AdsPartials/_ResponsiveAd3Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h2>@CategoryConstant.Blogs <a class="view-all" asp-page="/blog/list" title="View all @CategoryConstant.Blogs">View All <i class="fa fa-arrow-right"></i></a></h2>
+    </div>
+    <div class="width-left-100per">
+        <partial name="_BlogGalleryCasePartial" model="Model.Model.BlogForListView" />
+    </div>
+</div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+@section Scripts {
+}

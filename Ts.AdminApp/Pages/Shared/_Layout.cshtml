@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <link href="~/lib/flag-icon-css/css/flag-icons.min.css" rel="stylesheet" />
+    <link href="~/lib/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/css/datatables.jqueryui.min.css" rel="stylesheet" />
+
+    <link href="~/lib/datatables.net-buttons-dt/buttons.datatables.min.css" rel="stylesheet" />
+
+    <link href="~/js/rich-text-editor-jquery-richtext/src/richtext.min.css" rel="stylesheet" />
+
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link href="~/css/master.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/components/navbar/navbar-dropdowns.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/components/sidebar/sidebar-default.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/master.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/components/navbar/navbar-dropdowns.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/components/sidebar/sidebar-default.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    @await RenderSectionAsync("Heads", required: false)
+</head>
+<body>
+    <partial name="_Confirmation" />
+    <partial name="_StatusMessagePartial" />
+    <partial name="_NotificationPartial" />
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-scroll">
+                <div class="sidebar-header">
+                    <img src="~/images/static-images/logo.png" width="30" asp-append-version=true /> Technical Suite
+                </div>
+                <ul class="list-unstyled components text-secondary">
+                    <li>
+                        <a asp-page="/index"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                    @if (User.IsInRole(RoleConstant.Administrator))
+                    {
+                        <li>
+                            <a href="/#master" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-rectangle-list"></i> Masters</a>
+                            <ul class="collapse list-unstyled" id="master">
+                                @if (User.HasClaim(x => x.Type == CountryPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/country/index"><i class="fas fa-globe"></i> Country</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == StatePolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/state/index"><i class="fas fa-globe"></i> State</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == DistrictPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/district/index"><i class="fas fa-globe"></i> District</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == PostOfficePolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/postoffice/index"><i class="fas fa-globe"></i> Post Office</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == CategoryPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/category/index"><i class="fas fa-tools"></i> Category</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == SubCategoryPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/subcategory/index"><i class="fas fa-tools"></i> Sub Category</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == ShopCategoryPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/master/shopcategory/index"><i class="fas fa-tools"></i> Shop Category</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                        @if (User.HasClaim(x => x.Type == UserPolicy.CanView))
+                        {
+                            <li>
+                                <a asp-page="/user/index"><i class="fas fa-user-friends"></i> Users</a>
+                            </li>
+                            <li>
+                                <a asp-page="/user/shopinuser"><i class="fas fa-user-friends"></i> ShopIn Users</a>
+                            </li>
+                        }
+                    }
+                    @if (User.IsInRole(RoleConstant.Employee) || User.IsInRole(RoleConstant.Administrator))
+                    {
+                        @if (User.HasClaim(x => x.Type == PostPolicy.CanView))
+                        {
+                            <li>
+                                <a href="/#post" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-newspaper"></i> Posts</a>
+                                <ul class="collapse list-unstyled" id="post">
+                                    <li>
+                                        <a asp-page="/post/postdotin/index"><i class="fas fa-newspaper"></i> Post DotIn</a>
+                                    </li>
+                                    <li>
+                                        <a asp-page="/post/postdotcom/index"><i class="fas fa-newspaper"></i> Post DotCom</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    @if (User.IsInRole(RoleConstant.Employee) || User.IsInRole(RoleConstant.Administrator))
+                    {
+                        @if (User.HasClaim(x => x.Type == StoryPolicy.CanView))
+                        {
+                            <li>
+                                <a href="/#story" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-book-open"></i> Web Stories</a>
+                                <ul class="collapse list-unstyled" id="story">
+                                    <li>
+                                        <a asp-page="/story/storydotin/index"><i class="fas fa-book-open"></i> Story DotIn</a>
+                                    </li>
+                                    <li>
+                                        <a asp-page="/story/Storydotcom/index"><i class="fas fa-book-open"></i> Story DotCom</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    @if (User.IsInRole(RoleConstant.EmployeeShopIn) || User.IsInRole(RoleConstant.Administrator))
+                    {
+                        <li>
+                            <a href="/#shop" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-shopping-bag"></i> Shop In</a>
+                            <ul class="collapse list-unstyled" id="shop">
+                                @if (User.HasClaim(x => x.Type == BlogPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/blog/blogdotin/index"><i class="fas fa-newspaper"></i> Blog</a>
+                                    </li>
+                                    <li>
+                                        <a asp-page="/product/productdotin/index"><i class="fas fa-shopping-basket"></i> Product</a>
+                                    </li>
+                                    <li>
+                                        <a asp-page="/productdetail/productdetaildotin/index"><i class="fas fa-shopping-basket"></i> Product Detail</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    <li>
+                        <a href="/#tool" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-toolbox"></i> Tools</a>
+                        <ul class="collapse list-unstyled" id="tool">
+                            <li>
+                                <a asp-page="/tool/createhyperlink" target="_blank"><i class="fas fa-link"></i> Create Hyperlink</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                        @* <li class="nav-item dropdown">
+                        <div class="nav-dropdown">
+                        <a href="#" id="nav1" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-link"></i> <span>Quick Links</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end nav-link-menu" aria-labelledby="nav1">
+                        <ul class="nav-list">
+                        <li><a href="javascript:void(0)" class="dropdown-item"><i class="fas fa-list"></i> Access Logs</a></li>
+                        <li><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="fas fa-database"></i> Back ups</a></li>
+                        <li><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="fas fa-cloud-download-alt"></i> Updates</a></li>
+                        <li><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="fas fa-user-shield"></i> Roles</a></li>
+                        </ul>
+                        </div>
+                        </div>
+                        </li> *@
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="javasctipt:void(0)" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a class="dropdown-item" asp-page="/user/profile"><i class="fas fa-address-card"></i> Profile</a></li>
+                                        @* <li><a href="javascript:void(0)" class="dropdown-item"><i class="fas fa-envelope"></i> Messages</a></li> *@
+                                        <li><a class="dropdown-item" asp-page="/account/changepassword"><i class="fas fa-cog"></i> Change Password</a></li>
+                                        <li><a class="dropdown-item" asp-page="/user/changeemail"><i class="fas fa-envelope"></i> Change Email</a></li>
+                                        <li>
+                                            <div class="dropdown-divider"></div>
+                                            <form method="post" asp-page="/account/logout">
+                                                <button type="submit" class="dropdown-item" style="outline:none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+            <div class="content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <partial name="_ScriptTagPartial" />
+    <script src="~/js/rich-text-editor-jquery-richtext/src/jquery.richtext.min.js"></script>
+
+    <script src="~/lib/Chart.js/chart.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/js/datatables.jqueryui.min.js"></script>
+
+    <script src="~/lib/datatables-buttons/js/datatables.buttons.min.js"></script>
+    <script src="~/lib/jszip/jszip.min.js"></script>
+    <script src="~/lib/pdfmake/pdfmake.min.js"></script>
+    <script src="~/lib/pdfmake/vfs_fonts.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.colvis.min.js"></script>
+
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/initiate-datatables.js" asp-append-version="true"></script>
+        <script src="~/js/initiate-charts.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/initiate-datatables.min.js" asp-append-version="true"></script>
+        <script src="~/js/initiate-charts.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            sessionNotification('@((User.Claims.GetRefreshTokenExpiryAt() - DateTime.UtcNow.AddMinutes(2)).Value.TotalMilliseconds)');
+        </script>
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

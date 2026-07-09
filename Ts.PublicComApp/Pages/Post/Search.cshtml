@@ -1,0 +1,58 @@
+﻿@page "/search"
+@model Ts.PublicComApp.Pages.Post.SearchModel
+@{
+    var title = configuration["SiteTitle"];
+    ViewBag.Title = $"{title} : {Model.Q}";
+    ViewBag.Description = $"Search Page of {title}.";
+    ViewBag.Search = Model.Q;
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<partial name="AdsPartials/_ResponsiveAd1Partial" model="true" />
+<div class="width-left-100per">
+    <div class="bcolor">
+        <h1>Search Term : @Model.Q</h1>
+    </div>
+    @if (Model.Model.Count() > 0)
+    {
+        <div class="width-left-100per" id="append">
+            <partial name="_GalleryCasePartial" model="Model.Model" />
+        </div>
+        <div class="width-left-100per load-more">
+            <button class="btn" id="load-btn">Load More</button>
+        </div>
+    }
+    else
+    {
+        <div class="no-result"><b>No Data.</b></div>
+    }
+</div>
+<div class="clear-both"></div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+
+@section Scripts {
+    <script>
+        let search = encodeURIComponent('@Model.Q');
+        let start = 12;
+        let length = 9;
+        let callAgain = true;
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                let url = `/ajaxwork?search=${search}&start=${start}&length=${length}`;
+                let serverRequest = new ServerRequest(url, this, '#append', null, callBack);
+                serverRequest.loadMoreData();
+            }
+        });
+        callBack = (response) => {
+            if (response) {
+                start += length;
+            }
+            if (!response) {
+                callAgain = false;
+            }
+        };
+    </script>
+}

@@ -1,0 +1,25 @@
+﻿using System.Collections.Concurrent;
+using Ts.DotCom.Service.DataInterfaces;
+namespace Ts.DotCom.Service.DataServices
+{
+    public class StoryViewCounter : IStoryViewCounter
+    {
+        private ConcurrentDictionary<int, int> _views = new();
+
+        public Task IncrementAsync(int storyId)
+        {
+            _views.AddOrUpdate(storyId, 1, (key, oldValue) => oldValue + 1);
+            return Task.CompletedTask;
+        }
+
+        public Dictionary<int, int> SnapshotAndReset()
+        {
+            var oldDict = Interlocked.Exchange(
+                ref _views,
+                new ConcurrentDictionary<int, int>()
+            );
+
+            return new Dictionary<int, int>(oldDict);
+        }
+    }
+}

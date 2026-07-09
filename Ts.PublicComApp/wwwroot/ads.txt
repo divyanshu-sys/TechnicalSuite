@@ -1,0 +1,6 @@
+#google
+google.com, pub-5902017416803134, DIRECT, f08c47fec0942fa0
+#google ends
+
+#amazon
+#amazon ends

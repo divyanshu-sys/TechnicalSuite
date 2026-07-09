@@ -1,0 +1,26 @@
+﻿@page
+@model Ts.ShopApp.Pages.DeliveryPolicyModel
+
+@{
+    ViewBag.Title = "Shipping & Delivery Policy";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some information about {ViewBag.Title} of {title}.";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>Last Updated: 02-04-2026 IST</p>
+    <h2>1. Digital Delivery</h2>
+    <p>We sell digital products only. No physical items are shipped.</p>
+    <h2>2. Delivery Method</h2>
+    <p>After successful payment, the purchased product will be Available for download immediately in Order section. We will also notifiy you using Email.</p>
+    <h2>3. Delivery Time</h2>
+    <p>In rare cases, delivery may take up to 24 hours due to technical issues.</p>
+    <h2>4. Failed Delivery</h2>
+    <p>If you do not receive your product, <a asp-page="/contact">contact us.</a></p>
+    <h2>5. Shipping Charges</h2>
+    <p>No shipping charges apply since all products are digital.</p>
+</div>

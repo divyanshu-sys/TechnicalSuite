@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--<Nullable>enable</Nullable>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+		<PackageReference Include="Razorpay" Version="3.3.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Ts.Service\Ts.Service.csproj" />
+		<ProjectReference Include="..\TS.ShopIn.Domain\Ts.ShopIn.Domain.csproj" />
+		<ProjectReference Include="..\Ts.ShopIn.Dto\Ts.ShopIn.Dto.csproj" />
+	</ItemGroup>
+
+</Project>

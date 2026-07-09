@@ -1,0 +1,51 @@
+﻿@{
+    var title = configuration["SiteTitle"];
+    var homeUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}";
+    var logoUrl = $"{homeUrl}/images/static-images/logo.png";
+    var pageUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+}
+
+<partial name="_GtmHeadPartial" />
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<meta name="author" content="@title" />
+<meta name="keywords" content="@(ViewBag.Keywords ?? title)" />
+<meta name="description" content="@(ViewBag.Description ?? $"Latest products and gadgets reviews, trending news and tech news etc. at {title}")" />
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="@(ViewBag.Title ?? title)">
+<meta property="og:description" content="@(ViewBag.Description ?? $"Latest products and gadgets reviews, trending news and tech news etc. at {title}")">
+<meta property="og:url" content="@(ViewBag.Canonical ?? pageUrl)">
+<meta property="og:image" content="@(ViewBag.OgImage ?? logoUrl)" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@(ViewBag.Title ?? title)">
+<meta name="twitter:description" content="@(ViewBag.Description ?? $"Latest products and gadgets reviews, trending news and tech news etc. at {title}")">
+<meta name="twitter:image" content="@(ViewBag.OgImage ?? logoUrl)">
+
+<title>@(ViewBag.Title ?? title)</title>
+
+<link href="~/favicon.ico" rel="icon" type="image/x-icon" asp-append-version="true" />
+
+<link rel="canonical" href="@(ViewBag.Canonical ?? pageUrl)" />
+
+<partial name="AdsPartials/_AdsensePartial" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;500;600;800&display=swap" />
+
+<script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Organization",
+      "name": "@title",
+      "url": "@homeUrl",
+      "logo": "@logoUrl"
+    }
+</script>
+<script>
+        function loadAlternateImage(imgTag) {
+        imgTag.src = '/images/static-images/alternate-post.jpg';
+    }
+</script>

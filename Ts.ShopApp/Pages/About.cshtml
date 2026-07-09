@@ -1,0 +1,21 @@
+﻿@page
+@model Ts.ShopApp.Pages.AboutModel
+
+@{
+    ViewBag.Title = "About Us";
+    var title = configuration["SiteTitle"];
+    ViewBag.Description = $"Some information about {title}.";
+}
+@section Heads {
+    <meta name="robots" content="index, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <p>@title provides assignment notes, study guides, and educational content online. Find reliable resources for students, along with books and upcoming products to support your learning journey.</p>
+    <p>We provide high-quality digital products such as PDFs and downloadable documents designed to help users e.g., learning, business, education.</p>
+    <p>Our mission is to deliver valuable and easy-to-use digital resources at affordable prices.</p>
+    <p>We are committed to providing excellent customer support and a seamless purchasing experience.</p>
+    <p>For any queries, feel free to <a asp-page="/contact">contact us.</a></p>
+    <p>Thank you for choosing us!</p>
+</div>

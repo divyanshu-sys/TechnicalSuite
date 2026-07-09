@@ -1,0 +1,207 @@
+﻿@page "/products/{shopCategoryName}/{productDetailLink}"
+@model Ts.ShopApp.Pages.Product.ViewModel
+@{
+    var pageUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+    var homeUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+    var logoUrl = $"{homeUrl}/images/static-images/logo.png";
+    var title = configuration["SiteTitle"];
+    ViewBag.Title = Model.Model.Title;
+    ViewBag.Description = Model.Model.MetaDescription;
+    ViewBag.OgImage = Model.Model.MainImageUrl ?? $"{homeUrl}/images/static-images/alternate-post.jpg";
+    ViewBag.Canonical = pageUrl;
+
+    var shopCategoryName = Model.ShopCategoryName.ToUpperFirstLetterAndAfterHyphen();
+}
+
+@section Heads {
+    <meta name="robots" content="index, follow">
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "NewsArticle",
+          "headline": "@Model.Model.Title",
+          "image": [
+            "@ViewBag.OgImage"
+          ],
+          "datePublished": "@Model.Model.PublishedOn?.ToDateTimeUtcString()",
+          "dateModified": "@Model.Model.UpdatedOn?.ToDateTimeUtcString()",
+          "author": {
+            "@@type": "Person",
+            "name": "@title",
+            "url": "@homeUrl"
+          },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "@title",
+            "logo": {
+              "@@type": "ImageObject",
+              "url": "@logoUrl"
+            }
+          },
+          "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "@pageUrl"
+          },
+          "description": "@Model.Model.MetaDescription",
+          "articleBody": "@Model.Model.Description",
+          "articleSection": "@shopCategoryName",
+          "keywords": "@ViewBag.Keywords",
+          "thumbnailUrl": "@ViewBag.OgImage",
+          "isAccessibleForFree": "True",
+          "breadcrumb": {
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@@type": "ListItem",
+                "position": 1,
+                "name": "@title",
+                "item": "@homeUrl"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 2,
+                "name": "@CategoryConstant.Products",
+                "item": "@homeUrl/@CategoryConstant.Products.ToLower()"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 3,
+                "name": "@shopCategoryName",
+                "item": "@homeUrl/@CategoryConstant.Products.ToLower()/@Model.ShopCategoryName"
+              },
+              {
+                "@@type": "ListItem",
+                "position": 4,
+                "name": "@Model.Model.Title",
+                "item": "@pageUrl"
+              }
+            ]
+          }
+        }
+    </script>
+}
+
+<div class="small-width">
+    <partial name="AdsPartials/_ViewPageAd1Partial" model="true" />
+    <h1>@Model.Model.Title</h1>
+    <div class="post-category">
+        <a asp-page="/product/list" title="View all @CategoryConstant.Products">@CategoryConstant.Products</a> / <a asp-page="/product/list" asp-route-shopCategoryName="@shopCategoryName" title="View all @shopCategoryName">@shopCategoryName</a>
+    </div>
+    <div class="font-15"><em><b>@Model.Model.PublishedOnIst</b></em></div>
+    @if (Model.Model.MainImageUrl != null)
+    {
+        <img class="width-100per" src="@Model.Model.MainImageUrl" alt="@Model.Model.Title" onerror="loadAlternateImage(this);" />
+    }
+    else
+    {
+        <img class="width-100per" src="~/images/static-images/alternate-post.jpg" alt="@Model.Model.Title" asp-append-version="true" />
+    }
+    <div class="data-description">
+        <p><em>@Model.Model.MetaDescription</em></p>
+        <table class="no-table-border">
+            <tr>
+                <td>
+                    <strong>Price:</strong>
+                    @if (Model.Model.Mrp != Model.Model.Price)
+                    {
+                        <strike>@Model.Model.Currency@Model.Model.Mrp</strike>
+                    }
+                    <strong>@Model.Model.Currency@Model.Model.Price</strong>
+                </td>
+            </tr>
+        </table>
+        <table class="no-table-border">
+            <tr>
+                <td align="right">
+                    <button title="Add to cart" class="btn btn-cart" onclick="addToCart(this, @Model.Model.Id)"><i class="fa fa-cart-plus"></i> Add to Cart</button>
+                </td>
+            </tr>
+        </table>
+        <ul>
+            @if (Model.Model.ExchangePolicy != null)
+            {
+                <li><strong>Exchange Policy:</strong> @Model.Model.ExchangePolicy.Name</li>
+            }
+            @if (Model.Model.DeliveryPolicy != null)
+            {
+                <li><strong>Delivery Policy: </strong> @Model.Model.DeliveryPolicy.Title</li>
+            }
+            @if (Model.Model.ReturnPolicy != null)
+            {
+                <li><strong>Return Policy:</strong> @Model.Model.ReturnPolicy.Name</li>
+            }
+        </ul>
+    </div>
+    @if (Model.Model.ProductVariants.Count() > 0)
+    {
+        <div class="width-left-100per">
+            <p><strong>Similar Items:</strong></p>
+            <partial name="_VariantProductDetailGalleryCasePartial" model="Model.Model" />
+        </div>
+    }
+    <div class="clear-both"></div>
+    <div class="data-description">
+        <article>
+            @Html.Raw(Model.Model.Description)
+        </article>
+        <table class="no-table-border">
+            <tr>
+                <td align="right">
+                    <button title="Add to cart" class="btn btn-cart" onclick="addToCart(this, @Model.Model.Id)"><i class="fa fa-cart-plus"></i> Add to Cart</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="disclaimer">
+        <b>*Disclaimer:</b>  <a target="_blank" asp-page="/disclaimer">Read more</a>
+    </div>
+    <partial name="AdsPartials/_ViewPageAd2Partial" model="true" />
+</div>
+<div class="width-left-100per">
+    <h2 class="p-l-r-4">Recent @CategoryConstant.Products</h2>
+    <div id="append" class="width-left-100per"></div>
+    <div class="width-left-100per load-more">
+        <button class="btn" id="load-btn">Load More</button>
+    </div>
+</div>
+<div class="clear-both"></div>
+<partial name="AdsPartials/_MultiplexAd1Partial" model="true" />
+<div class="clear-both"></div>
+
+@section Scripts {
+    <script>
+        let start = 0;
+        let length = 9;
+        let callAgain = true;
+
+        $(function () {
+            loadData();
+        });
+
+        $('#load-btn').click(function () {
+            if (callAgain == true) {
+                loadData();
+            }
+        });
+        callBack = (response) => {
+            if (response == true) {
+                start += length;
+            }
+            else if (response == false) {
+                callAgain = false;
+            }
+        };
+
+        function loadData() {
+            let serverRequest = new ServerRequest(`/ajaxwork?handler=product&start=${start}&length=${length}`, '#load-btn', '#append', null, callBack);
+            serverRequest.loadMoreData();
+        }
+
+        function saveCount() {
+            let productdetailId = '@Model.Model.Id';
+            let saveCountRequest = new ServerRequest(`/ajaxwork?handler=updateproductdetailforviewcount&productdetailid=${productdetailId}`);
+            saveCountRequest.saveCountData();
+        }
+        setTimeout(saveCount, 2000);
+    </script>
+}

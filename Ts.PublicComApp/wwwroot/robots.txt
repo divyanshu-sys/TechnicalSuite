@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /disclaimer
+Disallow: /search
+Disallow: admin.technicalsuite.com
+
+Sitemap: https://www.technicalsuite.com/sitemap
+Sitemap: https://www.technicalsuite.com/storysitemap

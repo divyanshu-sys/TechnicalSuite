@@ -1,0 +1,1073 @@
+﻿@page "/"
+@model Ts.AdminApp.Pages.IndexModel
+@{
+    ViewBag.Title = "Home";
+    var range = TimeRangeZoneHelper.GetTodayRange(TimeZoneInfoConstant.India);
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 page-header">
+            <div class="page-pretitle">Overview</div>
+            <h2 class="page-title">Dashboard</h2>
+        </div>
+    </div>
+    @if (User.HasClaim(x => x.Type == ProductPolicy.CanView))
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header"><button title="Click to expand" id="ViewsProductDotIn" type="button" class="btn btn-light"><i class="fas fa-bars"></i></button> Views (Product ShopIn)</div>
+                    <div class="card-body" id="WrapViewsProductDotIn" style="display:none;">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadTodayUniquePageViewsProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTodayUniquePageViewsProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Today (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadYearUniquePageViewsProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValYearUniquePageViewsProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Current Year (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Total Page views</p>
+                                                    <button title="Click to load data" id="LoadTotalPageViewsProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTotalPageViewsProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Lifetime (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="olive fas fa-money-bill-alt"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Today's Revenue</p>
+                                                    <button title="Click to load data" id="LoadTodayRevenueProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTodayRevenueProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-calendar"></i> For Today (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="olive fas fa-money-bill-alt"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Month's Revenue</p>
+                                                    <button title="Click to load data" id="LoadMonthRevenueProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValMonthRevenueProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-calendar"></i> For this Month (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="olive fas fa-money-bill-alt"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Fin Year's Revenue</p>
+                                                    <button title="Click to load data" id="LoadFinYearRevenueProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValFinYearRevenueProductDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-calendar"></i> For this Fin Year (Product DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="head">
+                                            <h5 class="mb-0">Unique Pages Visited Today (Product DotIn) <button title="Click to load data" id="LoadUniquePageVisitedProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></h5>
+                                            <p class="text-muted">Today's' website visitor data with lifetime views</p>
+                                        </div>
+                                        <div class="canvas-wrapper" id="WrapLoadUniquePageVisitedProductDotIn" style="display:none;">
+                                            <table width="100%" class="table compact table-striped-columns" id="TableLoadUniquePageVisitedProductDotIn">
+                                                <thead class="success">
+                                                    <tr>
+                                                        <th>Page Name</th>
+                                                        <th class="text-end">Lifetime Views</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="head">
+                                            <h5 class="mb-0">Sales Overview (Product DotIn) <button title="Click to load data" id="LoadFinYearSalesProductDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></h5>
+                                            <p class="text-muted">Current Fin year sales data</p>
+                                        </div>
+                                        <div class="canvas-wrapper" id="WrapLoadFinYearSalesProductDotIn" style="display:none;">
+                                            <canvas class="chart" id="ChartLoadFinYearSalesProductDotIn"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.HasClaim(x => x.Type == BlogPolicy.CanView))
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header"><button title="Click to expand" id="ViewsBlogDotIn" type="button" class="btn btn-light"><i class="fas fa-bars"></i></button> Views (Blog ShopIn)</div>
+                    <div class="card-body" id="WrapViewsBlogDotIn" style="display:none;">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadTodayUniquePageViewsBlogDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTodayUniquePageViewsBlogDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Today (Blog DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadYearUniquePageViewsBlogDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValYearUniquePageViewsBlogDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Current Year (Blog DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Total Page views</p>
+                                                    <button title="Click to load data" id="LoadTotalPageViewsBlogDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTotalPageViewsBlogDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Lifetime (Blog DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="head">
+                                            <h5 class="mb-0">Unique Pages Visited Today (Blog DotIn) <button title="Click to load data" id="LoadUniquePageVisitedBlogDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></h5>
+                                            <p class="text-muted">Today's' website visitor data with lifetime views</p>
+                                        </div>
+                                        <div class="canvas-wrapper" id="WrapLoadUniquePageVisitedBlogDotIn" style="display:none;">
+                                            <table width="100%" class="table compact table-striped-columns" id="TableLoadUniquePageVisitedBlogDotIn">
+                                                <thead class="success">
+                                                    <tr>
+                                                        <th>Page Name</th>
+                                                        <th class="text-end">Lifetime Views</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.HasClaim(x => x.Type == PostPolicy.CanView))
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header"><button title="Click to expand" id="ViewsDotIn" type="button" class="btn btn-light"><i class="fas fa-bars"></i></button> Views (Post DotIn)</div>
+                    <div class="card-body" id="WrapViewsDotIn" style="display:none;">
+                        <div class="row">
+                            @* <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="teal fas fa-shopping-cart"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">New Orders</p>
+                                                    <span class="number">6,267</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-calendar"></i> For this Week
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+                            @* <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="olive fas fa-money-bill-alt"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Revenue</p>
+                                                    <span class="number">$180,900</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-calendar"></i> For this Month
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadTodayUniquePageViewsDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTodayUniquePageViewsDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Today (Post DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadYearUniquePageViewsDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValYearUniquePageViewsDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Current Year (Post DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Total Page views</p>
+                                                    <button title="Click to load data" id="LoadTotalPageViewsDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTotalPageViewsDotIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Lifetime (Post DotIn)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="orange fas fa-envelope"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Support Request</p>
+                                                    <span class="number">75</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-envelope-open-text"></i> For this week
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="head">
+                                            <h5 class="mb-0">Unique Pages Visited Today (Post DotIn) <button title="Click to load data" id="LoadUniquePageVisitedDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></h5>
+                                            <p class="text-muted">Today's' website visitor data with lifetime views</p>
+                                        </div>
+                                        <div class="canvas-wrapper" id="WrapLoadUniquePageVisitedDotIn" style="display:none;">
+                                            <table width="100%" class="table compact table-striped-columns" id="TableLoadUniquePageVisitedDotIn">
+                                                <thead class="success">
+                                                    <tr>
+                                                        <th>Page Name</th>
+                                                        <th class="text-end">Lifetime Views</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header"><button title="Click to expand" id="ViewsDotCom" type="button" class="btn btn-light"><i class="fas fa-bars"></i></button> Views (Post DotCom)</div>
+                    <div class="card-body" id="WrapViewsDotCom" style="display:none;">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadTodayUniquePageViewsDotCom" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTodayUniquePageViewsDotCom"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Today (Post DotCom)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Unique Page views</p>
+                                                    <button title="Click to load data" id="LoadYearUniquePageViewsDotCom" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValYearUniquePageViewsDotCom"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Current Year (Post DotCom)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="icon-big text-center">
+                                                    <i class="violet fas fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="detail">
+                                                    <p class="detail-subtitle">Total Page views</p>
+                                                    <button title="Click to load data" id="LoadTotalPageViewsDotCom" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button>
+                                                    <span class="number" id="ValTotalPageViewsDotCom"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="footer">
+                                            <hr />
+                                            <div class="stats">
+                                                <i class="fas fa-stopwatch"></i> For Lifetime (Post DotCom)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="content">
+                                        <div class="head">
+                                            <h5 class="mb-0">Unique Pages Visited Today (Post DotCom) <button title="Click to load data" id="LoadUniquePageVisitedDotCom" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></h5>
+                                            <p class="text-muted">Today's' website visitor data with lifetime views</p>
+                                        </div>
+                                        <div class="canvas-wrapper" id="WrapLoadUniquePageVisitedDotCom" style="display:none;">
+                                            <table width="100%" class="table compact table-striped-columns" id="TableLoadUniquePageVisitedDotCom">
+                                                <thead class="success">
+                                                    <tr>
+                                                        <th>Page Name</th>
+                                                        <th class="text-end">Lifetime Views</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* <div class="row">
+            <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">
+                            <div class="head">
+                                <h5 class="mb-0">Traffic Overview</h5>
+                                <p class="text-muted">Current year website visitor data</p>
+                            </div>
+                            <div class="canvas-wrapper">
+                                <canvas class="chart" id="trafficflow"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">
+                            <div class="head">
+                                <h5 class="mb-0">Sales Overview</h5>
+                                <p class="text-muted">Current year sales data</p>
+                            </div>
+                            <div class="canvas-wrapper">
+                                <canvas class="chart" id="sales"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="content">
+                    <div class="head">
+                        <h5 class="mb-0">Top Visitors by Country</h5>
+                        <p class="text-muted">Current year website visitor data</p>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <table class="table table-striped">
+                            <thead class="success">
+                                <tr>
+                                    <th>Country</th>
+                                    <th class="text-end">Unique Visitors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fi fi-us"></i> United States</td>
+                                    <td class="text-end">27,340</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-in"></i> India</td>
+                                    <td class="text-end">21,280</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-jp"></i> Japan</td>
+                                    <td class="text-end">18,210</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-gb"></i> United Kingdom</td>
+                                    <td class="text-end">15,176</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-es"></i> Spain</td>
+                                    <td class="text-end">14,276</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-de"></i> Germany</td>
+                                    <td class="text-end">13,176</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-br"></i> Brazil</td>
+                                    <td class="text-end">12,176</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-id"></i> Indonesia</td>
+                                    <td class="text-end">11,886</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-ph"></i> Philippines</td>
+                                    <td class="text-end">11,509</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fi fi-nz"></i> New Zealand</td>
+                                    <td class="text-end">1,700</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        </div>
+        <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="card">
+                <div class="content">
+                    <div class="row">
+                        <div class="dfd text-center">
+                            <i class="blue large-icon mb-2 fas fa-thumbs-up"></i>
+                            <h4 class="mb-0">+21,900</h4>
+                            <p class="text-muted">FACEBOOK PAGE LIKES</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="card">
+                <div class="content">
+                    <div class="row">
+                        <div class="dfd text-center">
+                            <i class="orange large-icon mb-2 fas fa-reply-all"></i>
+                            <h4 class="mb-0">+22,566</h4>
+                            <p class="text-muted">INSTAGRAM FOLLOWERS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="card">
+                <div class="content">
+                    <div class="row">
+                        <div class="dfd text-center">
+                            <i class="grey large-icon mb-2 fas fa-envelope"></i>
+                            <h4 class="mb-0">+15,566</h4>
+                            <p class="text-muted">E-MAIL SUBSCRIBERS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="card">
+                <div class="content">
+                    <div class="row">
+                        <div class="dfd text-center">
+                            <i class="olive large-icon mb-2 fas fa-dollar-sign"></i>
+                            <h4 class="mb-0">+98,601</h4>
+                            <p class="text-muted">TOTAL SALES</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> *@
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">Posts (DotIn) <button title="Click to load data" id="LoadDataDotIn" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></div>
+                    <div class="card-body" id="WrapDataDotIn" style="display:none;">
+                        <table width="100%" class="table-hover table compact table-striped-columns" id="TableDataDotIn">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Post Link</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th>Is Published</th>
+                                    <th>Published On</th>
+                                    <th>Published By</th>
+                                    <th>Post Worker</th>
+                                    <th>Total Views</th>
+                                    <th>Last Viewed On</th>
+                                    <th>Created On</th>
+                                    <th>Updated On</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">Posts (DotCom) <button title="Click to load data" id="LoadDataDotCom" type="button" class="btn btn-outline-danger btn-rounded"><i class="fas fa-redo-alt"></i></button></div>
+                    <div class="card-body" id="WrapDataDotCom" style="display:none;">
+                        <table width="100%" class="table-hover table compact table-striped-columns show" id="TableDataDotCom">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Post Link</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th>Is Published</th>
+                                    <th>Published On</th>
+                                    <th>Published By</th>
+                                    <th>Post Worker</th>
+                                    <th>Total Views</th>
+                                    <th>Last Viewed On</th>
+                                    <th>Created On</th>
+                                    <th>Updated On</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+    <script>
+        let tableDataDotIn;
+        let tableDataDotCom;
+        let tableLoadUniquePageVisitedDotIn;
+        let tableLoadUniquePageVisitedDotCom;
+        let tableLoadUniquePageVisitedBlogDotIn;
+        let tableLoadUniquePageVisitedProductDotIn;
+
+        let chartLoadFinYearSalesProductDotIn;
+
+        $(function () {
+            var columns = [
+                { data: 'title' },
+                { data: 'postLink' },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.category?.name ?? "";
+                    }
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.subCategory?.name ?? "";
+                    }
+                },
+                {
+                    data: 'isPublished',
+                    render: function (data, type, row, meta) {
+                        if (data) {
+                            data = '<b class="text-success">True</b>';
+                        }
+                        else if (!data) {
+                            data = '<b class="text-danger">False</b>';
+                        }
+                        return data;
+                    },
+                    className: 'text-center'
+                },
+                {
+                    data: 'publishedOnIst',
+                    className: 'text-end'
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return $.trim(`${row.publishedBy?.firstName ?? ""} ${row.publishedBy?.lastName ?? ""}`);
+                    }
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        let name = $.trim(`${row.postWorker?.firstName ?? ""} ${row.postWorker?.lastName ?? ""}`);
+                        return name;
+                    }
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.postView?.totalViews ?? "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.postView?.lastViewedOnIst ?? "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    data: 'createdOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'updatedOnIst',
+                    className: 'text-end'
+                }
+            ];
+            tableDataDotIn = initAjaxTable("#TableDataDotIn", [[10, 'desc']], [0, 1, 2, 3, 6, 7], '/post/postdotin?isshowall=true', columns, null, true);
+            tableDataDotCom = initAjaxTable("#TableDataDotCom", [[10, 'desc']], [0, 1, 2, 3, 6, 7], '/post/postdotcom?isshowall=true', columns, null, true);
+
+            var columnsViews = [
+                { data: 'title' },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.postView?.totalViews ?? "";
+                    },
+                    className: 'text-end'
+                }
+            ];
+
+            var columnsBlogViews = [
+                { data: 'title' },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.blogView?.totalViews ?? "";
+                    },
+                    className: 'text-end'
+                }
+            ];
+
+            var columnsProductViews = [
+                { data: 'title' },
+                {
+                    render: function (data, type, row, meta) {
+                        return row.productDetailView?.totalViews ?? "";
+                    },
+                    className: 'text-end'
+                }
+            ];
+
+            function getDynamicData() {
+                return {
+                    lastViewedOnStart: '@Html.Raw(range.Start)',
+                    lastViewedOnEnd: '@Html.Raw(range.End)'
+                };
+            }
+            tableLoadUniquePageVisitedProductDotIn = initAjaxTable("#TableLoadUniquePageVisitedProductDotIn", [[1, 'desc']], [0, 1], '/productdetail/productdetaildotin?isshowall=true&ispagesvisited=true', columnsProductViews, getDynamicData, true);
+            tableLoadUniquePageVisitedBlogDotIn = initAjaxTable("#TableLoadUniquePageVisitedBlogDotIn", [[1, 'desc']], [0, 1], '/blog/blogdotin?isshowall=true&ispagesvisited=true', columnsBlogViews, getDynamicData, true);
+            tableLoadUniquePageVisitedDotIn = initAjaxTable("#TableLoadUniquePageVisitedDotIn", [[1, 'desc']], [0, 1], '/post/postdotin?isshowall=true&ispagesvisited=true', columnsViews, getDynamicData, true);
+            tableLoadUniquePageVisitedDotCom = initAjaxTable("#TableLoadUniquePageVisitedDotCom", [[1, 'desc']], [0, 1], '/post/postdotcom?isshowall=true&ispagesvisited=true', columnsViews, getDynamicData, true);
+
+            chartLoadFinYearSalesProductDotIn = initBarChart("#ChartLoadFinYearSalesProductDotIn", '/productdetail/productdetaildotin?handler=FinYearSales', 'Income', 'Total Sales', 0);
+        });
+
+        $('#LoadDataDotIn').click(function (event) {
+            $("#WrapDataDotIn").show();
+            tableDataDotIn.ajax.reload();
+        });
+
+        $('#LoadDataDotCom').click(function (event) {
+            $("#WrapDataDotCom").show();
+            tableDataDotCom.ajax.reload();
+        });
+
+        $('#LoadUniquePageVisitedProductDotIn').click(function (event) {
+            $("#WrapLoadUniquePageVisitedProductDotIn").show();
+            tableLoadUniquePageVisitedProductDotIn.ajax.reload();
+        });
+
+        $('#LoadUniquePageVisitedBlogDotIn').click(function (event) {
+            $("#WrapLoadUniquePageVisitedBlogDotIn").show();
+            tableLoadUniquePageVisitedBlogDotIn.ajax.reload();
+        });
+
+        $('#LoadUniquePageVisitedDotIn').click(function (event) {
+            $("#WrapLoadUniquePageVisitedDotIn").show();
+            tableLoadUniquePageVisitedDotIn.ajax.reload();
+        });
+
+        $('#LoadUniquePageVisitedDotCom').click(function (event) {
+            $("#WrapLoadUniquePageVisitedDotCom").show();
+            tableLoadUniquePageVisitedDotCom.ajax.reload();
+        });
+
+        $('#LoadFinYearSalesProductDotIn').click(function (event) {
+            $("#WrapLoadFinYearSalesProductDotIn").show();
+            chartLoadFinYearSalesProductDotIn.ajax.reload();
+        });
+
+        $('#LoadTodayUniquePageViewsProductDotIn').click(function (event) {
+            let todayUniquePageViewsProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=TodayUniquePageViews', '#ValTodayUniquePageViewsProductDotIn', null, 1);
+            todayUniquePageViewsProductDotInRequest.showHtmlData();
+        });
+        $('#LoadYearUniquePageViewsProductDotIn').click(function (event) {
+            let yearUniquePageViewsProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=YearUniquePageViews', '#ValYearUniquePageViewsProductDotIn', null, 2);
+            yearUniquePageViewsProductDotInRequest.showHtmlData();
+        });
+        $('#LoadTotalPageViewsProductDotIn').click(function (event) {
+            let totalPageViewsProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=TotalPageViews', '#ValTotalPageViewsProductDotIn', null, 3);
+            totalPageViewsProductDotInRequest.showHtmlData();
+        });
+        $('#LoadTodayRevenueProductDotIn').click(function (event) {
+            let todayRevenueProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=TodayRevenue', '#ValTodayRevenueProductDotIn', null, 4);
+            todayRevenueProductDotInRequest.showHtmlData();
+        });
+        $('#LoadMonthRevenueProductDotIn').click(function (event) {
+            let monthRevenueProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=MonthRevenue', '#ValMonthRevenueProductDotIn', null, 5);
+            monthRevenueProductDotInRequest.showHtmlData();
+        });
+        $('#LoadFinYearRevenueProductDotIn').click(function (event) {
+            let finYearRevenueProductDotInRequest = new ServerRequest('/productdetail/productdetaildotin?handler=FinYearRevenue', '#ValFinYearRevenueProductDotIn', null, 6);
+            finYearRevenueProductDotInRequest.showHtmlData();
+        });
+
+        $('#LoadTodayUniquePageViewsBlogDotIn').click(function (event) {
+            let todayUniquePageViewsBlogDotInRequest = new ServerRequest('/blog/blogdotin?handler=TodayUniquePageViews', '#ValTodayUniquePageViewsBlogDotIn', null, 7);
+            todayUniquePageViewsBlogDotInRequest.showHtmlData();
+        });
+        $('#LoadYearUniquePageViewsBlogDotIn').click(function (event) {
+            let yearUniquePageViewsBlogDotInRequest = new ServerRequest('/blog/blogdotin?handler=YearUniquePageViews', '#ValYearUniquePageViewsBlogDotIn', null, 8);
+            yearUniquePageViewsBlogDotInRequest.showHtmlData();
+        });
+        $('#LoadTotalPageViewsBlogDotIn').click(function (event) {
+            let totalPageViewsBlogDotInRequest = new ServerRequest('/blog/blogdotin?handler=TotalPageViews', '#ValTotalPageViewsBlogDotIn', null, 9);
+            totalPageViewsBlogDotInRequest.showHtmlData();
+        });
+
+        $('#LoadTodayUniquePageViewsDotIn').click(function (event) {
+            let todayUniquePageViewsDotInRequest = new ServerRequest('/post/postdotin?handler=TodayUniquePageViews', '#ValTodayUniquePageViewsDotIn', null, 10);
+            todayUniquePageViewsDotInRequest.showHtmlData();
+        });
+        $('#LoadYearUniquePageViewsDotIn').click(function (event) {
+            let yearUniquePageViewsDotInRequest = new ServerRequest('/post/postdotin?handler=YearUniquePageViews', '#ValYearUniquePageViewsDotIn', null, 11);
+            yearUniquePageViewsDotInRequest.showHtmlData();
+        });
+        $('#LoadTotalPageViewsDotIn').click(function (event) {
+            let totalPageViewsDotInRequest = new ServerRequest('/post/postdotin?handler=TotalPageViews', '#ValTotalPageViewsDotIn', null, 12);
+            totalPageViewsDotInRequest.showHtmlData();
+        });
+
+        $('#LoadTodayUniquePageViewsDotCom').click(function (event) {
+            let todayUniquePageViewsDotComRequest = new ServerRequest('/post/postDotCom?handler=TodayUniquePageViews', '#ValTodayUniquePageViewsDotCom', null, 13);
+            todayUniquePageViewsDotComRequest.showHtmlData();
+        });
+        $('#LoadYearUniquePageViewsDotCom').click(function (event) {
+            let yearUniquePageViewsDotComRequest = new ServerRequest('/post/postDotCom?handler=YearUniquePageViews', '#ValYearUniquePageViewsDotCom', null, 14);
+            yearUniquePageViewsDotComRequest.showHtmlData();
+        });
+        $('#LoadTotalPageViewsDotCom').click(function (event) {
+            let totalPageViewsDotComRequest = new ServerRequest('/post/postDotCom?handler=TotalPageViews', '#ValTotalPageViewsDotCom', null, 15);
+            totalPageViewsDotComRequest.showHtmlData();
+        });
+
+        $('#ViewsProductDotIn').click(function(event){
+            $('#WrapViewsProductDotIn').toggle();
+        });
+
+        $('#ViewsBlogDotIn').click(function(event){
+            $('#WrapViewsBlogDotIn').toggle();
+        });
+
+        $('#ViewsDotIn').click(function(event){
+            $('#WrapViewsDotIn').toggle();
+        });
+
+        $('#ViewsDotCom').click(function(event){
+            $('#WrapViewsDotCom').toggle();
+        });
+    </script>
+}

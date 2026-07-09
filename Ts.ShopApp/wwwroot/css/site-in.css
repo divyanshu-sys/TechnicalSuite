@@ -1,0 +1,31 @@
+﻿.btn {
+    background-color: #d35972;
+}
+
+.header {
+    background: linear-gradient(135deg, #6a11cb, #ff6a88);
+}
+
+.menu, .sub-menu {
+    background: linear-gradient(135deg, #6a11cb, #ff6a88);
+}
+
+.user-menu {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+}
+
+.show-link {
+    background: linear-gradient(135deg, #6a11cb, #ff6a88);
+}
+
+.footer {
+    background: linear-gradient(135deg, #6a11cb, #ff6a88);
+}
+
+.case-img {
+    background-color: #b982b5;
+}
+
+.active {
+    background-color: #ff0034 !important;
+}

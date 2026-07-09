@@ -1,0 +1,84 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn.UpdateDescriptionModel
+@{
+    ViewBag.Title = "Update Description";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            ProductDetail DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="dialog" id="DescriptionForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <b>@Html.DisplayNameFor(m => m.Model.Title):</b> @Model.Model.Title
+                                <input type="hidden" asp-for="Model.Title" />
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <b>Click to copy ad:</b> <span class="copyText">#[in-article-ad-1]</span> / <span class="copyText">#[in-article-ad-2]</span> / <span class="copyText">#[in-article-ad-3]</span> / <span class="copyText">#[in-article-ad-4]</span>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-danger small">Recommend: Copy paste in HTML editor mode only.<br />Don't Use: h1, br</div>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label" asp-for="Model.Description"></label>
+                                <textarea class="form-control" asp-for="Model.Description"></textarea>
+                                <span asp-validation-for="Model.Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary mb-1 copyDescription">Copy Text</button>
+                        <a asp-page="updatemainimage" asp-route-id="@Model.Id" class="btn btn-secondary float-end mb-1 copyDescription"><i class="fas fa-angle-double-right"></i> Main Image / Copy Text</a>
+                        <a asp-page="edit" asp-route-id="@Model.Id" class="btn btn-secondary float-end mb-1 me-2 copyDescription"><i class="fas fa-angle-double-left"></i> ProductDetail / Copy Text</a>
+                        <a asp-page="updateproductdetailimage" target="_blank" asp-route-id="@Model.Id" class="btn btn-warning me-4 mb-1 float-end"><i class="fas fa-images"></i> Image</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var id = Model.Id;
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            htmlEditor('#Model_Description', saveDesctipion);
+        });
+
+        function saveDesctipion() {
+            let form = $('#DescriptionForm')
+            if ($(form).valid()) {
+                var formData = $(form).serialize();
+                let serverRequest = new ServerRequest(`/productdetail/productdetaildotin/updatedescription/${@id}?handler=byajax`, null, null, 1, formData);
+                serverRequest.saveData();
+            }
+        }
+
+        $('.copyDescription').click(function () {
+            copyDescriptionToClipboard();
+        });
+
+        function copyDescriptionToClipboard() {
+            let copyText = $('#Model_Description');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.val());
+        }
+
+        $('.copyText').click(function () {
+            let copyText = $(this);
+            copyText.select();
+            navigator.clipboard.writeText(copyText.text());
+        });
+    </script>
+}

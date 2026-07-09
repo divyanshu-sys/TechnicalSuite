@@ -1,0 +1,27 @@
+﻿@page "/accessdenied"
+@model Ts.ShopApp.Pages.AccessDeniedModel
+@{
+    Layout = null;
+    ViewBag.Title = ViewBag.StatusCode;
+    ViewBag.Description = "Access Denied Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <meta name="robots" content="noindex, follow">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sub-wrapper">
+            <div class="error-page">
+                <h1>@ViewBag.StatusCode</h1>
+                <p>@ViewBag.HeadLine</p>
+                <p>@ViewBag.TagLine</p>
+                <i class="fa fa-arrow-left"></i> <a asp-page="/index">Return to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

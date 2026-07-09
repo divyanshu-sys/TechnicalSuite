@@ -1,0 +1,100 @@
+﻿@page
+@model Ts.AdminApp.Pages.Tool.CreateHyperlinkModel
+@{
+    ViewBag.Title = "Create Hyperlink";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            <a asp-page="/index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Dashboard</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-link"></i> Create Internal Link</div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label" for="InternalLinkText">Link Text</label>
+                            <input class="form-control" id="InternalLinkText" placeholder="Enter Link Text">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label" for="InternalLink">Link</label>
+                            <input class="form-control" id="InternalLink" placeholder="https://www.domain.com/link">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="InternalLinkBtn"><i class="fas fa-link"></i> Create Internal Link</button>
+                    <div class="mt-2">
+                        <div title="Click to copy" class="copyText" id="DisplayInternalText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-external-link"></i> Create External Link</div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label" for="ExternalLinkText">Link Text</label>
+                            <input class="form-control" id="ExternalLinkText" placeholder="Enter Link Text">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label" for="ExternalLink">Link</label>
+                            <input class="form-control" id="ExternalLink" placeholder="https://www.external.com/link">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="ExternalLinkBtn"><i class="fas fa-external-link"></i> Create External Link</button>
+                    <div class="mt-2">
+                        <div title="Click to copy" class="copyText" id="DisplayExternalText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Create internal link
+        $('#InternalLinkBtn').click(function () {
+            $('#DisplayInternalText').text('');
+            let text = $('#InternalLinkText').val();
+            let link = $('#InternalLink').val();
+            let protocol = window.location.protocol;
+            let host = window.location.host;
+            if ((text == null || text == "") || (link == null || link == "")) {
+                failMsg('Fields cannot be blank.');
+            }
+            else {
+                var baseUrlPattern = /^(https?:\/\/[^\/]+)/;
+                link = link.replace(baseUrlPattern, '');
+                $('#DisplayInternalText').text('<a href="' + link + '">' + text + '</a>');
+            }
+        });
+
+        // Create external link
+        $('#ExternalLinkBtn').click(function () {
+            $('#DisplayExternalText').text('');
+            let text = $('#ExternalLinkText').val();
+            let link = $('#ExternalLink').val();
+            let protocol = window.location.protocol;
+            let host = window.location.host;
+            if ((text == null || text == "") || (link == null || link == "")) {
+                failMsg('Fields cannot be blank.');
+            }
+            else {
+                $('#DisplayExternalText').text('<a href="' + link + '" target="_blank" rel="nofollow">' + text + '</a>');
+            }
+        });
+
+        $('.copyText').click(function () {
+            var copyText = $(this);
+            copyText.select();
+            navigator.clipboard.writeText(copyText.text());
+        });
+    </script>
+}

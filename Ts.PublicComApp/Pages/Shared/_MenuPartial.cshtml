@@ -1,0 +1,5 @@
+﻿<a asp-page="/index" title="Home"><i class="fa fa-home"></i> Home</a>
+<a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" asp-route-subCategoryName="@null" title="View all @CategoryConstant.News" sub-active="@CategoryConstant.News.ToLower()">@CategoryConstant.News <i class="fa fa-caret-down"></i></a>
+<a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Reviews" asp-route-subCategoryName="@null" title="View all @CategoryConstant.Reviews" sub-active="@CategoryConstant.Reviews.ToLower()">@CategoryConstant.Reviews <i class="fa fa-caret-down"></i></a>
+<a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Explained" asp-route-subCategoryName="@null" title="View all @CategoryConstant.Explained" sub-active="@CategoryConstant.Explained.ToLower()">@CategoryConstant.Explained <i class="fa fa-caret-down"></i></a>
+<a asp-page="/webstory/list" asp-route-subCategoryName="@null" title="View all @CategoryConstant.WebStories" sub-active="@CategoryConstant.WebStories.ToLower()">@CategoryConstant.WebStories <i class="fa fa-caret-down"></i></a>

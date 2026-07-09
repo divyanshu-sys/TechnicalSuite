@@ -1,0 +1,91 @@
+﻿@page "/user"
+@model Ts.AdminApp.Pages.User.IndexModel
+@{
+    ViewBag.Title = "Users";
+}
+
+<div class="container">
+    <div class="page-title">
+        <h3>
+            @ViewBag.Title
+            @if (User.HasClaim(x => x.Type == UserPolicy.CanCreate))
+            {
+                <a asp-page="/account/registeruser" class="btn btn-sm btn-outline-primary float-end"><i class="fas fa-plus-circle"></i> Add User</a>
+            }
+        </h3>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Created On</th>
+                        <th>Updated On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                @* <tfoot>
+                <tr>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Created On</th>
+                <th>Updated On</th>
+                <th>Action</th>
+                </tr>
+                </tfoot> *@
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    var canUpdate = User.HasClaim(x => x.Type == UserPolicy.CanUpdate);
+    var CanUpdateUserPrivilege = User.HasClaim(x => x.Type == UserPolicy.CanUpdateUserPrivilege);
+    var CanUpdateUserEmail = User.HasClaim(x => x.Type == UserPolicy.CanUpdateUserEmail);
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            var columns = [
+                { data: 'userName' },
+                { data: 'firstName' },
+                { data: 'lastName' },
+                { data: 'email' },
+                {
+                    data: 'createdOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'updatedOnIst',
+                    className: 'text-end'
+                },
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        let link = '';
+                        let canUpdate = @canUpdate.ToString().ToLower();
+                        let CanUpdateUserEmail = @CanUpdateUserEmail.ToString().ToLower();
+                        let CanUpdateUserPrivilege = @CanUpdateUserPrivilege.ToString().ToLower();
+                        if (canUpdate)
+                            link += `<a href="/user/edit/${data}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>`;
+                        if (CanUpdateUserEmail)
+                            link += ` <a href="/user/updateemail/${data}" class="btn btn-outline-info btn-rounded" title="Update User Email"><i class="fas fa-envelope"></i></a>`;
+                        if (CanUpdateUserPrivilege)
+                            link += ` <a href="/user/updateprivilege/${data}" class="btn btn-outline-danger btn-rounded" title="Update Privilege"><i class="fas fa-user-shield"></i></a>`;
+
+                        return link;
+                    },
+                    className: 'text-end'
+                }
+            ];
+            var userTable = initAjaxTable("#DataTable", [[4, 'desc']], [0, 3, 6], '/user', columns);
+        });
+    </script>
+}

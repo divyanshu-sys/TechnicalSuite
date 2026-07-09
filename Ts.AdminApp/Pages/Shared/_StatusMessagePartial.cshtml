@@ -1,0 +1,28 @@
+﻿<div id="divStatusAppend" class="d-flex justify-content-center">
+    @if (TempData.ContainsKey("success"))
+    {
+        string successMsg = TempData["success"] as string;
+        if (successMsg != null)
+        {
+            <div class="position-fixed m-3 alert alert-success alert-dismissible fade show myalert" style="z-index:6; top:50px;">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Info!</strong> @successMsg
+            </div>
+        }
+    }
+    else if (TempData.ContainsKey("fail"))
+    {
+        string failMsg = TempData["fail"] as string;
+        if (failMsg != null)
+        {
+            <div class="position-fixed m-3 alert alert-danger alert-dismissible fade show myalert" style="z-index:6; top:50px;">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Info!</strong> @failMsg
+            </div>
+        }
+    }
+</div>
+
+<script>
+    setTimeout(function () { $(".myalert").alert('close'); }, 40000);
+</script>

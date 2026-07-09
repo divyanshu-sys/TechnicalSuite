@@ -1,0 +1,57 @@
+﻿@page "/login"
+@model Ts.ShopApp.Pages.Account.IndexModel
+@{
+    ViewBag.Title = "Login";
+    ViewBag.Description = "Login";
+}
+@section Heads {
+    <meta name="robots" content="noindex, follow">
+}
+
+<div class="small-width">
+    <h1>@ViewBag.Title</h1>
+    <div class="form-box">
+        <div class="form-border">
+            <form method="post" autocomplete="off">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label asp-for="Model.Email"></label>
+                        <input class="form-control" asp-for="Model.Email" placeholder="Email / Username" />
+                        <span asp-validation-for="Model.Email"></span>
+                    </div>
+                    <div class="form-col">
+                        <label asp-for="Model.Password"></label>
+                        <input class="form-control" asp-for="Model.Password" placeholder="Password" />
+                        <span asp-validation-for="Model.Password"></span>
+                    </div>
+                </div>
+                <div class="form-col check-box">
+                    <input type="hidden" id="ReCaptcha" name="ReCaptcha" />
+                    <input class="form-control" asp-for="Model.RememberMe" checked />
+                    <label asp-for="Model.RememberMe"></label>
+                </div>
+                <div class="form-col-100per">
+                    <button type="submit" class="btn" title="Login" id="SubmitButton">Login</button>
+                </div>
+                <div class="form-col">
+                    <a asp-page="/account/register">Are you a new User? Register</a>
+                </div>
+                <div class="form-col">
+                    <a asp-page="/account/forgotpassword">Forgot Password? Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <environment exclude="Development">
+        <script src="@GoogleCaptchaConstant.GoogleCaptchaShopInAppSiteUrl"></script>
+        <script>
+            $("#SubmitButton").on('click', function (event) {
+                reCaptcha(this, '@GoogleCaptchaConstant.GoogleCaptchaShopInAppSiteKey', '@GoogleCaptchaConstant.GoogleCaptchaLogin', '#ReCaptcha', event);
+            });
+        </script>
+    </environment>
+}

@@ -1,0 +1,72 @@
+﻿@{
+    var title = configuration["SiteTitle"];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    @await RenderSectionAsync("Heads", required: false)
+</head>
+<body>
+    <partial name="_GtmBodyPartial" />
+    <div class="header-top">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fa fa-bars" id="menu-icon"></i>
+                </div>
+                <div class="logo">
+                    <a asp-page="/index" title="@title"><img src="~/images/static-images/logo.png" alt="Logo" /><span class="brand-name">@title</span></a>
+                </div>
+                <div class="header-icon">
+                    <i class="fa fa-search" id="search-icon"></i>
+                </div>
+            </div>
+            <div class="header-right" id="search">
+                <form method="get" asp-page="/post/search">
+                    <div class="search-control">
+                        <input name="q" id="searchTxt" placeholder="Search here..." class="form-control" value="@ViewBag.Search" />
+                        <button type="submit" title="Search" class="btn" id="searchBtn"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="menu" id="menu">
+            <partial name="_MenuPartial" />
+        </div>
+        @RenderSection("Submenu", required: false)
+    </div>
+    <div class="wrapper">
+        <div class="sub-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-left">
+            <a asp-page="/about" title="About @title">About Us</a>
+            <a asp-page="/privacypolicy" title="Privacy Policy">Privacy Policy</a>
+            <a asp-page="/disclaimer" title="Disclaimer">Disclaimer</a>
+            <a asp-page="/feedback" title="Please give us a feedback">Feedback / Contact Us</a>
+            <a href="https://www.youtube.com/@@Technical_Suite_En" title="@title YouTube" target="_blank"><i class="fab fa-youtube-square"></i></a>
+        </div>
+        <div class="footer-right">
+            &copy; 2020 - @DateTime.Today.Year <a asp-page="/index" title="&copy; @title">@title</a>
+        </div>
+    </div>
+    <partial name="_CookieConsentPartial" />
+    <partial name="_ScriptTagPartial" />
+    <partial name="AdsPartials/_AllowAdPartial" />
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $('#searchBtn').click(function (event) {
+            event.preventDefault();
+            var q = $('#searchTxt').val();
+            if (q != null && q != "") {
+                $(this).attr('disabled', true).find('i').removeClass().addClass('fa fa-spinner fa-spin');
+                $(this).closest("form").submit();
+            }
+        });
+    </script>
+</body>
+</html>

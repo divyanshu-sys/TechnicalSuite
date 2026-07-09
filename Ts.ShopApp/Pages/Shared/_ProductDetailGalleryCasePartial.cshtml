@@ -1,0 +1,26 @@
+﻿@using Ts.ShopIn.Client.ViewModels.ProductDetailVms
+@model IEnumerable<GetProductDetailForListViewVm>
+@if (Model != null)
+    foreach (var item in Model)
+    {
+        <div class="case">
+            <div class="case-hover">
+                <div class="txt-top-left">@item.PublishedOnIst</div>
+                <div class="txt-price-left">@item.Currency@item.Price</div>
+                <div class="btn-cart-right"><button type="button" title="Add to cart" class="btn btn-cart" onclick="addToCart(this, @item.Id)"><i class="fa fa-cart-plus"></i> Add to Cart</button></div>
+                <a asp-page="/product/view" asp-route-shopCategoryName="@item.ShopCategoryName" asp-route-productDetailLink="@item.ProductDetailLink" title="@item.Title">
+                    @if (item.MainImageUrl != null)
+                    {
+                        <img class="case-img g-height" src="@item.MainImageUrl" alt="@item.Title" onerror="loadAlternateImage(this);" />
+                    }
+                    else
+                    {
+                        <img class="case-img g-height" src="~/images/static-images/alternate-post.jpg" alt="@item.Title" asp-append-version="true" />
+                    }
+                    <div class="show-link">
+                        <div class="case-link">@item.Title</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }

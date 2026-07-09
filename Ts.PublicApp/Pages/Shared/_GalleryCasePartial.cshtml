@@ -1,0 +1,24 @@
+﻿@using Ts.DotIn.Client.ViewModels.PostVms
+@model IEnumerable<GetPostForListViewVm>
+@if (Model != null)
+    foreach (var item in Model)
+    {
+        <div class="case">
+            <div class="case-hover">
+                <div class="txt-top-left">@item.PublishedOnIst</div>
+                <a asp-page="/post/view" asp-route-categoryName="@item.CategoryName" asp-route-subCategoryName="@item.SubCategoryName" asp-route-postLink="@item.PostLink" title="@item.Title">
+                    @if (item.MainImageUrl != null)
+                    {
+                        <img class="case-img g-height" src="@item.MainImageUrl" alt="@item.Title" onerror="loadAlternateImage(this);" />
+                    }
+                    else
+                    {
+                        <img class="case-img g-height" src="~/images/static-images/alternate-post.jpg" alt="@item.Title" asp-append-version="true" />
+                    }
+                    <div class="show-link">
+                        <div class="case-link">@item.Title</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }

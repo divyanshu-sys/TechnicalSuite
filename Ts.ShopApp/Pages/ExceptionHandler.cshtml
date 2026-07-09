@@ -1,0 +1,22 @@
+﻿@page
+@model Ts.ShopApp.Pages.ExceptionHandlerModel
+@{
+    Layout = null;
+    ViewBag.Title = ViewBag.StatusCode;
+    ViewBag.Description = "Error Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="_HeadTagPartial" />
+    <meta name="robots" content="noindex, follow">
+</head>
+<body>
+    <div class="error-page">
+        <h1>@ViewBag.StatusCode</h1>
+        <p>@ViewBag.TagLine</p>
+        <i class="fa fa-arrow-left"></i> <a asp-page="/index">Return to Home</a>
+    </div>
+</body>
+</html>

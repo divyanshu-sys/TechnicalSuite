@@ -1,0 +1,121 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.Master.PostOffice.EditModel
+@{
+    ViewBag.Title = "Edit Post Office";
+}
+
+<div class="container col-lg-6">
+    <div class="page-title">
+        <h3>
+            Post Office
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Name"></label>
+                                <input class="form-control" asp-for="Model.Name">
+                                <span asp-validation-for="Model.Name" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.Pincode"></label>
+                                <input class="form-control" asp-for="Model.Pincode">
+                                <span asp-validation-for="Model.Pincode" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.CountryId"></label>
+                                <select asp-for="Model.CountryId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="CountryId_Hidden" value="@Model.Model?.CountryId" />
+                                <span asp-validation-for="Model.CountryId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.StateId"></label>
+                                <select asp-for="Model.StateId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="StateId_Hidden" value="@Model.Model?.StateId" />
+                                <span asp-validation-for="Model.StateId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.DistrictId"></label>
+                                <select asp-for="Model.DistrictId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="DistrictId_Hidden" value="@Model.Model?.DistrictId" />
+                                <span asp-validation-for="Model.DistrictId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submitLoader"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $("#Model_CountryId").select2({
+                theme: "classic"
+            });
+
+            $("#Model_StateId").select2({
+                theme: "classic"
+            });
+
+            $("#Model_DistrictId").select2({
+                theme: "classic"
+            });
+
+            let serverRequest = new ServerRequest('/master/postoffice?handler=countrydropdown', '#Model_CountryId', '#CountryId_Hidden', 1);
+            serverRequest.loadDropDown();
+
+            let countryId = $("#CountryId_Hidden").val();
+            if (countryId != '')
+                getStatesByCountryId(countryId);
+
+            let stateId = $("#StateId_Hidden").val();
+            if (stateId != '')
+                getDistrictsByStateId(stateId);
+        });
+
+        $("#Model_CountryId").change(function () {
+            $("#StateId_Hidden").val('');
+            $("#Model_StateId").empty();
+            $("#Model_DistrictId").empty();
+            let countryId = this.value;
+            if (countryId != '') {
+                getStatesByCountryId(countryId);
+            }
+        });
+
+        $("#Model_StateId").change(function () {
+            $("#DistrictId_Hidden").val('');
+            $("#Model_DistrictId").empty();
+            let stateId = this.value;
+            if (stateId != '') {
+                getDistrictsByStateId(stateId);
+            }
+        });
+
+        function getStatesByCountryId(countryId) {
+            let serverRequest = new ServerRequest(`/master/postoffice?countryid=${countryId}&handler=statedropdownbycountryid`, '#Model_StateId', '#StateId_Hidden', 2);
+            serverRequest.loadDropDown();
+        }
+
+        function getDistrictsByStateId(stateId) {
+            let serverRequest = new ServerRequest(`/master/postoffice?stateid=${stateId}&handler=districtdropdownbystateid`, '#Model_DistrictId', '#DistrictId_Hidden', 3);
+            serverRequest.loadDropDown();
+        }
+    </script>
+}

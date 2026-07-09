@@ -1,0 +1,198 @@
+﻿@page
+@model Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn.AddModel
+@{
+    ViewBag.Title = "Create ProductDetail";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            ProductDetail DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-shopping-basket"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label" asp-for="Model.Title"></label>
+                                <input class="form-control" asp-for="Model.Title">
+                                <span asp-validation-for="Model.Title" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.ShopCategoryId"></label>
+                                <select asp-for="Model.ShopCategoryId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="ShopCategoryId_Hidden" value="@Model.Model?.ShopCategoryId" />
+                                <span asp-validation-for="Model.ShopCategoryId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.ExchangePolicyId"></label>
+                                <select asp-for="Model.ExchangePolicyId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="ExchangePolicyId_Hidden" value="@Model.Model?.ExchangePolicyId" />
+                                <span asp-validation-for="Model.ExchangePolicyId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.DeliveryPolicyId"></label>
+                                <select asp-for="Model.DeliveryPolicyId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="DeliveryPolicyId_Hidden" value="@Model.Model?.DeliveryPolicyId" />
+                                <span asp-validation-for="Model.DeliveryPolicyId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.ReturnPolicyId"></label>
+                                <select asp-for="Model.ReturnPolicyId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="ReturnPolicyId_Hidden" value="@Model.Model?.ReturnPolicyId" />
+                                <span asp-validation-for="Model.ReturnPolicyId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label" asp-for="Model.ProductId"></label>
+                                <select asp-for="Model.ProductId" class="form-select">
+                                    <option value="">Select...</option>
+                                </select>
+                                <input hidden id="ProductId_Hidden" value="@Model.Model?.ProductId" />
+                                <span asp-validation-for="Model.ProductId" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-10">
+                                <label class="form-label" asp-for="Model.ProductDetailLink"></label>
+                                <input class="form-control" placeholder="samsung_galaxy_s21_plus-review-india" asp-for="Model.ProductDetailLink">
+                                <span asp-validation-for="Model.ProductDetailLink" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label" asp-for="Model.MetaDescription"></label>
+                                <input class="form-control" asp-for="Model.MetaDescription">
+                                <span asp-validation-for="Model.MetaDescription" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-info small">Specify Keywords</div>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword1"></label>
+                                <input class="form-control" asp-for="Model.Keyword1">
+                                <span asp-validation-for="Model.Keyword1" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword2"></label>
+                                <input class="form-control" asp-for="Model.Keyword2">
+                                <span asp-validation-for="Model.Keyword2" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword3"></label>
+                                <input class="form-control" asp-for="Model.Keyword3">
+                                <span asp-validation-for="Model.Keyword3" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword4"></label>
+                                <input class="form-control" asp-for="Model.Keyword4">
+                                <span asp-validation-for="Model.Keyword4" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Keyword5"></label>
+                                <input class="form-control" asp-for="Model.Keyword5">
+                                <span asp-validation-for="Model.Keyword5" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-3" id="Stock_Hidden" style="display:none;">
+                                <label class="form-label" asp-for="Model.Stock"></label>
+                                <input type="number" min="0" class="form-control" asp-for="Model.Stock">
+                                <span asp-validation-for="Model.Stock" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Mrp"></label>
+                                <input type="number" min="0" class="form-control" asp-for="Model.Mrp">
+                                <span asp-validation-for="Model.Mrp" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3 col-md-3">
+                                <label class="form-label" asp-for="Model.Price"></label>
+                                <input type="number" min="0" class="form-control" asp-for="Model.Price">
+                                <span asp-validation-for="Model.Price" id="PriceError" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="Model.IsAvailable" checked>
+                                <label class="form-check-label" asp-for="Model.IsAvailable"></label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="SubmitButton"><i class="fas fa-save"></i> Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let deliveryPolicyId = '#Model_DeliveryPolicyId';
+
+        function toggleDeliveryPolicyField(){
+            var deliveryPolicyText = $(deliveryPolicyId).find('option:selected').text();
+            var deliveryPolicyVal = $(deliveryPolicyId).find('option:selected').val();
+
+            if (deliveryPolicyText=='@DeliveryPolicyConstant.Downloadable15Days' || deliveryPolicyVal=='') {
+                $('#Stock_Hidden').hide();
+            } else {
+                $('#Stock_Hidden').show();
+            }
+        }
+
+        $(deliveryPolicyId).change(function () {
+            toggleDeliveryPolicyField();
+        });
+
+        $(document).on('click', '#SubmitButton', function (event) {
+            var deliveryPolicyText = $(deliveryPolicyId).find('option:selected').text();
+            var deliveryPolicyVal = $(deliveryPolicyId).find('option:selected').val();
+
+            if (deliveryPolicyText=='@DeliveryPolicyConstant.Downloadable15Days' || deliveryPolicyVal=='') {
+                $('#Model_Stock').val(0);
+            }
+            validateSecondFieldLessThan(this, 'Model_Mrp', 'Model_Price', 'PriceError', 'Price should not be greater than MRP', event);
+        });
+
+        $(function () {
+            $("#Model_ShopCategoryId").select2({
+                theme: "classic"
+            });
+            let shopCategoryServerRequest = new ServerRequest('/productdetail/productdetaildotin?handler=shopcategorydropdown', "#Model_ShopCategoryId", '#ShopCategoryId_Hidden', 1);
+            shopCategoryServerRequest.loadDropDown();
+
+            $("#Model_ExchangePolicyId").select2({
+                theme: "classic"
+            });
+            let exchangePolicyServerRequest = new ServerRequest('/productdetail/productdetaildotin?handler=exchangepolicydropdown', '#Model_ExchangePolicyId', '#ExchangePolicyId_Hidden', 2);
+            exchangePolicyServerRequest.loadDropDown();
+
+            $("#Model_DeliveryPolicyId").select2({
+                theme: "classic"
+            });
+            let deliveryPolicyServerRequest = new ServerRequest('/productdetail/productdetaildotin?handler=deliverypolicydropdown', '#Model_DeliveryPolicyId', '#DeliveryPolicyId_Hidden', 3, null, toggleDeliveryPolicyField);
+            deliveryPolicyServerRequest.loadDropDown();
+
+            $("#Model_ReturnPolicyId").select2({
+                theme: "classic"
+            });
+            let returnPolicyServerRequest = new ServerRequest('/productdetail/productdetaildotin?handler=returnpolicydropdown', '#Model_ReturnPolicyId', '#ReturnPolicyId_Hidden', 4);
+            returnPolicyServerRequest.loadDropDown();
+
+            $("#Model_ProductId").select2({
+                theme: "classic"
+            });
+            let productServerRequest = new ServerRequest('/productdetail/productdetaildotin?handler=productdropdown', '#Model_ProductId', '#ProductId_Hidden', 5);
+            productServerRequest.loadDropDown();
+        });
+    </script>
+}

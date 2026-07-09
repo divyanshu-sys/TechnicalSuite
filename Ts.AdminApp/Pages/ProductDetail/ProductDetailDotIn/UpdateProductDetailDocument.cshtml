@@ -1,0 +1,97 @@
+﻿@page "{id:min(1)}"
+@model Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn.UpdateProductDetailDocumentModel
+@{
+    ViewBag.Title = "Update ProductDetail Document";
+}
+
+<div class="container col-lg-12">
+    <div class="page-title">
+        <h3>
+            ProductDetail DotIn
+            <a asp-page="index" class="btn btn-sm btn-outline-info float-end me-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Return</span></a>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><i class="fa fa-edit"></i> @ViewBag.Title</div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        <div class="row g-2">
+                            <div class="mb-3 col-md-12">
+                                <b>@Html.DisplayNameFor(m => m.ModelVm.Title):</b> @Model.ModelVm.Title
+                            </div>
+                            <div class="mb-3 col-md-12">
+                                <div class="text-success small">Recommended: Note : Only one document can be uploaded.</div>
+                            </div>
+                        </div>
+                        @if (Model.ModelVm.ProductDetailDocument == null)
+                        {
+                            <div class="row g-2">
+                                <div class="mb-3 col-md-12">
+                                    <div class="text-danger small">Note: @Model.DocumentFileExtensionInValidMsg</div>
+                                    <div class="text-danger small">Note: @Model.ImageFileExtensionInValidMsg</div>
+                                    <div class="text-danger small">Note: @Model.DocumentFileSizeInvalidMsg</div>
+                                    <div class="text-success small">Recommended: Note : Image dimension should be (1010x780).</div>
+                                </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" asp-for="Model.DocumentFile"></label>
+                                    <input class="form-control" asp-for="Model.DocumentFile">
+                                    <span asp-validation-for="Model.DocumentFile" id="DocumentError" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="SubmitButton"><i class="fas fa-save"></i> Save</button>
+                        }
+                        @if (User.HasClaim(x => x.Type == ProductPolicy.CanPublish))
+                        {
+                            <a asp-page="publish" asp-route-id="@Model.Id" class="btn btn-secondary mb-1 float-end"><i class="fas fa-angle-double-right"></i> Publish ProductDetail</a>
+                        }
+                        <a asp-page="updatemainimage" asp-route-id="@Model.Id" class="btn btn-secondary me-2 mb-1 float-end"><i class="fas fa-angle-double-left"></i> Main Image</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body">
+            <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ModelVm.ProductDetailDocument != null)
+                    {
+                        <tr>
+                            <td>@Model.ModelVm.ProductDetailDocument.Document</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-outline-success btn-rounded DownloadBtn"><i class="fas fa-download"></i> </button>
+                                <button type="button" class="btn btn-outline-danger btn-rounded" onClick="showConfirmation('Delete', 'Confirm Delete', 'Are you sure you want to delete?', '/productdetail/productdetaildotin/deleteproductdetaildocument/@Model.Id')"><i class="fas fa-trash"></i> </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            let dataTable = initTable("#DataTable", [], [0, 1]);
+        });
+
+        $(document).on('click', '#SubmitButton', function (event) {
+            validateDocument(this, 'Model_DocumentFile', 'DocumentError', event);
+        });
+
+        $(document).on('click', '.DownloadBtn', function (event) {
+            let serverRequest = new ServerRequest('/productdetail/productdetaildotin/downloaddocument/' + '@Model.Id', null, null, 1);
+            serverRequest.downloadDocument();
+        });
+    </script>
+}

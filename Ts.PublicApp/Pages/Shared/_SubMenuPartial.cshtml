@@ -1,0 +1,40 @@
+﻿@model string
+
+@if (Model == CategoryConstant.Reviews)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Reviews" asp-route-subCategoryName="@SubCategoryConstant.Mobiles" title="View all @SubCategoryConstant.Mobiles @CategoryConstant.Reviews">@SubCategoryConstant.Mobiles</a>
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Reviews" asp-route-subCategoryName="@SubCategoryConstant.Tablets" title="View all @SubCategoryConstant.Tablets @CategoryConstant.Reviews">@SubCategoryConstant.Tablets</a>
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Reviews" asp-route-subCategoryName="@SubCategoryConstant.Laptops" title="View all @SubCategoryConstant.Laptops @CategoryConstant.Reviews">@SubCategoryConstant.Laptops</a>
+    </div>
+}
+else if (Model == CategoryConstant.News)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" asp-route-subCategoryName="@SubCategoryConstant.GeneralNews" title="View all @SubCategoryConstant.GeneralNews @CategoryConstant.News">@SubCategoryConstant.GeneralNews</a>
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" asp-route-subCategoryName="@SubCategoryConstant.Finance" title="View all @SubCategoryConstant.Finance @CategoryConstant.News">@SubCategoryConstant.Finance</a>
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" asp-route-subCategoryName="@SubCategoryConstant.SciTech" title="View all @SubCategoryConstant.SciTech @CategoryConstant.News">@SubCategoryConstant.SciTech</a>
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.News" asp-route-subCategoryName="@SubCategoryConstant.AutoTech" title="View all @SubCategoryConstant.AutoTech @CategoryConstant.News">@SubCategoryConstant.AutoTech</a>
+    </div>
+}
+else if (Model == CategoryConstant.WebStories)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/webstory/list" asp-route-subCategoryName="@SubCategoryConstant.GeneralNews" title="View all @SubCategoryConstant.GeneralNews @CategoryConstant.WebStories">@SubCategoryConstant.GeneralNews</a>
+        <a asp-page="/webstory/list" asp-route-subCategoryName="@SubCategoryConstant.SciTech" title="View all @SubCategoryConstant.SciTech @CategoryConstant.WebStories">@SubCategoryConstant.SciTech</a>
+        <a asp-page="/webstory/list" asp-route-subCategoryName="@SubCategoryConstant.Entertainment" title="View all @SubCategoryConstant.Entertainment @CategoryConstant.WebStories">@SubCategoryConstant.Entertainment</a>
+    </div>
+}
+else if (Model == CategoryConstant.ShareBazaar)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/post/list" asp-route-subCategoryName="@SubCategoryConstant.Stocks" title="View all @SubCategoryConstant.Stocks @CategoryConstant.ShareBazaar">@SubCategoryConstant.Stocks</a>
+        <a asp-page="/post/list" asp-route-subCategoryName="@SubCategoryConstant.Finance" title="View all @SubCategoryConstant.Finance @CategoryConstant.ShareBazaar">@SubCategoryConstant.Finance</a>
+    </div>
+}
+else if (Model == CategoryConstant.Explained)
+{
+    <div class="sub-menu" id="sub-menu">
+        <a asp-page="/post/list" asp-route-categoryName="@CategoryConstant.Explained" asp-route-subCategoryName="@SubCategoryConstant.SciTech" title="View all @SubCategoryConstant.SciTech @CategoryConstant.Explained">@SubCategoryConstant.SciTech</a>
+    </div>
+}
