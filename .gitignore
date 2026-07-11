@@ -373,3 +373,5 @@ FodyWeavers.xsd
 /Ts.WebApi/appsettings.Production.json
 /Ts.WebApi/appsettings.Azure.json
 /Ts.SrcApi/appsettings.Azure.json
+/Ts.AdminApp/DataProtectionKey
+/Ts.ShopApp/DataProtectionKey
