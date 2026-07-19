@@ -23,6 +23,7 @@ namespace Ts.Infra.Data.Repositories
         private IPaymentGatewayTypeRepository _paymentGatewayTypeRepository;
         private IPaymentStatusRepository _paymentStatusRepository;
         private ICurrencyTypeRepository _currencyTypeRepository;
+        private bool disposedValue;
 
         public IPostOfficeRepository PostOfficeRepo => _postOfficeRepository ??= new PostOfficeRepository(dbContext);
         public IDistrictRepository DistrictRepo => _districtRepository ??= new DistrictRepository(dbContext);
@@ -71,9 +72,49 @@ namespace Ts.Infra.Data.Repositories
             return dbContext.Database.CurrentTransaction.RollbackAsync();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    dbContext.Dispose();
+                }
+
+                _postOfficeRepository = null;
+                _districtRepository = null;
+                _stateRepository = null;
+                _countryRepository = null;
+                _nextUserSettingRepository = null;
+                _refreshTokenRepository = null;
+                _loginLogRepository = null;
+                _categoryRepository = null;
+                _subCategoryRepository = null;
+                _shopCategoryRepository = null;
+                _exchangePolicyRepository = null;
+                _deliveryPolicyRepository = null;
+                _returnPolicyRepository = null;
+                _applicationUserRepository = null;
+                _paymentModeRepository = null;
+                _orderStatusRepository = null;
+                _paymentGatewayTypeRepository = null;
+                _paymentStatusRepository = null;
+                _currencyTypeRepository = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // ~UnitOfWork()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
         public void Dispose()
         {
-            dbContext.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

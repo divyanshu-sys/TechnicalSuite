@@ -6,6 +6,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
     {
         private IPostRepository _postRepository;
         private IStoryRepository _storyRepository;
+        private bool disposedValue;
 
         public IPostRepository PostRepo => _postRepository ??= new PostRepository(dbContext);
         public IStoryRepository StoryRepo => _storyRepository ??= new StoryRepository(dbContext);
@@ -37,9 +38,32 @@ namespace Ts.Infra.DotCom.Data.Repositories
             return dbContext.Database.CurrentTransaction.RollbackAsync();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    dbContext.Dispose();
+                }
+
+                _postRepository = null;
+                _storyRepository = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // ~UnitOfWork()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
         public void Dispose()
         {
-            dbContext.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

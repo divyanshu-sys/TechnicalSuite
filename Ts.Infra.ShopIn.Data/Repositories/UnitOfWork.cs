@@ -19,6 +19,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         private ILoginLogRepository _loginLogRepository;
         private INextUserSettingRepository _nextUserSettingRepository;
         private INextOrderSettingRepository _nextOrderSettingRepository;
+        private bool disposedValue;
 
         public IBlogRepository BlogRepo => _blogRepository ??= new BlogRepository(dbContext);
         public ICartRepository CartRepo => _cartRepository ??= new CartRepository(dbContext);
@@ -63,9 +64,45 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             return dbContext.Database.CurrentTransaction.RollbackAsync();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    dbContext.Dispose();
+                }
+
+                _blogRepository = null;
+                _cartRepository = null;
+                _clientUserRepository = null;
+                _refreshTokenRepository = null;
+                _orderDetailRepository = null;
+                _orderDetailStatusHistoryRepository = null;
+                _orderRepository = null;
+                _paymentRepository = null;
+                _paymentStatusHistoryRepository = null;
+                _productDetailRepository = null;
+                _productDetailDocumentRepository = null;
+                _productRepository = null;
+                _loginLogRepository = null;
+                _nextUserSettingRepository = null;
+                _nextOrderSettingRepository = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // ~UnitOfWork()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
         public void Dispose()
         {
-            dbContext.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
