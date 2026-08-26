@@ -109,12 +109,12 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 CreatedOn = x.CreatedOn,
                 UpdatedOn = x.UpdatedOn,
                 BlogView = x.BlogView
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(BlogDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<Blog>> GetForListViewAsync(BlogDataTableForViewRequest requestModel)
@@ -140,7 +140,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 SubCategoryId = x.SubCategoryId,
                 PublishedOn = x.PublishedOn,
                 UpdatedOn = x.UpdatedOn
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<Blog> CommonSearch(BlogDataTableRequest requestModel)
@@ -166,7 +166,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
 
         public Task<Blog> GetForViewAsync(int subCategoryId, string blogLink)
         {
-            return dbContext.Blogs.SingleOrDefaultAsync(x => x.SubCategoryId == subCategoryId && x.BlogLink == blogLink && x.IsPublished);
+            return dbContext.Blogs.AsNoTracking().SingleOrDefaultAsync(x => x.SubCategoryId == subCategoryId && x.BlogLink == blogLink && x.IsPublished);
         }
 
         public Task<List<BlogView>> GetBlogViewWithLockByBlogIdsAsync(IEnumerable<int> blogIds)
@@ -191,12 +191,12 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             if (lastViewedOnEnd.HasValue)
                 query = query.Where(x => x.LastViewedOn < lastViewedOnEnd.Value.UtcDateTime);
 
-            return query.CountAsync();
+            return query.AsNoTracking().CountAsync();
         }
 
         public Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return dbContext.BlogViews.SumAsync(x => x.TotalViews);
+            return dbContext.BlogViews.AsNoTracking().SumAsync(x => x.TotalViews);
         }
     }
 }

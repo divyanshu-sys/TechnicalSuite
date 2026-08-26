@@ -72,12 +72,12 @@ namespace Ts.Infra.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(CategoryDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         private IQueryable<Category> CommonSearch(CategoryDataTableRequest requestModel)

@@ -109,12 +109,12 @@ namespace Ts.Infra.DotCom.Data.Repositories
                 CreatedOn = x.CreatedOn,
                 UpdatedOn = x.UpdatedOn,
                 StoryView = x.StoryView
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(StoryDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<Story>> GetForListViewAsync(StoryDataTableForViewRequest requestModel)
@@ -140,7 +140,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
                 SubCategoryId = x.SubCategoryId,
                 PublishedOn = x.PublishedOn,
                 UpdatedOn = x.UpdatedOn
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<Story> CommonSearch(StoryDataTableRequest requestModel)
@@ -160,7 +160,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
 
         public Task<Story> GetForViewAsync(int subCategoryId, string storyLink)
         {
-            return dbContext.Stories.SingleOrDefaultAsync(x => x.SubCategoryId == subCategoryId && x.StoryLink == storyLink && x.IsPublished);
+            return dbContext.Stories.AsNoTracking().SingleOrDefaultAsync(x => x.SubCategoryId == subCategoryId && x.StoryLink == storyLink && x.IsPublished);
         }
 
         public Task<List<StoryView>> GetStoryViewWithLockByStoryIdsAsync(IEnumerable<int> storyIds)

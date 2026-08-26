@@ -48,7 +48,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                         DeliveryPolicyId = c.ProductDetail.DeliveryPolicyId,
                         ReturnPolicyId = c.ProductDetail.ReturnPolicyId
                     }
-                }).ToListAsync();
+                }).AsNoTracking().ToListAsync();
         }
     }
 }

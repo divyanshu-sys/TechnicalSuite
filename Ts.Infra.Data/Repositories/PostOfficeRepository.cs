@@ -72,17 +72,17 @@ namespace Ts.Infra.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(PostOfficeDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<PostOffice>> GetAllByDistrictIdAsync(int districtId)
         {
-            return dbContext.PostOffices.Where(x => x.DistrictId == districtId).ToListAsync();
+            return dbContext.PostOffices.Where(x => x.DistrictId == districtId).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<PostOffice> CommonSearch(PostOfficeDataTableRequest requestModel)

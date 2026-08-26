@@ -99,12 +99,12 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 ProductWorkerId = x.ProductWorkerId,
                 CreatedOn = x.CreatedOn,
                 UpdatedOn = x.UpdatedOn
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(ProductDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<Product>> GetForListViewAsync(ProductDataTableForViewRequest requestModel, List<int> downloadableDeliveryPolicyIds)
@@ -154,7 +154,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                         }
                     })
                     .ToList()
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<Product> CommonSearch(ProductDataTableRequest requestModel)

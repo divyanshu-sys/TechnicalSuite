@@ -19,6 +19,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         {
             return dbContext.OrderDetails.Where(x => x.Id == id && x.Order.UserId == userId && orderStatusIds.Contains(x.OrderStatusId))
                 .Include(x => x.ProductDetail).ThenInclude(x => x.ProductDetailDocument)
+                .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
 
@@ -26,6 +27,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         {
             return dbContext.OrderDetails.Where(x => x.ProductDetailId == productDetailId && x.OrderStatusId == orderStatusId)
                 .OrderByDescending(x => x.UpdatedOn)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
@@ -42,7 +44,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             if (orderStatusIds?.Length > 0)
                 query = query.Where(x => orderStatusIds.Contains(x.OrderStatusId));
 
-            return query.SumAsync(x => x.TotalPrice);
+            return query.AsNoTracking().SumAsync(x => x.TotalPrice);
         }
 
         public Task<List<TotalPriceByMonthsHelperModel>> GetTotalPriceByMonthsAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, params int[] orderStatusIds)
@@ -74,7 +76,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             {
                 Month = TimeZoneInfoConstant.MonthNames[x.Month - 1],
                 TotalPrice = x.TotalPrice
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
     }
 }

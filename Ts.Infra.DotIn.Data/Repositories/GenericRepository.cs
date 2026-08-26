@@ -60,7 +60,7 @@ namespace Ts.Infra.DotIn.Data.Repositories
 
         public Task<List<TEntity>> GetAllAsync()
         {
-            return _entity.ToListAsync();
+            return _entity.AsNoTracking().ToListAsync();
         }
 
         public Task<TEntity> GetAsync(object id)

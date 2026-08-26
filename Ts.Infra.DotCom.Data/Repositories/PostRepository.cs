@@ -110,12 +110,12 @@ namespace Ts.Infra.DotCom.Data.Repositories
                 CreatedOn = x.CreatedOn,
                 UpdatedOn = x.UpdatedOn,
                 PostView = x.PostView
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(PostDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<Post>> GetForListViewAsync(PostDataTableForViewRequest requestModel)
@@ -148,7 +148,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
                 SubCategoryId = x.SubCategoryId,
                 PublishedOn = x.PublishedOn,
                 UpdatedOn = x.UpdatedOn
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<Post> CommonSearch(PostDataTableRequest requestModel)
@@ -174,7 +174,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
 
         public Task<Post> GetForViewAsync(int categoryId, int subCategoryId, string postLink)
         {
-            return dbContext.Posts.SingleOrDefaultAsync(x => x.CategoryId == categoryId && x.SubCategoryId == subCategoryId && x.PostLink == postLink && x.IsPublished);
+            return dbContext.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.CategoryId == categoryId && x.SubCategoryId == subCategoryId && x.PostLink == postLink && x.IsPublished);
         }
 
         public Task<List<PostView>> GetPostViewWithLockByPostIdsAsync(IEnumerable<int> postIds)
@@ -199,12 +199,12 @@ namespace Ts.Infra.DotCom.Data.Repositories
             if (lastViewedOnEnd.HasValue)
                 query = query.Where(x => x.LastViewedOn < lastViewedOnEnd.Value.UtcDateTime);
 
-            return query.CountAsync();
+            return query.AsNoTracking().CountAsync();
         }
 
         public Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return dbContext.PostViews.SumAsync(x => x.TotalViews);
+            return dbContext.PostViews.AsNoTracking().SumAsync(x => x.TotalViews);
         }
     }
 }

@@ -72,17 +72,17 @@ namespace Ts.Infra.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<List<District>> GetAllByStateIdAsync(int stateId)
         {
-            return dbContext.Districts.Where(x => x.StateId == stateId).ToListAsync();
+            return dbContext.Districts.Where(x => x.StateId == stateId).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(DistrictDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         private IQueryable<District> CommonSearch(DistrictDataTableRequest requestModel)

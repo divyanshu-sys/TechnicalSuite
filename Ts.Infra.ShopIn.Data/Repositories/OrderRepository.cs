@@ -30,6 +30,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             .Take(requestModel.Length)
 
             // 4. Performance Optimization
+            .AsNoTracking()
             .AsSplitQuery()
             .ToListAsync();
         }

@@ -72,17 +72,17 @@ namespace Ts.Infra.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<List<State>> GetAllByCountryIdAsync(int countryId)
         {
-            return dbContext.States.Where(x => x.CountryId == countryId).ToListAsync();
+            return dbContext.States.Where(x => x.CountryId == countryId).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(StateDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         private IQueryable<State> CommonSearch(StateDataTableRequest requestModel)

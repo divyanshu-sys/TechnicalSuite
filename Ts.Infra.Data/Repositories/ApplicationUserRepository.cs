@@ -80,17 +80,17 @@ namespace Ts.Infra.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(ApplicationUserDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<int> GetTotalCountAsync()
         {
-            return dbContext.Users.CountAsync();
+            return dbContext.Users.AsNoTracking().CountAsync();
         }
 
         public Task<List<ApplicationUser>> GetUsersByRolesAsync(IEnumerable<string> roles)
@@ -101,14 +101,14 @@ namespace Ts.Infra.Data.Repositories
                                          where roles.Contains(role.Name) && user.EmailConfirmed
                                          select user.Id).Distinct()
                          join user in dbContext.Users on userId equals user.Id
-                         select user).ToListAsync();
+                         select user).AsNoTracking().ToListAsync();
 
             return users;
         }
 
         public Task<List<ApplicationUser>> GetUsersByUserIdsAsync(IEnumerable<string> userIds)
         {
-            return dbContext.Users.Where(x => userIds.Contains(x.Id)).ToListAsync();
+            return dbContext.Users.Where(x => userIds.Contains(x.Id)).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<ApplicationUser> CommonSearch(ApplicationUserDataTableRequest requestModel)

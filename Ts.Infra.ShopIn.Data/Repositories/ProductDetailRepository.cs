@@ -148,12 +148,12 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 CreatedOn = x.CreatedOn,
                 UpdatedOn = x.UpdatedOn,
                 ProductDetailView = x.ProductDetailView
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(ProductDetailDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<List<ProductDetail>> GetForListViewAsync(ProductDetailDataTableForViewRequest requestModel, List<int> downloadableDeliveryPolicyIds)
@@ -189,7 +189,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 ExchangePolicyId = x.ExchangePolicyId,
                 DeliveryPolicyId = x.DeliveryPolicyId,
                 ReturnPolicyId = x.ReturnPolicyId
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
         }
 
         private IQueryable<ProductDetail> CommonSearch(ProductDetailDataTableRequest requestModel)
@@ -277,8 +277,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                                 }).ToList()
                         }
                     }
-                })
-                .SingleOrDefaultAsync();
+                }).AsNoTracking().SingleOrDefaultAsync();
         }
 
         public Task<List<ProductDetailView>> GetProductDetailViewWithLockByProductDetailIdsAsync(IEnumerable<int> productdetailIds)
@@ -303,12 +302,12 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             if (lastViewedOnEnd.HasValue)
                 query = query.Where(x => x.LastViewedOn < lastViewedOnEnd.Value.UtcDateTime);
 
-            return query.CountAsync();
+            return query.AsNoTracking().CountAsync();
         }
 
         public Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return dbContext.ProductDetailViews.SumAsync(x => x.TotalViews);
+            return dbContext.ProductDetailViews.AsNoTracking().SumAsync(x => x.TotalViews);
         }
     }
 }

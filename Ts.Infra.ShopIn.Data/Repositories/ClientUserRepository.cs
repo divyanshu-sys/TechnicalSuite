@@ -80,17 +80,17 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).ToListAsync();
+            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).AsNoTracking().ToListAsync();
         }
 
         public Task<int> GetRecordsFilteredAsync(ClientUserDataTableRequest requestModel)
         {
-            return CommonSearch(requestModel).CountAsync();
+            return CommonSearch(requestModel).AsNoTracking().CountAsync();
         }
 
         public Task<int> GetTotalCountAsync()
         {
-            return dbContext.Users.CountAsync();
+            return dbContext.Users.AsNoTracking().CountAsync();
         }
 
         public Task<List<ClientUser>> GetUsersByRolesAsync(IEnumerable<string> roles)
@@ -101,7 +101,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                                          where roles.Contains(role.Name) && user.EmailConfirmed
                                          select user.Id).Distinct()
                          join user in dbContext.Users on userId equals user.Id
-                         select user).ToListAsync();
+                         select user).AsNoTracking().ToListAsync();
 
             return users;
         }
@@ -130,6 +130,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                     PhoneCode = x.PhoneCode,
                     PhoneNumber = x.PhoneNumber
                 })
+                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
