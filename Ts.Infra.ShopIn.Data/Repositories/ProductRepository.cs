@@ -14,6 +14,11 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             this.dbContext = dbContext;
         }
 
+        override public Task<List<Product>> GetAllAsync()
+        {
+            return dbContext.Products.OrderByDescending(x => x.CreatedOn).AsNoTracking().ToListAsync();
+        }
+
         public Task<List<Product>> GetAllAsync(ProductDataTableRequest requestModel)
         {
             var queriableEntity = CommonSearch(requestModel);

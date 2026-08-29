@@ -58,7 +58,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             return _entity.FromSqlRaw($"sp" + typeof(TEntity).Name, sqlParameters).FirstOrDefaultAsync();
         }
 
-        public Task<List<TEntity>> GetAllAsync()
+        public virtual Task<List<TEntity>> GetAllAsync()
         {
             return _entity.AsNoTracking().ToListAsync();
         }
