@@ -19,6 +19,7 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Email Confirmed</th>
                         <th>Created On</th>
                         <th>Updated On</th>
                     </tr>
@@ -41,12 +42,25 @@
 
 @section Scripts {
     <script>
-        $(function () {
+        $(function() {
             var columns = [
                 { data: 'userName' },
                 { data: 'firstName' },
                 { data: 'lastName' },
                 { data: 'email' },
+                {
+                    data: 'emailConfirmed',
+                    render: function(data, type, row, meta) {
+                        if (data) {
+                            data = '<b class="text-success">True</b>';
+                        }
+                        else if (!data) {
+                            data = '<b class="text-danger">False</b>';
+                        }
+                        return data;
+                    },
+                    className: 'text-center'
+                },
                 {
                     data: 'createdOnIst',
                     className: 'text-end'
