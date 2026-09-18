@@ -134,9 +134,9 @@ namespace Ts.Client.HttpClientServices.ClientServices
                         sort.OrderBy.FirstName = true;
                     else if (order.Column == 2)
                         sort.OrderBy.LastName = true;
-                    else if (order.Column == 4)
-                        sort.OrderBy.CreatedOn = true;
                     else if (order.Column == 5)
+                        sort.OrderBy.CreatedOn = true;
+                    else if (order.Column == 6)
                         sort.OrderBy.UpdatedOn = true;
 
                     if (order.Dir == "asc")
