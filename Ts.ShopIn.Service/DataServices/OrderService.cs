@@ -429,7 +429,8 @@ namespace Ts.ShopIn.Service.DataServices
                         orderForViewDto.RefundedAmount += orderDetail.TotalPrice;
                     }
 
-                    orderDetailForViewDto.ProductDetailForView = CommonProductDetailService.SetProductDetailForListViewDto(configuration, shopCategories, orderDetail.ProductDetail);
+                    if (orderDetail.ProductDetail != null)
+                        orderDetailForViewDto.ProductDetailForView = CommonProductDetailService.SetProductDetailForListViewDto(configuration, shopCategories, orderDetail.ProductDetail);
                     orderForViewDto.OrderDetailsForView.Add(orderDetailForViewDto);
                 }
 
