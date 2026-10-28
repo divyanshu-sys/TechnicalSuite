@@ -9,10 +9,17 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Timeout;
+using System.Net;
 using Ts.Application.Client.SecurityHandlers;
 using Ts.Client.HttpClientServices;
 using Ts.ShopIn.Client.AutoMapper;
 using Ts.ShopIn.Client.HttpClientServices;
+using Ts.ShopIn.Client.Resilience;
 using WebMarkupMin.AspNetCore8;
 namespace Ts.Infra.Ioc.ShoppApp
 {
@@ -135,9 +142,71 @@ namespace Ts.Infra.Ioc.ShoppApp
 
             #region Register HttpClient
             services.AddHttpContextAccessor();
-            services.AddHttpClient<IHttpPublicService, HttpPublicService>();
-            services.AddHttpClient<IHttpClientUserService, HttpClientUserService>();
+            services.Configure<ShopInResilienceSetting>(configuration.GetSection(nameof(ShopInResilienceSetting)));
+            services.AddHttpClient<IHttpPublicService, HttpPublicService>().AddResilience();
+            services.AddHttpClient<IHttpClientUserService, HttpClientUserService>().AddResilience();
             #endregion
+        }
+
+        private static IHttpClientBuilder AddResilience(this IHttpClientBuilder httpClientBuilder)
+        {
+            httpClientBuilder.AddResilienceHandler("webapi-request", (builder, context) =>
+            {
+                var options = context.ServiceProvider
+                                     .GetRequiredService<IOptions<ShopInResilienceSetting>>()
+                                     .Value;
+
+                var policy = options.Rest.WebApi;
+
+                builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+                {
+                    FailureRatio = policy.FailureRatio,
+                    MinimumThroughput = policy.MinimumThroughput,
+                    SamplingDuration = TimeSpan.FromSeconds(policy.SamplingDurationSeconds),
+                    BreakDuration = TimeSpan.FromSeconds(policy.BreakDurationSeconds),
+                    ShouldHandle = static args =>
+                    {
+                        if (args.Outcome.Exception is HttpRequestException or TimeoutRejectedException)
+                            return ValueTask.FromResult(true);
+
+                        return ValueTask.FromResult(
+                            args.Outcome.Result is HttpResponseMessage r &&
+                            (
+                                r.StatusCode is HttpStatusCode.RequestTimeout or
+                                HttpStatusCode.TooManyRequests ||
+                                (int)r.StatusCode >= 500
+                            )
+                        );
+                    },
+                    OnOpened = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.WebApi");
+                        logger.LogWarning("WebApi circuit OPENED for {BreakDuration}. Reason: {Reason}",
+                            args.BreakDuration,
+                            args.Outcome.Exception?.Message ?? args.Outcome.Result?.StatusCode.ToString());
+                        return ValueTask.CompletedTask;
+                    },
+                    OnHalfOpened = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.WebApi");
+                        logger.LogWarning("WebApi circuit is HALF-OPEN (testing).");
+                        return ValueTask.CompletedTask;
+                    },
+                    OnClosed = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.WebApi");
+                        logger.LogInformation("WebApi circuit CLOSED (service recovered).");
+                        return ValueTask.CompletedTask;
+                    }
+                });
+            });
+            return httpClientBuilder;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await productDetailClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await productDetailClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

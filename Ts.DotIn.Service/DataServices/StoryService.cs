@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SixLabors.ImageSharp;
 using Ts.Application.AppConstants;
 using Ts.Application.HelperExtensions;
 using Ts.Common.AppInterfaces;
@@ -19,7 +18,7 @@ using Ts.DotIn.Dto.StoryDtos;
 using Ts.DotIn.Dto.StoryImageDtos;
 using Ts.DotIn.Dto.StoryRelativeDtos;
 using Ts.DotIn.Service.DataInterfaces;
-using Ts.DotIn.Service.HttpClientServices.ClientInterfaces;
+using Ts.DotIn.Service.ExternalInterfaces;
 using Ts.Dto;
 using Ts.Service.DataInterfaces;
 using Ts.Service.HelperExtensions;
@@ -65,29 +64,29 @@ namespace Ts.DotIn.Service.DataServices
             entity.CreatedOn = DateTime.UtcNow;
             entity.IsActive = true;
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 unitOfWork.StoryRepo.Create(entity);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 entity.StoryLink += "-" + entity.Id;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.CommitAsync();
 
                 responseResult.Data = mapper.Map<StoryDto>(entity);
             }
             catch (DbUpdateException ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 string msg = ex.GetFriendlySqlExceptionMessage();
                 logger.LogError(ex, "Create Story failed: {Message}", msg);
                 responseResult.ErrorMessage.Add(msg);
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Create Story failed.");
                 responseResult.ErrorMessage.Add("Create Story failed.");
             }
@@ -102,7 +101,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Story you want to delete was not found.");
             else if (!isAdmin && entity.StoryWorkerId != userId)
@@ -119,9 +118,9 @@ namespace Ts.DotIn.Service.DataServices
 
                 try
                 {
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
 
-                    var fileResponse = await fileClient.DeleteStoryImagesAsync(imageNames).ConfigureAwait(false);
+                    var fileResponse = await fileClient.DeleteStoryImagesAsync(imageNames);
                     if (fileResponse.ErrorMessage.Count > 0)
                     {
                         if (rowsChanged > 0)
@@ -155,7 +154,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Story not found for the deletion of image.");
@@ -176,7 +175,7 @@ namespace Ts.DotIn.Service.DataServices
             }
             storyImageHelperModels.Remove(storyImageHelperModel);
 
-            var fileResponse = await fileClient.DeleteStoryImagesAsync([imageName]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeleteStoryImagesAsync([imageName]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -197,7 +196,7 @@ namespace Ts.DotIn.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -212,14 +211,14 @@ namespace Ts.DotIn.Service.DataServices
                 model.StoryWorkerId = userId;
             var responseResult = new DataTableResponseDto<GetStoryDataTableDto>
             {
-                AaData = mapper.Map<List<GetStoryDataTableDto>>(await unitOfWork.StoryRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.StoryRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetStoryDataTableDto>>(await unitOfWork.StoryRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.StoryRepo.GetTotalCountAsync()
             };
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
 
             var userIds = responseResult.AaData.SelectMany(x => new List<string> { x.StoryWorkerId, x.PublishedById }).Distinct();
-            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds);
 
             foreach (var story in responseResult.AaData)
             {
@@ -230,7 +229,7 @@ namespace Ts.DotIn.Service.DataServices
             }
 
             if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.StoryWorkerId))
-                responseResult.RecordsFiltered = await unitOfWork.StoryRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.StoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -243,7 +242,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetUpdateStoryDto>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Story not found by supplied Id.");
             else if (!isAdmin && entity.StoryWorkerId != userId)
@@ -260,7 +259,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var model = mapper.Map<StoryDataTableForViewRequest>(modelDto);
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
             if (!string.IsNullOrEmpty(modelDto.SubCategoryName))
             {
                 model.SubCategoryId = subCategories.FirstOrDefault(x => x.Name.Equals(modelDto.SubCategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
@@ -268,7 +267,7 @@ namespace Ts.DotIn.Service.DataServices
                     return dtos;
             }
 
-            var entities = await unitOfWork.StoryRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var entities = await unitOfWork.StoryRepo.GetForListViewAsync(model);
 
             foreach (var entity in entities)
             {
@@ -292,7 +291,7 @@ namespace Ts.DotIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetStoryForViewDto>();
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
             var subCategoryId = subCategories.Where(x => x.Name.Equals(subCategoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Id;
 
             if (!subCategoryId.HasValue)
@@ -301,7 +300,7 @@ namespace Ts.DotIn.Service.DataServices
                 return responseResult;
             }
 
-            var entity = await unitOfWork.StoryRepo.GetForViewAsync(subCategoryId.Value, storyLink).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetForViewAsync(subCategoryId.Value, storyLink);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Story not found by supplied storyLink.");
             else
@@ -319,8 +318,8 @@ namespace Ts.DotIn.Service.DataServices
                 Start = 0,
                 Length = 15000
             };
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
-            var entities = await unitOfWork.StoryRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
+            var entities = await unitOfWork.StoryRepo.GetForListViewAsync(model);
 
             var sitemapData = new SitemapDto
             {
@@ -346,12 +345,12 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task IncrementStoryViewForStoryIdsAsync(IEnumerable<int> storyIds)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 var groupedIds = storyIds.GroupBy(id => id)
                                         .Select(group => new { Id = group.Key, Count = group.Count() });
-                var entities = await unitOfWork.StoryRepo.GetStoryViewWithLockByStoryIdsAsync(groupedIds.Select(x => x.Id)).ConfigureAwait(false);
+                var entities = await unitOfWork.StoryRepo.GetStoryViewWithLockByStoryIdsAsync(groupedIds.Select(x => x.Id));
 
                 foreach (var group in groupedIds)
                 {
@@ -372,12 +371,12 @@ namespace Ts.DotIn.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing story views");
             }
         }
@@ -389,7 +388,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Story does not exist to update.");
@@ -432,7 +431,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -446,7 +445,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -467,7 +466,7 @@ namespace Ts.DotIn.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
@@ -488,7 +487,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -529,7 +528,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -543,18 +542,18 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -570,7 +569,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var storyImageHelperModels = JsonConvert.DeserializeObject<List<StoryImageHelperModel>>(entity.StoryImage?.ImageNames ?? "[]");
 
-            var fileResponse = await fileClient.UploadStoryImageAsync(modelDto.ImageFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadStoryImageAsync(modelDto.ImageFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -612,7 +611,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -626,7 +625,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -645,7 +644,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -659,7 +658,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -678,7 +677,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -692,7 +691,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -729,7 +728,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -742,7 +741,7 @@ namespace Ts.DotIn.Service.DataServices
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Story does not exist to delete description.");
@@ -767,7 +766,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -781,7 +780,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(storyId).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(storyId);
 
             if (entity == null)
             {
@@ -840,7 +839,7 @@ namespace Ts.DotIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -854,7 +853,7 @@ namespace Ts.DotIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StoryRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.StoryRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Story not found for the deletion of relative.");
@@ -886,7 +885,7 @@ namespace Ts.DotIn.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -895,10 +894,10 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task IncrementStoryView2ForStoryIdsAsync(Dictionary<int, int> data)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entities = await unitOfWork.StoryRepo.GetStoryViewWithLockByStoryIdsAsync(data.Select(x => x.Key)).ConfigureAwait(false);
+                var entities = await unitOfWork.StoryRepo.GetStoryViewWithLockByStoryIdsAsync(data.Select(x => x.Key));
 
                 foreach (var item in data)
                 {
@@ -919,12 +918,12 @@ namespace Ts.DotIn.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing story views.");
             }
         }

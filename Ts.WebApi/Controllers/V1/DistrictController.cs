@@ -28,7 +28,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DataTableResponseDto<GetDistrictDataTableDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DataTable(DistrictDataTableRequestDto modelDto)
         {
-            return Ok(await districtService.GetAllAsync(modelDto).ConfigureAwait(false));
+            return Ok(await districtService.GetAllAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}")]
@@ -38,7 +38,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateDistrictDto modelDto)
         {
-            var responseResult = await districtService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await districtService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(Get), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -50,7 +50,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Get(int id)
         {
-            var responseResult = await districtService.GetAsync(id).ConfigureAwait(false);
+            var responseResult = await districtService.GetAsync(id);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -63,7 +63,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(int id)
         {
-            var responseResult = await districtService.GetForEditAsync(id).ConfigureAwait(false);
+            var responseResult = await districtService.GetForEditAsync(id);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -76,7 +76,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateDistrictDto modelDto)
         {
-            var responseResult = await districtService.UpdateAsync(id, modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await districtService.UpdateAsync(id, modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -89,7 +89,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await districtService.DeleteAsync(id, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await districtService.DeleteAsync(id, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -99,7 +99,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<DistrictDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllByCountryId(int stateId)
         {
-            var responseResult = await districtService.GetAllByStateIdAsync(stateId).ConfigureAwait(false);
+            var responseResult = await districtService.GetAllByStateIdAsync(stateId);
             return Ok(responseResult);
         }
     }

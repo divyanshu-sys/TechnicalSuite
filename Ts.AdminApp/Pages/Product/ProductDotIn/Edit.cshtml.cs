@@ -25,7 +25,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await productClient.GetForUpdateProductAsync(Id).ConfigureAwait(false);
+            var response = await productClient.GetForUpdateProductAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -41,7 +41,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await productClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await productClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -33,7 +33,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DataTableResponseDto<ClientUserDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ShopInDataTable([FromBody] ClientUserDataTableRequestDto modelDto)
         {
-            return Ok(await clientUserService.GetAllAsync(modelDto).ConfigureAwait(false));
+            return Ok(await clientUserService.GetAllAsync(modelDto));
         }
 
         [Authorize(Roles = RoleConstant.Administrator)]
@@ -42,7 +42,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DataTableResponseDto<ApplicationUserDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DataTable([FromBody] ApplicationUserDataTableRequestDto modelDto)
         {
-            return Ok(await applicationUserService.GetAllAsync(modelDto).ConfigureAwait(false));
+            return Ok(await applicationUserService.GetAllAsync(modelDto));
         }
 
         [Authorize(Roles = RoleConstant.Administrator)]
@@ -52,7 +52,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(string userId)
         {
-            var responseResult = await applicationUserService.GetForEditAsync(userId).ConfigureAwait(false);
+            var responseResult = await applicationUserService.GetForEditAsync(userId);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -65,7 +65,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(string userId, UpdateApplicationUserDto modelDto)
         {
-            var responseResult = await applicationUserService.UpdateForEditAsync(userId, modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await applicationUserService.UpdateForEditAsync(userId, modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -76,7 +76,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetUserProfile()
         {
-            var responseResult = await applicationUserService.GetUserProfileAsync(User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await applicationUserService.GetUserProfileAsync(User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -87,7 +87,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto modelDto)
         {
-            var responseResult = await applicationUserService.ChangeEmailAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await applicationUserService.ChangeEmailAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return Accepted();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -99,7 +99,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ConfirmChangeEmail([FromBody] ConfirmChangeEmailDto modelDto)
         {
-            var responseResult = await applicationUserService.ConfirmChangeEmailAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await applicationUserService.ConfirmChangeEmailAsync(modelDto);
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -112,7 +112,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateUserEmail(string userId, [FromBody] ChangeEmailDto modelDto)
         {
-            var responseResult = await applicationUserService.ChangeEmailAsync(modelDto, userId).ConfigureAwait(false);
+            var responseResult = await applicationUserService.ChangeEmailAsync(modelDto, userId);
             if (responseResult.Data)
                 return Accepted();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -125,7 +125,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetUserPrivilege(string userId)
         {
-            var responseResult = await applicationUserService.GetUserPrivilegeAsync(userId).ConfigureAwait(false);
+            var responseResult = await applicationUserService.GetUserPrivilegeAsync(userId);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -138,7 +138,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateUserPrivilege(string userId, [FromBody] UpdateApplicationUserPrivilegeDto modelDto)
         {
-            var responseResult = await applicationUserService.UpdateUserPrivilegeAsync(modelDto, userId, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await applicationUserService.UpdateUserPrivilegeAsync(modelDto, userId, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -152,7 +152,7 @@ namespace Ts.WebApi.Controllers.V1
             return Ok(await applicationUserService.GetAllByRolesAsync(
                 [RoleConstant.Administrator, RoleConstant.Employee, RoleConstant.EmployeeShopIn], User.Claims.GetUserId(),
                 User.IsInRole(RoleConstant.Administrator)
-                ).ConfigureAwait(false));
+                ));
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<GetBlogForListViewVm>>> GetForListViewAsync(BlogDataTableForViewRequestDto model)
         {
-            var response = await httpPublicService.PostAsync<IEnumerable<GetBlogForListViewVm>>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-list-for-view", model, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<IEnumerable<GetBlogForListViewVm>>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-list-for-view", model, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching blog for list view: {ErrorMessages}", string.Join(',', response.ErrorMessage));
             return response;
@@ -40,7 +40,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         private async Task<ResponseMessageDto<BlogVm>> GetForViewAsync(string subCategoryName, string blogLink)
         {
-            var response = await httpPublicService.GetAsync<BlogVm>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-for-view/{subCategoryName}/{blogLink}", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<BlogVm>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-for-view/{subCategoryName}/{blogLink}", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching blog for view: {ErrorMessages}", string.Join(',', response.ErrorMessage));
 
@@ -49,23 +49,23 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(BlogCacheKey + "_" + subCategoryName + "_" + blogLink, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(BlogCacheKey + "_" + subCategoryName + "_" + blogLink, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }
 
         public async Task<ResponseMessageDto<BlogVm>> GetForViewCacheAsync(string subCategoryName, string blogLink)
         {
-            var cachedData = await cache.GetStringAsync(BlogCacheKey + "_" + subCategoryName + "_" + blogLink).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(BlogCacheKey + "_" + subCategoryName + "_" + blogLink);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<BlogVm>>(cachedData);
 
-            return await GetForViewAsync(subCategoryName, blogLink).ConfigureAwait(false);
+            return await GetForViewAsync(subCategoryName, blogLink);
         }
 
         public async Task<ResponseMessageDto<string>> GetSitemapAsync()
         {
-            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/blogdotin/sitemap", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/blogdotin/sitemap", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching sitemap: {ErrorMessages}", string.Join(',', response.ErrorMessage));
             return response;
@@ -75,7 +75,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
         {
             if (isBrowser)
             {
-                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-for-view-count/{blogId}", null, true).ConfigureAwait(false);
+                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/blogdotin/blog-for-view-count/{blogId}", null, true);
                 if (response.ErrorMessage.Count > 0)
                     logger.LogError("Error updating blog view count: {ErrorMessages}", string.Join(',', response.ErrorMessage));
                 return response;

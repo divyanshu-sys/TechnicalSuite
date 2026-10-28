@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await storyClient.GetForUpdateStoryAsync(Id).ConfigureAwait(false);
+            var response = await storyClient.GetForUpdateStoryAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await storyClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await storyClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

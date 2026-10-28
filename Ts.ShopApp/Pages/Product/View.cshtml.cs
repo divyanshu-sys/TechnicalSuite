@@ -27,7 +27,7 @@ namespace Ts.ShopApp.Pages.Product
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await productDetailForViewClient.GetForViewCacheAsync(ShopCategoryName, ProductDetailLink).ConfigureAwait(false);
+            var response = await productDetailForViewClient.GetForViewCacheAsync(ShopCategoryName, ProductDetailLink);
             if (response.Data == null)
                 return NotFound();
 

@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.PostOffice
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await postOfficeClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await postOfficeClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -16,19 +16,19 @@ namespace Ts.Common.AppServices
             var passwordBuilder = new StringBuilder();
 
             // 2-Letters upper case  
-            var str = await RandomStringAsync(2, false).ConfigureAwait(false);
+            var str = await RandomStringAsync(2, false);
             passwordBuilder.Append(str);
 
             // 2-Letters lower case
-            var randString = await RandomStringAsync(2).ConfigureAwait(false);
+            var randString = await RandomStringAsync(2);
             passwordBuilder.Append(randString);
 
             // 2-Digits between 10 and 99  
-            var randNum = await RandomNumberAsync(10, 99).ConfigureAwait(false);
+            var randNum = await RandomNumberAsync(10, 99);
             passwordBuilder.Append(randNum);
 
             // 2-Special Characters
-            var randAlpha = await RandomSpecialCharsAsync().ConfigureAwait(false);
+            var randAlpha = await RandomSpecialCharsAsync();
             passwordBuilder.Append(randAlpha);
 
             Random random = new();

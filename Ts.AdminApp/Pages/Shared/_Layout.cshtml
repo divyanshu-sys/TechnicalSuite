@@ -142,11 +142,20 @@
                                     <li>
                                         <a asp-page="/blog/blogdotin/index"><i class="fas fa-newspaper"></i> Blog</a>
                                     </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == ProductPolicy.CanView))
+                                {
                                     <li>
                                         <a asp-page="/product/productdotin/index"><i class="fas fa-shopping-basket"></i> Product</a>
                                     </li>
                                     <li>
                                         <a asp-page="/productdetail/productdetaildotin/index"><i class="fas fa-shopping-basket"></i> Product Detail</a>
+                                    </li>
+                                }
+                                @if (User.HasClaim(x => x.Type == OrderPolicy.CanView))
+                                {
+                                    <li>
+                                        <a asp-page="/order/orderdotin/index"><i class="fas fa-luggage-cart"></i> All Orders</a>
                                     </li>
                                 }
                             </ul>
@@ -244,7 +253,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <script>
-            sessionNotification('@((User.Claims.GetRefreshTokenExpiryAt() - DateTime.UtcNow.AddMinutes(2)).Value.TotalMilliseconds)');
+                sessionNotification('@((User.Claims.GetRefreshTokenExpiryAt() - DateTime.UtcNow.AddMinutes(2)).Value.TotalMilliseconds)');
         </script>
     }
     @await RenderSectionAsync("Scripts", required: false)

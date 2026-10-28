@@ -38,8 +38,8 @@ namespace Ts.ShopIn.Service.DataServices
             var responseResult = new ResponseMessageDto<CartDto>();
 
             modelDto.HtmlEncodeObject();
-            var cart = await unitOfWork.CartRepo.GetAsync(modelDto.ProductDetailId, userId).ConfigureAwait(false);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var cart = await unitOfWork.CartRepo.GetAsync(modelDto.ProductDetailId, userId);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             if (cart != null)
             {
                 var deliveryPolicy = deliveryPolicies.SingleOrDefault(x => x.Id == cart.ProductDetail.ShopCategoryId);
@@ -66,7 +66,7 @@ namespace Ts.ShopIn.Service.DataServices
                 cart.CreatedOn = DateTime.UtcNow;
                 cart.IsActive = true;
 
-                var productDetail = await unitOfWork.ProductDetailRepo.GetAsync(cart.ProductDetailId).ConfigureAwait(false);
+                var productDetail = await unitOfWork.ProductDetailRepo.GetAsync(cart.ProductDetailId);
                 if (productDetail == null)
                 {
                     responseResult.ErrorMessage.Add("Item not found.");
@@ -90,7 +90,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
 
             unitOfWork.CartRepo.Create(cart);
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync();
 
             responseResult.Data = mapper.Map<CartDto>(cart);
             return responseResult;
@@ -101,7 +101,7 @@ namespace Ts.ShopIn.Service.DataServices
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
-            var responseResult = await CartCommonService.GetCartByUserIdAsync(unitOfWork, shopCategoryService, configuration, userId).ConfigureAwait(false);
+            var responseResult = await CartCommonService.GetCartByUserIdAsync(unitOfWork, shopCategoryService, configuration, userId);
 
             return responseResult;
         }
@@ -113,7 +113,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.CartRepo.GetAsync(productDetailId, userId).ConfigureAwait(false);
+            var entity = await unitOfWork.CartRepo.GetAsync(productDetailId, userId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Cart item you want to remove was not found.");
@@ -121,7 +121,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
 
             unitOfWork.CartRepo.Delete(entity);
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
 
             if (rowsChanged > 0)
                 responseResult.Data = true;

@@ -29,12 +29,12 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<GetCartForListViewDto>> GetByUserAsync()
         {
-            return await httpClientService.GetAsync<GetCartForListViewDto>($"{BaseUrl}/{ApiUrl}/cartdotin/getbyuser", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<GetCartForListViewDto>($"{BaseUrl}/{ApiUrl}/cartdotin/getbyuser", true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int productDetailId)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/cartdotin/{productDetailId}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/cartdotin/{productDetailId}", true);
         }
 
         public async Task<ResponseMessageDto<CartVm>> PostAsync(CreateCartVm model)
@@ -43,7 +43,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<CreateCartDto>(model);
             modelDto.IpAddress = ipAddress;
 
-            return await httpClientService.PostAsync<CartVm>($"{BaseUrl}/{ApiUrl}/cartdotin", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<CartVm>($"{BaseUrl}/{ApiUrl}/cartdotin", modelDto, true);
         }
     }
 }

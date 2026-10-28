@@ -37,7 +37,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<PostVm>>> GetAllAsync(PostDataTableRequestVm model, bool isShowAll = false, bool IsPagesVisited = false)
@@ -79,7 +79,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<PostVm>>($"{BaseUrl}/{ApiUrl}/postdotin/datatable/{isShowAll}", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<PostVm>>($"{BaseUrl}/{ApiUrl}/postdotin/datatable/{isShowAll}", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -87,26 +87,26 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<PostVm>> GetForEditAsync(int id)
         {
-            return await httpClientService.GetAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/for-edit", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/for-edit", true);
         }
 
         public async Task<ResponseMessageDto<UpdatePostVm>> GetForUpdatePostAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdatePostVm>>(vm);
             return updateVm;
         }
 
         public async Task<ResponseMessageDto<UpdatePostDescriptionVm>> GetForUpdateDescriptionAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdatePostDescriptionVm>>(vm);
             return updateVm;
         }
 
         public async Task<ResponseMessageDto<UpdatePostMainImageVm>> GetForUpdateMainImageAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdatePostMainImageVm>>(vm);
             return updateVm;
         }
@@ -116,7 +116,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreatePostDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotin", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotin", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PublishPostAsync(int postId, bool isRepublish)
@@ -127,7 +127,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
                 IsRepublish = isRepublish,
                 IpAddress = ipAddress
             };
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/publish", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/publish", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdatePostVm model, int postId)
@@ -135,7 +135,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdatePostDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateDescriptionAsync(UpdatePostDescriptionVm model, int postId)
@@ -143,7 +143,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdatePostDescriptionDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PatchAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/description", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PatchAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/description", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(UpdatePostMainImageVm model, int postId)
@@ -151,7 +151,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdatePostMainImageDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/main-image", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/main-image", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdatePostImageAsync(UpdatePostImageVm model, int postId)
@@ -171,17 +171,17 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
 
             content.Add(new StringContent(ipAddress), "IpAddress");
 
-            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/post-image", content, true).ConfigureAwait(false);
+            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/post-image", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeletePostImageAsync(int id, string imageName)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/post-image/{imageName}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/post-image/{imageName}", true);
         }
 
         public async Task<ResponseMessageDto<UpdatePostWorkerVm>> GetForUpdatePostWorkerAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdatePostWorkerVm>>(vm);
             return updateVm;
         }
@@ -191,7 +191,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdatePostWorkerDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/postworker", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/postworker", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<int>> GetTotalUniquePagesVisited(string lastViewedOnStart = null, string lastViewedOnEnd = null)
@@ -212,12 +212,12 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
 
             return await httpClientService
                 .GetAsync<int>(finalUrl, true)
-                .ConfigureAwait(false);
+                ;
         }
 
         public async Task<ResponseMessageDto<int>> GetTotalPagesVisitedLifetime()
         {
-            return await httpClientService.GetAsync<int>($"{BaseUrl}/{ApiUrl}/postdotin/total-pages-visited-lifetime", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<int>($"{BaseUrl}/{ApiUrl}/postdotin/total-pages-visited-lifetime", true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdatePostRelativeAsync(UpdatePostRelativeVm model, int postId)
@@ -227,12 +227,12 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<UpdatePostRelativeDto>(model);
             modelDto.IpAddress = ipAddress;
 
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/post-relative", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{postId}/post-relative", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeletePostRelativeAsync(int id, string hrefLang)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/post-relative/{hrefLang}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotin/{id}/post-relative/{hrefLang}", true);
         }
     }
 }

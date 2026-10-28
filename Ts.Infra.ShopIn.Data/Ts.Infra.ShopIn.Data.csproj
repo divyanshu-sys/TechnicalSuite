@@ -7,8 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Ts.Common.Constant\Ts.Common.Constant.csproj" />
-		<ProjectReference Include="..\TS.ShopIn.Domain\Ts.ShopIn.Domain.csproj" />
+	  <PackageReference Include="Razorpay" Version="3.3.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Ts.ShopIn.Service\Ts.ShopIn.Service.csproj" />
 	</ItemGroup>
 
 </Project>

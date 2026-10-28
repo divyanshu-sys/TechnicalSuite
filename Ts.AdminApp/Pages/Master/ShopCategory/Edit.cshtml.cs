@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.ShopCategory
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await shopCategoryClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await shopCategoryClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -39,7 +39,7 @@ namespace Ts.AdminApp.Pages.Master.ShopCategory
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await shopCategoryClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await shopCategoryClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

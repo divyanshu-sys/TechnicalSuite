@@ -29,7 +29,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await storyClient.DeleteDescriptionAsync(Id, DescriptionId).ConfigureAwait(false);
+            var response = await storyClient.DeleteDescriptionAsync(Id, DescriptionId);
             if (response.Data)
             {
                 TempData["success"] = "Story's description deleted successfully.";

@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await postClient.GetForUpdateMainImageAsync(Id).ConfigureAwait(false);
+            var response = await postClient.GetForUpdateMainImageAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await postClient.UpdateMainImageAsync(Model, Id).ConfigureAwait(false);
+            var response = await postClient.UpdateMainImageAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

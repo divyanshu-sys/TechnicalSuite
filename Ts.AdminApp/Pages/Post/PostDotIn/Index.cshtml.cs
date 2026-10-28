@@ -41,7 +41,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await postClient.GetAllAsync(Model, IsShowAll, IsPagesVisited).ConfigureAwait(false);
+            var response = await postClient.GetAllAsync(Model, IsShowAll, IsPagesVisited);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -49,7 +49,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGetCategoryDropDown()
         {
-            var response = await categoryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await categoryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -57,7 +57,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGetSubCategoryDropDown()
         {
-            var response = await subCategoryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await subCategoryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -65,7 +65,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGetApplicationUserDropDown()
         {
-            var response = await applicationUserClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -74,7 +74,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
         public async Task<IActionResult> OnGetTodayUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetTodayRange(TimeZoneInfoConstant.India);
-            var response = await postClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await postClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -83,7 +83,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
         public async Task<IActionResult> OnGetYearUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetCurrentYearRange(TimeZoneInfoConstant.India);
-            var response = await postClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await postClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -91,7 +91,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGetTotalPageViews()
         {
-            var response = await postClient.GetTotalPagesVisitedLifetime().ConfigureAwait(false);
+            var response = await postClient.GetTotalPagesVisitedLifetime();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -99,7 +99,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGetHrefLangDropDown()
         {
-            var response = await dropDownClient.GetHrefLangAsync().ConfigureAwait(false);
+            var response = await dropDownClient.GetHrefLangAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

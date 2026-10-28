@@ -21,7 +21,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await productdetailClient.GetDocumentDetailAsync(Id).ConfigureAwait(false);
+            var response = await productdetailClient.GetDocumentDetailAsync(Id);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

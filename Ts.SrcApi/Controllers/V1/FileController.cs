@@ -23,7 +23,7 @@ namespace Ts.SrcApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UploadDocument(IFormFile file, string folderPath, bool isPublic, [FromForm] string oldFileName)
         {
-            var fileStatus = await fileService.UploadDocumentAsync(file, folderPath, isPublic, oldFileName).ConfigureAwait(false);
+            var fileStatus = await fileService.UploadDocumentAsync(file, folderPath, isPublic, oldFileName);
 
             if (fileStatus.ErrorMessage.Count > 0)
                 return UnprocessableEntity(fileStatus.ErrorMessage);
@@ -36,7 +36,7 @@ namespace Ts.SrcApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UploadImage(IFormFile file, string folderPath, bool isPublic, [FromForm] string oldFileName)
         {
-            var fileStatus = await fileService.UploadImageAsync(file, folderPath, isPublic, oldFileName).ConfigureAwait(false);
+            var fileStatus = await fileService.UploadImageAsync(file, folderPath, isPublic, oldFileName);
 
             if (fileStatus.ErrorMessage.Count > 0)
                 return UnprocessableEntity(fileStatus.ErrorMessage);
@@ -49,7 +49,7 @@ namespace Ts.SrcApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteFile(string folderPath, bool isPublic, IEnumerable<string> fileNames)
         {
-            var fileStatus = await fileService.DeleteFileAsync(folderPath, fileNames, isPublic).ConfigureAwait(false);
+            var fileStatus = await fileService.DeleteFileAsync(folderPath, fileNames, isPublic);
             if (fileStatus.ErrorMessage.Count > 0)
                 return UnprocessableEntity(fileStatus.ErrorMessage);
             return NoContent();

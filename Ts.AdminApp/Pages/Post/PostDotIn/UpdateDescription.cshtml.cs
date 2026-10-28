@@ -25,7 +25,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await postClient.GetForUpdateDescriptionAsync(Id).ConfigureAwait(false);
+            var response = await postClient.GetForUpdateDescriptionAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -41,7 +41,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotIn
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
 
-            var response = await postClient.UpdateDescriptionAsync(Model, Id).ConfigureAwait(false);
+            var response = await postClient.UpdateDescriptionAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());

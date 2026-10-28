@@ -53,7 +53,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ShopCategoryVm>>($"{BaseUrl}/{ApiUrl}/shopcategory/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ShopCategoryVm>>($"{BaseUrl}/{ApiUrl}/shopcategory/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -61,24 +61,24 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<ShopCategoryVm>>> GetAllAsync()
         {
-            return await httpClientService.GetAsync<IEnumerable<ShopCategoryVm>>($"{BaseUrl}/{ApiUrl}/shopcategory", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<ShopCategoryVm>>($"{BaseUrl}/{ApiUrl}/shopcategory", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownAsync()
         {
-            var vms = await GetAllAsync().ConfigureAwait(false);
+            var vms = await GetAllAsync();
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }
 
         public async Task<ResponseMessageDto<ShopCategoryVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<ShopCategoryVm>($"{BaseUrl}/{ApiUrl}/shopcategory/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<ShopCategoryVm>($"{BaseUrl}/{ApiUrl}/shopcategory/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateShopCategoryVm>> GetForEditAsync(int id)
         {
-            var vm = await GetAsync(id).ConfigureAwait(false);
+            var vm = await GetAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateShopCategoryVm>>(vm);
             return updateVm;
         }
@@ -88,7 +88,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateShopCategoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<ShopCategoryVm>($"{BaseUrl}/{ApiUrl}/shopcategory", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<ShopCategoryVm>($"{BaseUrl}/{ApiUrl}/shopcategory", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateShopCategoryVm model, int shopCategoryId)
@@ -96,7 +96,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateShopCategoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/shopcategory/{shopCategoryId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/shopcategory/{shopCategoryId}", modelDto, true);
         }
     }
 }

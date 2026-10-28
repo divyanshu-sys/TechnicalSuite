@@ -25,7 +25,7 @@ namespace Ts.PublicApp.Pages.WebStory
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await storyForViewClient.GetForViewCacheAsync(SubCategoryName, StoryLink).ConfigureAwait(false);
+            var response = await storyForViewClient.GetForViewCacheAsync(SubCategoryName, StoryLink);
             if (response.Data == null)
                 return RedirectToPage("/webstory/list");
 

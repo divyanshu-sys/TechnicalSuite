@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Master.District
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await districtClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await districtClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Master.District
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await districtClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await districtClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

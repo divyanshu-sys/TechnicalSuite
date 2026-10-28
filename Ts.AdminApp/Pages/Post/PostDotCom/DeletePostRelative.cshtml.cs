@@ -29,7 +29,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await postClient.DeletePostRelativeAsync(Id, HrefLang).ConfigureAwait(false);
+            var response = await postClient.DeletePostRelativeAsync(Id, HrefLang);
             if (response.Data)
             {
                 TempData["success"] = "Post's relative deleted successfully.";

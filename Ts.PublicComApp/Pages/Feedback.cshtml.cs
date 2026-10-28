@@ -20,7 +20,7 @@ namespace Ts.PublicComApp.Pages
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await contactClient.ContactAsync(Model).ConfigureAwait(false);
+            var response = await contactClient.ContactAsync(Model);
 
             if (response.Data)
             {

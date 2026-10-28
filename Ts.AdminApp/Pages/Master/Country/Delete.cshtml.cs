@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Master.Country
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await countryClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await countryClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Country deleted successfully.";
             else

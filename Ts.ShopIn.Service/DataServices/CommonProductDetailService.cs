@@ -20,7 +20,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var model = mapper.Map<ProductDetailDataTableForViewRequest>(modelDto);
 
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
+            var shopCategories = await shopCategoryService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(modelDto.ShopCategoryName))
             {
@@ -29,11 +29,11 @@ namespace Ts.ShopIn.Service.DataServices
                     return dtos;
             }
 
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
 
             List<int> downloadableIds = GetDownloadableIdsForDeliveryPolicy(deliveryPolicies);
 
-            var entities = await unitOfWork.ProductDetailRepo.GetForListViewAsync(model, downloadableIds).ConfigureAwait(false);
+            var entities = await unitOfWork.ProductDetailRepo.GetForListViewAsync(model, downloadableIds);
 
             foreach (var entity in entities)
             {

@@ -15,7 +15,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<IActionResult> OnPost()
         {
-            await HttpContext.SignOutAsync().ConfigureAwait(false);
+            await HttpContext.SignOutAsync();
             return RedirectToPage("index");
         }
     }

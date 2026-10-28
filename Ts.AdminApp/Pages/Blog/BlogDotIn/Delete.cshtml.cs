@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await blogClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await blogClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Blog deleted successfully.";
             else

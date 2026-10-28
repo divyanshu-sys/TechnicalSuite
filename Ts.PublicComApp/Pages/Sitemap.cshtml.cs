@@ -13,7 +13,7 @@ namespace Ts.PublicComApp.Pages
         }
         public async Task<IActionResult> OnGet()
         {
-            return Content((await postForViewClient.GetSitemapAsync().ConfigureAwait(false)).Data, "text/xml");
+            return Content((await postForViewClient.GetSitemapAsync()).Data, "text/xml");
         }
     }
 }

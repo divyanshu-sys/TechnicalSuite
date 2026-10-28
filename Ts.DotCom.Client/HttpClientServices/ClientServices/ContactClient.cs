@@ -31,7 +31,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
         {
             var modelDto = mapper.Map<ContactFormDto>(model);
             modelDto.Subject = $"Message from contact form - {configuration["SiteTitle"]}";
-            var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/publicapp", modelDto, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/publicapp", modelDto, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error sending contact form message: {ErrorMessage}", string.Join(',', response.ErrorMessage));
             return response;

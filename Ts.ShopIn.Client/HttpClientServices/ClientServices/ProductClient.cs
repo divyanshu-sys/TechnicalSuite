@@ -34,7 +34,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<ProductVm>>> GetAllAsync(ProductDataTableRequestVm model, bool isShowAll = false)
@@ -66,7 +66,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                     productModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ProductVm>>($"{BaseUrl}/{ApiUrl}/productdotin/datatable/{isShowAll}", productModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ProductVm>>($"{BaseUrl}/{ApiUrl}/productdotin/datatable/{isShowAll}", productModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -74,19 +74,19 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<ProductVm>> GetForEditAsync(int id)
         {
-            return await httpClientService.GetAsync<ProductVm>($"{BaseUrl}/{ApiUrl}/productdotin/{id}/for-edit", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<ProductVm>($"{BaseUrl}/{ApiUrl}/productdotin/{id}/for-edit", true);
         }
 
         public async Task<ResponseMessageDto<UpdateProductVm>> GetForUpdateProductAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateProductVm>>(vm);
             return updateVm;
         }
 
         public async Task<ResponseMessageDto<UpdateProductMainImageVm>> GetForUpdateMainImageAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateProductMainImageVm>>(vm);
             return updateVm;
         }
@@ -96,7 +96,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateProductDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<ProductVm>($"{BaseUrl}/{ApiUrl}/productdotin", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<ProductVm>($"{BaseUrl}/{ApiUrl}/productdotin", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PublishProductAsync(int productId, bool isRepublish)
@@ -107,7 +107,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                 IsRepublish = isRepublish,
                 IpAddress = ipAddress
             };
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/publish", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/publish", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateProductVm model, int productId)
@@ -115,7 +115,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateProductDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(UpdateProductMainImageVm model, int productId)
@@ -123,7 +123,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateProductMainImageDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/main-image", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/main-image", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateProductImageAsync(UpdateProductImageVm model, int productId)
@@ -139,17 +139,17 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
             content.Add(new StringContent(ipAddress), "IpAddress");
 
-            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/product-image", content, true).ConfigureAwait(false);
+            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/product-image", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteProductImageAsync(int id, string imageName)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{id}/product-image/{imageName}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{id}/product-image/{imageName}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateProductWorkerVm>> GetForUpdateProductWorkerAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateProductWorkerVm>>(vm);
             return updateVm;
         }
@@ -159,12 +159,12 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateProductWorkerDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/productworker", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/productdotin/{productId}/productworker", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<DropdownItemDto>>> GetAllForDropDownAsync()
         {
-            return await httpClientService.GetAsync<IEnumerable<DropdownItemDto>>($"{BaseUrl}/{ApiUrl}/productdotin/dropdown", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<DropdownItemDto>>($"{BaseUrl}/{ApiUrl}/productdotin/dropdown", true);
         }
     }
 }

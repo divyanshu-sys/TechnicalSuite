@@ -27,7 +27,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await productClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await productClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Product deleted successfully.";
             else

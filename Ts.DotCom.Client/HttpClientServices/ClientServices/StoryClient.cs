@@ -36,7 +36,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<StoryVm>>> GetAllAsync(StoryDataTableRequestVm model, bool isShowAll = false)
@@ -70,7 +70,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
                     storyModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<StoryVm>>($"{BaseUrl}/{ApiUrl}/storydotcom/datatable/{isShowAll}", storyModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<StoryVm>>($"{BaseUrl}/{ApiUrl}/storydotcom/datatable/{isShowAll}", storyModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -78,7 +78,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<StoryVm>> GetForEditAsync(int id)
         {
-            return await httpClientService.GetAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/for-edit", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/for-edit", true);
         }
 
         public UpdateStoryDescriptionVm GetForUpdateDescription(StoryVm vm, string descriptionId)
@@ -90,14 +90,14 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<UpdateStoryVm>> GetForUpdateStoryAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateStoryVm>>(vm);
             return updateVm;
         }
 
         public async Task<ResponseMessageDto<UpdateStoryMainImageVm>> GetForUpdateMainImageAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateStoryMainImageVm>>(vm);
             return updateVm;
         }
@@ -107,7 +107,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateStoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PublishStoryAsync(int storyId, bool isRepublish)
@@ -118,7 +118,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
                 IsRepublish = isRepublish,
                 IpAddress = ipAddress
             };
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/publish", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/publish", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateStoryVm model, int storyId)
@@ -126,7 +126,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> AddDescriptionAsync(UpdateStoryDescriptionVm model, int storyId)
@@ -134,7 +134,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStoryDescriptionDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateDescriptionAsync(UpdateStoryDescriptionVm model, int storyId, string descriptionId)
@@ -142,12 +142,12 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStoryDescriptionDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description/{descriptionId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description/{descriptionId}", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteDescriptionAsync(int storyId, string descriptionId)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description/{descriptionId}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/description/{descriptionId}", true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(UpdateStoryMainImageVm model, int storyId)
@@ -155,7 +155,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStoryMainImageDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/main-image", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/main-image", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateStoryImageAsync(UpdateStoryImageVm model, int storyId)
@@ -175,17 +175,17 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
             content.Add(new StringContent(ipAddress), "IpAddress");
 
-            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/story-image", content, true).ConfigureAwait(false);
+            return await httpClientService.PutMultipartAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/story-image", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteStoryImageAsync(int id, string imageName)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/story-image/{imageName}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/story-image/{imageName}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateStoryWorkerVm>> GetForUpdateStoryWorkerAsync(int id)
         {
-            var vm = await GetForEditAsync(id).ConfigureAwait(false);
+            var vm = await GetForEditAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateStoryWorkerVm>>(vm);
             return updateVm;
         }
@@ -195,7 +195,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStoryWorkerDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/storyworker", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/storyworker", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateStoryRelativeAsync(UpdateStoryRelativeVm model, int storyId)
@@ -205,12 +205,12 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<UpdateStoryRelativeDto>(model);
             modelDto.IpAddress = ipAddress;
 
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/story-relative", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{storyId}/story-relative", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteStoryRelativeAsync(int id, string hrefLang)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/story-relative/{hrefLang}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/{id}/story-relative/{hrefLang}", true);
         }
     }
 }

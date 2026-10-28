@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await blogClient.GetForUpdateMainImageAsync(Id).ConfigureAwait(false);
+            var response = await blogClient.GetForUpdateMainImageAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await blogClient.UpdateMainImageAsync(Model, Id).ConfigureAwait(false);
+            var response = await blogClient.UpdateMainImageAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

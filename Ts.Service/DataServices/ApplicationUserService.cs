@@ -88,18 +88,18 @@ namespace Ts.Service.DataServices
                 return responseResult;
             }
 
-            var refreshToken = await unitOfWork.RefreshTokenRepo.GetAsync(authRefreshEncodeDto.RefreshId).ConfigureAwait(false);
+            var refreshToken = await unitOfWork.RefreshTokenRepo.GetAsync(authRefreshEncodeDto.RefreshId);
             if (refreshToken == null)
             {
                 responseResult.ErrorMessage.Add("Refresh token not found.");
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(refreshToken.UserId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(refreshToken.UserId);
             if (user != null && user.CanLogin && user.EmailConfirmed &&
-                (!user.LockoutEnabled || !await userManager.IsLockedOutAsync(user).ConfigureAwait(false)))
+                (!user.LockoutEnabled || !await userManager.IsLockedOutAsync(user)))
             {
-                var apiToken = await GetApiTokenAsync(user, DateTime.UtcNow, refreshToken.RefreshReloginId, authRefreshEncodeDto.ExpireAt.Value).ConfigureAwait(false);
+                var apiToken = await GetApiTokenAsync(user, DateTime.UtcNow, refreshToken.RefreshReloginId, authRefreshEncodeDto.ExpireAt.Value);
                 responseResult.Data = apiToken;
                 return responseResult;
             }
@@ -115,9 +115,9 @@ namespace Ts.Service.DataServices
 
             ApplicationUser user;
             if (Regex.IsMatch(modelDto.Email, RegxConstant.Email))
-                user = await userManager.FindByEmailAsync(modelDto.Email).ConfigureAwait(false);
+                user = await userManager.FindByEmailAsync(modelDto.Email);
             else
-                user = await userManager.FindByNameAsync(modelDto.Email).ConfigureAwait(false);
+                user = await userManager.FindByNameAsync(modelDto.Email);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("Invalid login user.");
@@ -130,17 +130,17 @@ namespace Ts.Service.DataServices
                 return responseResult;
             }
 
-            if (user.LockoutEnabled && await userManager.IsLockedOutAsync(user).ConfigureAwait(false))
+            if (user.LockoutEnabled && await userManager.IsLockedOutAsync(user))
             {
                 responseResult.ErrorMessage.Add("Your account is lockedout! Please contact administrator.");
                 return responseResult;
             }
 
-            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, modelDto.Password).ConfigureAwait(false);
+            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, modelDto.Password);
 
             if (isPasswordCorrect && !user.EmailConfirmed)
             {
-                bool success = await SendEmailConfirmationAsync(user).ConfigureAwait(false);
+                bool success = await SendEmailConfirmationAsync(user);
                 responseResult.ErrorMessage.Add("Email not confirmed yet! Please check your email account and gets email confirmed.");
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending email verification link.");
@@ -157,7 +157,7 @@ namespace Ts.Service.DataServices
 
                 int maxLoginFailedAccessAttempts = int.Parse(config["MaxLoginFailedAccessAttempts"]);
 
-                var accessResult = await userManager.AccessFailedAsync(user).ConfigureAwait(false);
+                var accessResult = await userManager.AccessFailedAsync(user);
                 if (!accessResult.Succeeded && accessResult.Errors.Any())
                 {
                     foreach (var error in accessResult.Errors)
@@ -165,28 +165,28 @@ namespace Ts.Service.DataServices
                     return responseResult;
                 }
 
-                var accessFailedCount = await userManager.GetAccessFailedCountAsync(user).ConfigureAwait(false);
+                var accessFailedCount = await userManager.GetAccessFailedCountAsync(user);
 
-                if (await userManager.IsLockedOutAsync(user).ConfigureAwait(false))
+                if (await userManager.IsLockedOutAsync(user))
                     responseResult.ErrorMessage.Add("Your account is lockedout!");
                 else
                     responseResult.ErrorMessage.Add($"Invalid login. {maxLoginFailedAccessAttempts - accessFailedCount} attempts left.");
             }
             else
             {
-                var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                 try
                 {
                     refreshToken ??= RefreshTokenCommonService.CreateByUserId(user.Id, unitOfWork);
-                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync();
                 }
                 catch (DbUpdateException ex)
                 {
-                    refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                    refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                     if (refreshToken == null)
                     {
                         await Task.Delay(50);
-                        refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                        refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                     }
 
                     logger.LogError(ex, "An error occurred while updating the refresh token for user {UserId}.", user.Id);
@@ -195,14 +195,14 @@ namespace Ts.Service.DataServices
                 DateTime utcDateTime = DateTime.UtcNow;
                 var refreshTokenExpiryAt = utcDateTime.Add(TimeSpan.FromMinutes(jwtSetting.RefreshTokenExpireTimeInMinute));
 
-                var apiToken = await GetApiTokenAsync(user, utcDateTime, refreshToken.RefreshReloginId, refreshTokenExpiryAt).ConfigureAwait(false);
+                var apiToken = await GetApiTokenAsync(user, utcDateTime, refreshToken.RefreshReloginId, refreshTokenExpiryAt);
                 if (apiToken == null)
                 {
                     responseResult.ErrorMessage.Add("Your role is not assigned. Please contact administrator.");
                     return responseResult;
                 }
 
-                var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
+                var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user);
                 if (!resetAccessFailedCountResult.Succeeded && resetAccessFailedCountResult.Errors.Any())
                 {
                     foreach (var error in resetAccessFailedCountResult.Errors)
@@ -218,7 +218,7 @@ namespace Ts.Service.DataServices
                     LoggedOn = utcDateTime,
                     IpAddress = modelDto.IpAddress
                 });
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 responseResult.Data = new()
                 {
@@ -239,14 +239,14 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<bool>();
 
-            var user = await userManager.FindByEmailAsync(modelDto.Email).ConfigureAwait(false);
+            var user = await userManager.FindByEmailAsync(modelDto.Email);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else if (!user.CanLogin)
                 responseResult.ErrorMessage.Add("You cannot login. Please contact administrator.");
             else if (!user.EmailConfirmed)
             {
-                bool success = await SendEmailConfirmationAsync(user).ConfigureAwait(false);
+                bool success = await SendEmailConfirmationAsync(user);
                 responseResult.ErrorMessage.Add("Email not confirmed yet! Please check your email account and gets email confirmed.");
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending email verification link.");
@@ -254,11 +254,11 @@ namespace Ts.Service.DataServices
             else
             {
                 var encryptUserId = resetPasswordProtector.Protect(user.Id, TimeSpan.FromMinutes(Convert.ToDouble(config["ResetPasswordLinkValidFromMinutes"])));
-                var resetPasswordToken = await userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+                var resetPasswordToken = await userManager.GeneratePasswordResetTokenAsync(user);
                 var tokenGeneratedBytes = Encoding.UTF8.GetBytes(resetPasswordToken);
                 var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
                 var resetPasswordLink = $"{config["AppUrl"]}/resetpassword?encUserId={encryptUserId}&token={codeEncoded}";
-                var success = await emailMessageService.PasswordResetLinkAsync(resetPasswordLink, user.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+                var success = await emailMessageService.PasswordResetLinkAsync(resetPasswordLink, user.Email, user.FirstName, user.LastName, logger);
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending reset password link.");
                 else
@@ -275,7 +275,7 @@ namespace Ts.Service.DataServices
             try
             {
                 var userId = resetPasswordProtector.Unprotect(modelDto.EncUserId);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -285,17 +285,17 @@ namespace Ts.Service.DataServices
                 else
                 {
                     // Remove Refresh Token and Forcing User to relogin
-                    var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork, cache).ConfigureAwait(false);
-                    if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync().ConfigureAwait(false) > 0)
+                    var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork, cache);
+                    if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync() > 0)
                     {
                         var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                        var resetResult = await userManager.ResetPasswordAsync(user, codeDecoded, modelDto.Password).ConfigureAwait(false);
+                        var resetResult = await userManager.ResetPasswordAsync(user, codeDecoded, modelDto.Password);
                         if (resetResult.Succeeded)
                         {
                             responseResult.Data = true;
 
-                            var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
+                            var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user);
                             if (!resetAccessFailedCountResult.Succeeded)
                                 if (resetAccessFailedCountResult.Errors.Any())
                                     foreach (var error in resetAccessFailedCountResult.Errors)
@@ -303,8 +303,8 @@ namespace Ts.Service.DataServices
                         }
                         else
                             if (resetResult.Errors.Any())
-                            foreach (var error in resetResult.Errors)
-                                responseResult.ErrorMessage.Add(error.Description);
+                                foreach (var error in resetResult.Errors)
+                                    responseResult.ErrorMessage.Add(error.Description);
                     }
                     else
                         responseResult.ErrorMessage.Add("Failed to reset password.");
@@ -326,7 +326,7 @@ namespace Ts.Service.DataServices
             try
             {
                 var userId = confirmMailProtector.Unprotect(modelDto.EncUserId);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -335,15 +335,15 @@ namespace Ts.Service.DataServices
                 {
                     var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                     var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                    var resetResult = await userManager.ConfirmEmailAsync(user, codeDecoded).ConfigureAwait(false);
+                    var resetResult = await userManager.ConfirmEmailAsync(user, codeDecoded);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
             }
             catch (Exception ex)
@@ -368,22 +368,22 @@ namespace Ts.Service.DataServices
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else if (!user.CanLogin)
                 responseResult.ErrorMessage.Add("You cannot login. Please contact administrator.");
-            else if (!await userManager.CheckPasswordAsync(user, modelDto.CurrentPassword).ConfigureAwait(false))
+            else if (!await userManager.CheckPasswordAsync(user, modelDto.CurrentPassword))
                 responseResult.ErrorMessage.Add("Current Password is not correct.");
             else if (!user.EmailConfirmed)
                 responseResult.ErrorMessage.Add("Your email is not verified. Please contact administrator.");
             else
             {
                 // Remove Refresh Token and Forcing User to relogin
-                var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork, cache).ConfigureAwait(false);
-                if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync().ConfigureAwait(false) > 0)
+                var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork, cache);
+                if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync() > 0)
                 {
-                    var resetResult = await userManager.ChangePasswordAsync(user, modelDto.CurrentPassword, modelDto.Password).ConfigureAwait(false);
+                    var resetResult = await userManager.ChangePasswordAsync(user, modelDto.CurrentPassword, modelDto.Password);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
@@ -392,7 +392,7 @@ namespace Ts.Service.DataServices
                         user.UpdatedOn = DateTime.UtcNow;
                         user.UpdatedById = userId;
                         user.IpAddress = modelDto.IpAddress;
-                        var updateUserResult = await userManager.UpdateAsync(user).ConfigureAwait(false);
+                        var updateUserResult = await userManager.UpdateAsync(user);
                         if (!updateUserResult.Succeeded)
                             if (updateUserResult.Errors.Any())
                                 foreach (var error in updateUserResult.Errors)
@@ -400,8 +400,8 @@ namespace Ts.Service.DataServices
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
                 else
                     responseResult.ErrorMessage.Add("Failed to change password");
@@ -414,11 +414,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<ApplicationUserDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<ApplicationUserDto>
             {
-                AaData = mapper.Map<List<ApplicationUserDto>>(await unitOfWork.ApplicationUserRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.ApplicationUserRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<ApplicationUserDto>>(await unitOfWork.ApplicationUserRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.ApplicationUserRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.ApplicationUserRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.ApplicationUserRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -426,7 +426,7 @@ namespace Ts.Service.DataServices
 
         public async Task<bool> IsEmailAvailableAsync(string email)
         {
-            return await userManager.FindByEmailAsync(email).ConfigureAwait(false) == null;
+            return await userManager.FindByEmailAsync(email) == null;
         }
 
         public async Task<ResponseMessageDto<ApplicationUserDto>> RegisterUserAsync(RegisterApplicationUserDto modelDto, string userId)
@@ -436,13 +436,13 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<ApplicationUserDto>();
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var siteSetting = await unitOfWork.NextUserSettingRepo.GetWithLockFirstOrDefaultAsync().ConfigureAwait(false);
+                var siteSetting = await unitOfWork.NextUserSettingRepo.GetWithLockFirstOrDefaultAsync();
                 if (siteSetting == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Site setting not found. Please contact administrator");
                     return responseResult;
                 }
@@ -467,20 +467,20 @@ namespace Ts.Service.DataServices
                 };
 
                 siteSetting.NextUserNumber += 1;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                var createResult = await userManager.CreateAsync(user).ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                var createResult = await userManager.CreateAsync(user);
+                await unitOfWork.CommitAsync();
 
                 if (createResult.Succeeded)
                 {
                     responseResult.Data = mapper.Map<ApplicationUserDto>(user);
-                    var addPasswordResult = await userManager.AddPasswordAsync(user, modelDto.Password).ConfigureAwait(false);
+                    var addPasswordResult = await userManager.AddPasswordAsync(user, modelDto.Password);
                     if (addPasswordResult.Succeeded)
                     {
-                        bool success = await SendEmailConfirmationWithPasswordAsync(user, modelDto.Password).ConfigureAwait(false);
+                        bool success = await SendEmailConfirmationWithPasswordAsync(user, modelDto.Password);
                         if (!success)
                             responseResult.ErrorMessage.Add("Problem in sending email verification link.");
-                        _ = emailMessageService.NotifyUserRegistrationToAdministratorAsync(user.FirstName, user.LastName, user.UserName, logger).ConfigureAwait(false);
+                        _ = emailMessageService.NotifyUserRegistrationToAdministratorAsync(user.FirstName, user.LastName, user.UserName, logger);
                     }
                     if (addPasswordResult.Errors.Any())
                         foreach (var error in addPasswordResult.Errors)
@@ -492,7 +492,7 @@ namespace Ts.Service.DataServices
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error while registering user.");
             }
 
@@ -503,7 +503,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetUpdateApplicationUserDto>();
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
@@ -524,7 +524,7 @@ namespace Ts.Service.DataServices
 
             var date = DateTime.UtcNow;
 
-            var user = await userManager.FindByIdAsync(editUserId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(editUserId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User does not exist to update.");
@@ -554,7 +554,7 @@ namespace Ts.Service.DataServices
                 address
             };
 
-            var updateResult = await userManager.UpdateAsync(user).ConfigureAwait(false);
+            var updateResult = await userManager.UpdateAsync(user);
             if (updateResult.Succeeded)
                 responseResult.Data = true;
             else if (updateResult.Errors.Any())
@@ -568,7 +568,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetProfileDto>();
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
@@ -584,13 +584,13 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await IsEmailAvailableAsync(modelDto.Email).ConfigureAwait(false))
+            if (!await IsEmailAvailableAsync(modelDto.Email))
             {
                 responseResult.ErrorMessage.Add("Email is already in use.");
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else
@@ -598,11 +598,11 @@ namespace Ts.Service.DataServices
                 var changeEmailTimeSpan = TimeSpan.FromMinutes(Convert.ToDouble(config["ChangeEmailLinkValidFromMinutes"]));
                 var encryptEmail = changeEmailProtector.Protect(modelDto.Email, changeEmailTimeSpan);
                 var encryptUserId = changeEmailProtector.Protect(userId, changeEmailTimeSpan);
-                var changeEmailToken = await userManager.GenerateChangeEmailTokenAsync(user, modelDto.Email).ConfigureAwait(false);
+                var changeEmailToken = await userManager.GenerateChangeEmailTokenAsync(user, modelDto.Email);
                 var tokenGeneratedBytes = Encoding.UTF8.GetBytes(changeEmailToken);
                 var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
                 var changeEmailLink = $"{config["AppUrl"]}/user/confirmchangeemail?encUserId={encryptUserId}&encEmail={encryptEmail}&token={codeEncoded}";
-                var success = await emailMessageService.ChangeEmailLinkAsync(changeEmailLink, modelDto.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+                var success = await emailMessageService.ChangeEmailLinkAsync(changeEmailLink, modelDto.Email, user.FirstName, user.LastName, logger);
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending change email link.");
                 else
@@ -620,7 +620,7 @@ namespace Ts.Service.DataServices
             {
                 var userId = changeEmailProtector.Unprotect(modelDto.EncUserId);
                 var email = changeEmailProtector.Unprotect(modelDto.EncEmail);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -629,15 +629,15 @@ namespace Ts.Service.DataServices
                 {
                     var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                     var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                    var resetResult = await userManager.ChangeEmailAsync(user, email, codeDecoded).ConfigureAwait(false);
+                    var resetResult = await userManager.ChangeEmailAsync(user, email, codeDecoded);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
             }
             catch (Exception ex)
@@ -653,7 +653,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetApplicationUserPrivilegeDto>();
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
@@ -661,11 +661,11 @@ namespace Ts.Service.DataServices
             }
 
             responseResult.Data = mapper.Map<GetApplicationUserPrivilegeDto>(user);
-            var roles = await roleManager.Roles.ToListAsync().ConfigureAwait(false);
+            var roles = await roleManager.Roles.ToListAsync();
             var claims = RoleConstant.GetApplicationPrivileges();
 
-            var userRoles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
-            var userClaims = await userManager.GetClaimsAsync(user).ConfigureAwait(false);
+            var userRoles = await userManager.GetRolesAsync(user);
+            var userClaims = await userManager.GetClaimsAsync(user);
 
             // Map roles
             responseResult.Data.UserRoles.AddRange(roles.Select(role => new GetUserRoleDto
@@ -705,7 +705,7 @@ namespace Ts.Service.DataServices
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(updateUserId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(updateUserId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User does not exist to update privileges.");
@@ -730,8 +730,8 @@ namespace Ts.Service.DataServices
                 }
             }
 
-            var userRoles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
-            var userClaims = await userManager.GetClaimsAsync(user).ConfigureAwait(false);
+            var userRoles = await userManager.GetRolesAsync(user);
+            var userClaims = await userManager.GetClaimsAsync(user);
 
             var rolesToRemove = new List<string>();
             var rolesToAdd = new List<string>();
@@ -768,22 +768,22 @@ namespace Ts.Service.DataServices
                 return responseResult;
             }
 
-            var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork, cache).ConfigureAwait(false);
+            var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork, cache);
             if (!isRefreshTokenDeleted)
             {
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
             }
 
             if (rolesToRemove.Count != 0)
             {
-                var rolesRemoveResult = await userManager.RemoveFromRolesAsync(user, rolesToRemove).ConfigureAwait(false);
+                var rolesRemoveResult = await userManager.RemoveFromRolesAsync(user, rolesToRemove);
                 if (rolesRemoveResult.Errors.Any())
                     foreach (var error in rolesRemoveResult.Errors)
                         responseResult.ErrorMessage.Add(error.Description);
             }
             if (rolesToAdd.Count != 0)
             {
-                var rolesAddResult = await userManager.AddToRolesAsync(user, rolesToAdd).ConfigureAwait(false);
+                var rolesAddResult = await userManager.AddToRolesAsync(user, rolesToAdd);
                 if (rolesAddResult.Errors.Any())
                     foreach (var error in rolesAddResult.Errors)
                         responseResult.ErrorMessage.Add(error.Description);
@@ -791,14 +791,14 @@ namespace Ts.Service.DataServices
 
             if (claimsToRemove.Count != 0)
             {
-                var claimsRemoveResult = await userManager.RemoveClaimsAsync(user, claimsToRemove).ConfigureAwait(false);
+                var claimsRemoveResult = await userManager.RemoveClaimsAsync(user, claimsToRemove);
                 if (claimsRemoveResult.Errors.Any())
                     foreach (var error in claimsRemoveResult.Errors)
                         responseResult.ErrorMessage.Add(error.Description);
             }
             if (claimsToAdd.Count != 0)
             {
-                var claimsAddResult = await userManager.AddClaimsAsync(user, claimsToAdd).ConfigureAwait(false);
+                var claimsAddResult = await userManager.AddClaimsAsync(user, claimsToAdd);
                 if (claimsAddResult.Errors.Any())
                     foreach (var error in claimsAddResult.Errors)
                         responseResult.ErrorMessage.Add(error.Description);
@@ -818,12 +818,12 @@ namespace Ts.Service.DataServices
             var responseResult = new List<ApplicationUserDto>();
             if (!isAdmin)
             {
-                var entity = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var entity = await userManager.FindByIdAsync(userId);
                 responseResult.Add(mapper.Map<ApplicationUserDto>(entity));
                 return responseResult;
             }
 
-            var entities = await unitOfWork.ApplicationUserRepo.GetUsersByRolesAsync(roles).ConfigureAwait(false);
+            var entities = await unitOfWork.ApplicationUserRepo.GetUsersByRolesAsync(roles);
             responseResult.AddRange(mapper.Map<List<ApplicationUserDto>>(entities));
 
             return responseResult;
@@ -831,22 +831,22 @@ namespace Ts.Service.DataServices
 
         private async Task<bool> SendEmailConfirmationAsync(ApplicationUser user)
         {
-            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user).ConfigureAwait(false);
-            bool success = await emailMessageService.EmailConfirmationLinkAsync(confirmEmailLink, user.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user);
+            bool success = await emailMessageService.EmailConfirmationLinkAsync(confirmEmailLink, user.Email, user.FirstName, user.LastName, logger);
             return success;
         }
 
         private async Task<bool> SendEmailConfirmationWithPasswordAsync(ApplicationUser user, string password)
         {
-            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user).ConfigureAwait(false);
-            bool success = await emailMessageService.EmailConfirmationLinkWithPasswordAsync(confirmEmailLink, user.Email, user.UserName, user.FirstName, user.LastName, password, logger).ConfigureAwait(false);
+            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user);
+            bool success = await emailMessageService.EmailConfirmationLinkWithPasswordAsync(confirmEmailLink, user.Email, user.UserName, user.FirstName, user.LastName, password, logger);
             return success;
         }
 
         private async Task<string> GetEmailConfirmationLinkAsync(ApplicationUser user)
         {
             var encryptUserId = confirmMailProtector.Protect(user.Id, TimeSpan.FromMinutes(Convert.ToDouble(config["ConfirmEmailLinkValidFromMinutes"])));
-            var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var tokenGeneratedBytes = Encoding.UTF8.GetBytes(confirmEmailToken);
             var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
             var confirmEmailLink = $"{config["AppUrl"]}/confirmemail?encUserId={encryptUserId}&token={codeEncoded}";
@@ -855,7 +855,7 @@ namespace Ts.Service.DataServices
 
         private async Task<ApiTokenDto> GetApiTokenAsync(ApplicationUser user, DateTime utcDateTime, string refreshReloginId, DateTime refreshTokenExpireyAt)
         {
-            var userRoles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+            var userRoles = await userManager.GetRolesAsync(user);
             if (userRoles == null || !userRoles.Any())
                 return null;
 
@@ -882,7 +882,7 @@ namespace Ts.Service.DataServices
             var identityRoles = new ClaimsIdentity(claimRoles, "User Roles");
             principal.AddIdentity(identityRoles);
 
-            var userClaims = await userManager.GetClaimsAsync(user).ConfigureAwait(false);
+            var userClaims = await userManager.GetClaimsAsync(user);
             if (userClaims != null && userClaims.Any())
             {
                 var claimUserClaims = new List<Claim>();
@@ -919,7 +919,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<ApplicationUserDto>> GetUsersByUserIdsAsync(IEnumerable<string> userIds)
         {
-            var entities = await unitOfWork.ApplicationUserRepo.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var entities = await unitOfWork.ApplicationUserRepo.GetUsersByUserIdsAsync(userIds);
             return mapper.Map<IEnumerable<ApplicationUserDto>>(entities);
         }
     }

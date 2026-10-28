@@ -28,7 +28,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DataTableResponseDto<ShopCategoryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DataTable(ShopCategoryDataTableRequestDto modelDto)
         {
-            return Ok(await shopCategoryService.GetAllAsync(modelDto).ConfigureAwait(false));
+            return Ok(await shopCategoryService.GetAllAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}")]
@@ -38,7 +38,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateShopCategoryDto modelDto)
         {
-            var responseResult = await shopCategoryService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await shopCategoryService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(Get), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -51,7 +51,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Get(int id)
         {
-            var responseResult = await shopCategoryService.GetAsync(id).ConfigureAwait(false);
+            var responseResult = await shopCategoryService.GetAsync(id);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -64,7 +64,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateShopCategoryDto modelDto)
         {
-            var responseResult = await shopCategoryService.UpdateAsync(id, modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await shopCategoryService.UpdateAsync(id, modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -74,7 +74,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<ShopCategoryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
         {
-            return Ok(await shopCategoryService.GetAllAsync().ConfigureAwait(false));
+            return Ok(await shopCategoryService.GetAllAsync());
         }
     }
 }

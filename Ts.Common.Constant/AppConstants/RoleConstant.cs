@@ -41,7 +41,8 @@ namespace Ts.Common.Constant.AppConstants
                 [EmployeeShopIn] = new Dictionary<string, IEnumerable<string>>
                 {
                     { nameof(BlogPolicy), BlogPolicy.GetPolicies() },
-                    { nameof(ProductPolicy), ProductPolicy.GetPolicies() }
+                    { nameof(ProductPolicy), ProductPolicy.GetPolicies() },
+                    { nameof(OrderPolicy), OrderPolicy.GetPolicies() }
                 }
             };
 

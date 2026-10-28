@@ -42,7 +42,7 @@ namespace Ts.Service.DataServices
             unitOfWork.StateRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = mapper.Map<StateDto>(entity);
                 else
@@ -65,7 +65,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StateRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.StateRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("State you want to delete was not found.");
             else
@@ -73,7 +73,7 @@ namespace Ts.Service.DataServices
                 try
                 {
                     unitOfWork.StateRepo.Delete(entity);
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
                     if (rowsChanged > 0)
                         responseResult.Data = true;
                 }
@@ -93,11 +93,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<StateDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<GetStateDataTableDto>
             {
-                AaData = mapper.Map<List<GetStateDataTableDto>>(await unitOfWork.StateRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.StateRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetStateDataTableDto>>(await unitOfWork.StateRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.StateRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.StateRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.StateRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -105,7 +105,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<StateDto>> GetAllByCountryIdAsync(int countryId)
         {
-            var enities = await unitOfWork.StateRepo.GetAllByCountryIdAsync(countryId).ConfigureAwait(false);
+            var enities = await unitOfWork.StateRepo.GetAllByCountryIdAsync(countryId);
             return mapper.Map<List<StateDto>>(enities);
         }
 
@@ -113,7 +113,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<StateDto>();
 
-            var state = await unitOfWork.StateRepo.GetAsync(id).ConfigureAwait(false);
+            var state = await unitOfWork.StateRepo.GetAsync(id);
             if (state == null)
                 responseResult.ErrorMessage.Add("State not found by supplied Id.");
             else
@@ -129,7 +129,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.StateRepo.GetAsync(stateId).ConfigureAwait(false);
+            var entity = await unitOfWork.StateRepo.GetAsync(stateId);
 
             if (entity == null)
             {
@@ -144,7 +144,7 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }

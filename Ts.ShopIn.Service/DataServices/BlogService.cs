@@ -23,8 +23,8 @@ using Ts.ShopIn.Dto.BlogDtos;
 using Ts.ShopIn.Dto.BlogImageDtos;
 using Ts.ShopIn.Dto.DataTableDtos.BlogDataTableDtos;
 using Ts.ShopIn.Service.DataInterfaces;
+using Ts.ShopIn.Service.ExternalInterfaces;
 using Ts.ShopIn.Service.Helpers;
-using Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
 namespace Ts.ShopIn.Service.DataServices
 {
     public class BlogService : IBlogService
@@ -70,29 +70,29 @@ namespace Ts.ShopIn.Service.DataServices
             entity.CreatedOn = DateTime.UtcNow;
             entity.IsActive = true;
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 unitOfWork.BlogRepo.Create(entity);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 entity.BlogLink += "-" + entity.Id;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.CommitAsync();
 
                 responseResult.Data = mapper.Map<BlogDto>(entity);
             }
             catch (DbUpdateException ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 string msg = ex.GetFriendlySqlExceptionMessage();
                 logger.LogError(ex, "Create Blog failed: {Message}", msg);
                 responseResult.ErrorMessage.Add(msg);
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Create Blog failed.");
                 responseResult.ErrorMessage.Add("Create Blog failed.");
             }
@@ -107,7 +107,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Blog you want to delete was not found.");
             else if (!isAdmin && entity.BlogWorkerId != userId)
@@ -122,9 +122,9 @@ namespace Ts.ShopIn.Service.DataServices
 
                 unitOfWork.BlogRepo.Delete(entity);
 
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
 
-                var fileResponse = await fileClient.DeleteBlogImagesAsync(imageNames).ConfigureAwait(false);
+                var fileResponse = await fileClient.DeleteBlogImagesAsync(imageNames);
                 if (fileResponse.ErrorMessage.Count > 0)
                 {
                     if (rowsChanged > 0)
@@ -152,14 +152,14 @@ namespace Ts.ShopIn.Service.DataServices
                 model.BlogWorkerId = userId;
             var responseResult = new DataTableResponseDto<GetBlogDataTableDto>
             {
-                AaData = mapper.Map<List<GetBlogDataTableDto>>(await unitOfWork.BlogRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.BlogRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetBlogDataTableDto>>(await unitOfWork.BlogRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.BlogRepo.GetTotalCountAsync()
             };
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
 
             var userIds = responseResult.AaData.SelectMany(x => new List<string> { x.BlogWorkerId, x.PublishedById }).Distinct();
-            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds);
 
             foreach (var blog in responseResult.AaData)
             {
@@ -170,7 +170,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
 
             if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.BlogWorkerId) || modelDto.LastViewedOnStart.HasValue || modelDto.LastViewedOnEnd.HasValue)
-                responseResult.RecordsFiltered = await unitOfWork.BlogRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.BlogRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -183,7 +183,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetUpdateBlogDto>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Blog not found by supplied Id.");
             else if (!isAdmin && entity.BlogWorkerId != userId)
@@ -201,7 +201,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Blog does not exist to update.");
@@ -236,7 +236,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -250,7 +250,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
 
             if (entity == null)
             {
@@ -271,7 +271,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
@@ -292,7 +292,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
 
             if (entity == null)
             {
@@ -311,7 +311,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -325,7 +325,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
 
             if (entity == null)
             {
@@ -344,7 +344,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -358,7 +358,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
 
             if (entity == null)
             {
@@ -377,7 +377,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -391,18 +391,18 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(blogId).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(blogId);
 
             if (entity == null)
             {
@@ -418,7 +418,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var blogImageHelperModels = JsonConvert.DeserializeObject<List<BlogImageHelperModel>>(entity.BlogImage?.ImageNames ?? "[]");
 
-            var fileResponse = await fileClient.UploadBlogImageAsync(modelDto.ImageFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadBlogImageAsync(modelDto.ImageFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -461,7 +461,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -475,7 +475,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.BlogRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Blog not found for the deletion of image.");
@@ -496,7 +496,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
             blogImageHelperModels.Remove(blogImageHelperModel);
 
-            var fileResponse = await fileClient.DeleteBlogImagesAsync([imageName]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeleteBlogImagesAsync([imageName]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -517,7 +517,7 @@ namespace Ts.ShopIn.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -526,14 +526,14 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<IEnumerable<GetBlogForListViewDto>> GetForListViewAsync(BlogDataTableForViewRequestDto modelDto)
         {
-            return await CommonBlogService.GetForListViewAsync(unitOfWork, mapper, subCategoryService, config, modelDto).ConfigureAwait(false);
+            return await CommonBlogService.GetForListViewAsync(unitOfWork, mapper, subCategoryService, config, modelDto);
         }
 
         public async Task<ResponseMessageDto<BlogDto>> GetForViewAsync(string subCategoryName, string blogLink)
         {
             var responseResult = new ResponseMessageDto<BlogDto>();
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
 
             var subCategoryId = subCategories.Where(x => x.Name.Equals(subCategoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Id;
 
@@ -543,7 +543,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var entity = await unitOfWork.BlogRepo.GetForViewAsync(subCategoryId.Value, blogLink).ConfigureAwait(false);
+            var entity = await unitOfWork.BlogRepo.GetForViewAsync(subCategoryId.Value, blogLink);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Blog not found by supplied blogLink.");
             else
@@ -577,8 +577,8 @@ namespace Ts.ShopIn.Service.DataServices
                 Start = 0,
                 Length = 15000
             };
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
-            var entities = await unitOfWork.BlogRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
+            var entities = await unitOfWork.BlogRepo.GetForListViewAsync(model);
 
             var sitemapData = new SitemapDto
             {
@@ -603,20 +603,20 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<int> GetTotalUniquePagesVisitedAsync(DateTimeOffset? lastViewedOnStart = null, DateTimeOffset? lastViewedOnEnd = null)
         {
-            return await unitOfWork.BlogRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd).ConfigureAwait(false);
+            return await unitOfWork.BlogRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd);
         }
 
         public async Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return await unitOfWork.BlogRepo.GetTotalPagesVisitedLifetimeAsync().ConfigureAwait(false);
+            return await unitOfWork.BlogRepo.GetTotalPagesVisitedLifetimeAsync();
         }
 
         public async Task IncrementBlogView2ForBlogIdsAsync(Dictionary<int, int> data)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entities = await unitOfWork.BlogRepo.GetBlogViewWithLockByBlogIdsAsync(data.Select(x => x.Key)).ConfigureAwait(false);
+                var entities = await unitOfWork.BlogRepo.GetBlogViewWithLockByBlogIdsAsync(data.Select(x => x.Key));
 
                 foreach (var item in data)
                 {
@@ -637,12 +637,12 @@ namespace Ts.ShopIn.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing blog views.");
             }
         }

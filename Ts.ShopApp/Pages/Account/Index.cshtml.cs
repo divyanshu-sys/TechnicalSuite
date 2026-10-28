@@ -54,7 +54,7 @@ namespace Ts.ShopApp.Pages.Account
 
             if (!ModelState.IsValid) return Page();
 
-            var response = await clientUserClient.LoginAsync(Model).ConfigureAwait(false);
+            var response = await clientUserClient.LoginAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -93,7 +93,7 @@ namespace Ts.ShopApp.Pages.Account
                     IsPersistent = Model.RememberMe
                 };
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties).ConfigureAwait(false);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties);
                 TempData["success"] = "Welcome to Shop.TechnicalSuite.in";
             }
             if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))

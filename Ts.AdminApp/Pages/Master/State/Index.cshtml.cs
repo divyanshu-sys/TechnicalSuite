@@ -25,7 +25,7 @@ namespace Ts.AdminApp.Pages.Master.State
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await stateClient.GetAllAsync(Model).ConfigureAwait(false);
+            var response = await stateClient.GetAllAsync(Model);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -33,7 +33,7 @@ namespace Ts.AdminApp.Pages.Master.State
 
         public async Task<IActionResult> OnGetCountryDropDown()
         {
-            var response = await countryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await countryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

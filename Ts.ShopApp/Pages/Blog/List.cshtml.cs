@@ -28,7 +28,7 @@ namespace Ts.ShopApp.Pages.Blog
                 Start = 0,
                 Length = 12,
                 SubCategoryName = SubCategoryName
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return NotFound();

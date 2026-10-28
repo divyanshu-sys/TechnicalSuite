@@ -26,7 +26,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit()
         {
-            var responseResult = await clientUserService.GetForEditAsync(User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await clientUserService.GetForEditAsync(User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -37,7 +37,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(UpdateClientUserDto modelDto)
         {
-            var responseResult = await clientUserService.UpdateForEditAsync(User.Claims.GetUserId(), modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await clientUserService.UpdateForEditAsync(User.Claims.GetUserId(), modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -48,7 +48,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetUserProfile()
         {
-            var responseResult = await clientUserService.GetUserProfileAsync(User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await clientUserService.GetUserProfileAsync(User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -59,7 +59,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto modelDto)
         {
-            var responseResult = await clientUserService.ChangeEmailAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await clientUserService.ChangeEmailAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return Accepted();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -71,7 +71,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ConfirmChangeEmail([FromBody] ConfirmChangeEmailDto modelDto)
         {
-            var responseResult = await clientUserService.ConfirmChangeEmailAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.ConfirmChangeEmailAsync(modelDto);
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);

@@ -33,8 +33,8 @@ namespace Ts.WebApi.Controllers.V1
         public async Task<IActionResult> DataTable(PostDataTableRequestDto modelDto, bool isShowAll)
         {
             if (isShowAll)
-                return Ok(await postService.GetAllAsync(modelDto).ConfigureAwait(false));
-            return Ok(await postService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false));
+                return Ok(await postService.GetAllAsync(modelDto));
+            return Ok(await postService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.Employee}")]
@@ -44,7 +44,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreatePostDto modelDto)
         {
-            var responseResult = await postService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await postService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(GetForEdit), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -57,7 +57,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(int id)
         {
-            var responseResult = await postService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -70,7 +70,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdatePostDto modelDto)
         {
-            var responseResult = await postService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -83,7 +83,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await postService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -96,7 +96,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> PatchDescription(int id, UpdatePostDescriptionDto modelDto)
         {
-            var responseResult = await postService.UpdateDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdateDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -109,7 +109,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdatePostWorker(int id, UpdatePostWorkerDto modelDto)
         {
-            var responseResult = await postService.UpdatePostWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdatePostWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -122,7 +122,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateMainImage(int id, UpdatePostMainImageDto modelDto)
         {
-            var responseResult = await postService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -135,7 +135,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdatePostImage(int id, UpdatePostImageDto modelDto)
         {
-            var responseResult = await postService.UpdatePostImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdatePostImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -148,7 +148,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeletePostImage(int id, string imageName)
         {
-            var responseResult = await postService.DeletePostImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.DeletePostImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -161,7 +161,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdatePostRelative(int id, UpdatePostRelativeDto modelDto)
         {
-            var responseResult = await postService.UpdatePostRelativeAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.UpdatePostRelativeAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -174,7 +174,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeletePostRelative(int id, string hrefLang)
         {
-            var responseResult = await postService.DeletePostRelativeAsync(id, hrefLang, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.DeletePostRelativeAsync(id, hrefLang, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -187,7 +187,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Publish(int id, PublishPostDto modelDto)
         {
-            var responseResult = await postService.PublishPostAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await postService.PublishPostAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -198,7 +198,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<GetPostForListViewDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetForListView(PostDataTableForViewRequestDto modelDto)
         {
-            return Ok(await postService.GetForListViewAsync(modelDto).ConfigureAwait(false));
+            return Ok(await postService.GetForListViewAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.DotInSiteUser}")]
@@ -207,7 +207,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForView(string categoryName, string subCategoryName, string postLink)
         {
-            var responseResult = await postService.GetForViewAsync(categoryName, subCategoryName, postLink).ConfigureAwait(false);
+            var responseResult = await postService.GetForViewAsync(categoryName, subCategoryName, postLink);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -218,7 +218,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdatePostForViewCount(int postId)
         {
-            _ = postViewCounter.IncrementAsync(postId).ConfigureAwait(false);
+            _ = postViewCounter.IncrementAsync(postId);
             return NoContent();
         }
 
@@ -227,7 +227,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSitemap()
         {
-            return Ok(await postService.GetSitemapAsync().ConfigureAwait(false));
+            return Ok(await postService.GetSitemapAsync());
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.Employee}")]
@@ -236,7 +236,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalUniquePagesVisited(DateTimeOffset? lastViewedOnStart, DateTimeOffset? lastViewedOnEnd)
         {
-            var response = await postService.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd).ConfigureAwait(false);
+            var response = await postService.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd);
             return Ok(response);
         }
 
@@ -246,7 +246,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalPagesVisitedLifetime()
         {
-            var response = await postService.GetTotalPagesVisitedLifetimeAsync().ConfigureAwait(false);
+            var response = await postService.GetTotalPagesVisitedLifetimeAsync();
             return Ok(response);
         }
     }

@@ -57,7 +57,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<CountryVm>>($"{BaseUrl}/{ApiUrl}/country/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<CountryVm>>($"{BaseUrl}/{ApiUrl}/country/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -65,12 +65,12 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<CountryVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<CountryVm>($"{BaseUrl}/{ApiUrl}/country/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<CountryVm>($"{BaseUrl}/{ApiUrl}/country/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateCountryVm>> GetForEditAsync(int id)
         {
-            var vm = await GetAsync(id).ConfigureAwait(false);
+            var vm = await GetAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateCountryVm>>(vm);
             return updateVm;
         }
@@ -80,7 +80,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateCountryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<CountryVm>($"{BaseUrl}/{ApiUrl}/country", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<CountryVm>($"{BaseUrl}/{ApiUrl}/country", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateCountryVm model, int countryId)
@@ -88,22 +88,22 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateCountryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/country/{countryId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/country/{countryId}", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/country/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/country/{id}", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<CountryVm>>> GetAllAsync()
         {
-            return await httpClientService.GetAsync<IEnumerable<CountryVm>>($"{BaseUrl}/{ApiUrl}/country", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<CountryVm>>($"{BaseUrl}/{ApiUrl}/country", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownAsync()
         {
-            var vms = await GetAllAsync().ConfigureAwait(false);
+            var vms = await GetAllAsync();
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }

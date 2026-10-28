@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await blogClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await blogClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -29,7 +29,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await blogClient.DeleteBlogImageAsync(Id, ImageName).ConfigureAwait(false);
+            var response = await blogClient.DeleteBlogImageAsync(Id, ImageName);
             if (response.Data)
             {
                 TempData["success"] = "Blog's image deleted successfully.";

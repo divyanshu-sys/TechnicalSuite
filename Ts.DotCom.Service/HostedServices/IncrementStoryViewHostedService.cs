@@ -29,10 +29,10 @@ namespace Ts.DotCom.Service.HostedServices
                 if (!storyQueue.IsEmpty)
                 {
                     var ids = storyQueue.DequeueAll();
-                    await ProcessWorkAsync(ids).ConfigureAwait(false);
+                    await ProcessWorkAsync(ids);
                     logger.LogInformation($"DotIn - Database Processing: Incremented total views.");
                 }
-                await Task.Delay(TimeSpan.FromMinutes(2), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMinutes(2), cancellationToken);
             }
 
             logger.LogInformation("DotIn - IncrementStoryView Hosted Service stopping.");
@@ -44,7 +44,7 @@ namespace Ts.DotCom.Service.HostedServices
             var storyService = scope.ServiceProvider.GetRequiredService<IStoryService>();
             try
             {
-                await storyService.IncrementStoryViewForStoryIdsAsync(ids).ConfigureAwait(false);
+                await storyService.IncrementStoryViewForStoryIdsAsync(ids);
             }
             catch (Exception ex)
             {

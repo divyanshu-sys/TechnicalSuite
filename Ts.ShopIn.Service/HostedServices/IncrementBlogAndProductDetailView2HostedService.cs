@@ -32,7 +32,7 @@ namespace Ts.ShopIn.Service.HostedServices
 
                 if (snapshotBlog.Count > 0)
                 {
-                    await ProcessBlogWorkAsync(snapshotBlog).ConfigureAwait(false);
+                    await ProcessBlogWorkAsync(snapshotBlog);
                     logger.LogInformation($"ShopDotIn - Database Processing: Incremented blog total views.");
                 }
 
@@ -40,11 +40,11 @@ namespace Ts.ShopIn.Service.HostedServices
 
                 if (snapshotProductDetail.Count > 0)
                 {
-                    await ProcessProductDetailWorkAsync(snapshotProductDetail).ConfigureAwait(false);
+                    await ProcessProductDetailWorkAsync(snapshotProductDetail);
                     logger.LogInformation($"ShopDotIn - Database Processing: Incremented product detail total views.");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(2.04), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMinutes(2.04), cancellationToken);
             }
 
             logger.LogInformation("ShopDotIn - IncrementBlogAndProductDetailView Hosted Service stopping.");
@@ -56,7 +56,7 @@ namespace Ts.ShopIn.Service.HostedServices
             var blogService = scope.ServiceProvider.GetRequiredService<IBlogService>();
             try
             {
-                await blogService.IncrementBlogView2ForBlogIdsAsync(data).ConfigureAwait(false);
+                await blogService.IncrementBlogView2ForBlogIdsAsync(data);
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace Ts.ShopIn.Service.HostedServices
             var productDetailService = scope.ServiceProvider.GetRequiredService<IProductDetailService>();
             try
             {
-                await productDetailService.IncrementProductDetailView2ForProductDetailIdsAsync(data).ConfigureAwait(false);
+                await productDetailService.IncrementProductDetailView2ForProductDetailIdsAsync(data);
             }
             catch (Exception ex)
             {

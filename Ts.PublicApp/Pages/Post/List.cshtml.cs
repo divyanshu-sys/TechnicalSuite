@@ -30,7 +30,7 @@ namespace Ts.PublicApp.Pages.Post
                 Length = 12,
                 CategoryName = CategoryName,
                 SubCategoryName = SubCategoryName
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return NotFound();

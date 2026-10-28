@@ -27,7 +27,7 @@ namespace Ts.ShopApp.Pages.Cart
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
 
-            var response = await cartClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await cartClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());

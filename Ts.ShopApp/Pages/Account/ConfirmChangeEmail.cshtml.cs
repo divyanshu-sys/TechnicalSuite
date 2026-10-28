@@ -28,7 +28,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (!string.IsNullOrEmpty(EncEmail) && !string.IsNullOrEmpty(Token))
             {
-                var response = await clientUserClient.ConfirmChangeEmailAsync(new ConfirmChangeEmailDto { EncUserId = EncUserId, EncEmail = EncEmail, Token = Token }).ConfigureAwait(false);
+                var response = await clientUserClient.ConfirmChangeEmailAsync(new ConfirmChangeEmailDto { EncUserId = EncUserId, EncEmail = EncEmail, Token = Token });
                 if (response.Data)
                 {
                     TempData["success"] = "Your email changed successfully.";

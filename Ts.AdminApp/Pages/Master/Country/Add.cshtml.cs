@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.Country
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await countryClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await countryClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

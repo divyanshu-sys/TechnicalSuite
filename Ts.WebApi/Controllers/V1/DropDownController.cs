@@ -30,21 +30,21 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<DropdownItemDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExchangePolicyDropDown()
         {
-            return Ok(await dropDownService.GetExchangePolicyDropDownAsync().ConfigureAwait(false));
+            return Ok(await dropDownService.GetExchangePolicyDropDownAsync());
         }
 
         [HttpGet("deliverypolicy")]
         [ProducesResponseType(typeof(IEnumerable<DropdownItemDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDeliveryPolicyDropDown()
         {
-            return Ok(await dropDownService.GetDeliveryPolicyDropDownAsync().ConfigureAwait(false));
+            return Ok(await dropDownService.GetDeliveryPolicyDropDownAsync());
         }
 
         [HttpGet("returnpolicy")]
         [ProducesResponseType(typeof(IEnumerable<DropdownItemDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReturnPolicyDropDown()
         {
-            return Ok(await dropDownService.GetReturnPolicyDropDownAsync().ConfigureAwait(false));
+            return Ok(await dropDownService.GetReturnPolicyDropDownAsync());
         }
     }
 }

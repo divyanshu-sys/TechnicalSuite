@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Ts.Application.AppConstants;
 using Ts.Common.HelperExtensions;
+using Ts.Dto;
 using Ts.ShopIn.Dto.DataTableDtos.OrderDataTableDtos;
 using Ts.ShopIn.Dto.HomeDtos;
 using Ts.ShopIn.Dto.OrderDtos;
@@ -33,7 +34,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> CreateRazorpayOrder()
         {
-            var responseResult = await orderService.CreateRazorpayOrderAsync(User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await orderService.CreateRazorpayOrderAsync(User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -45,7 +46,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> VerifyRazorpayOrderPayment(VerifyRazorpayPaymentDto modelDto)
         {
-            var responseResult = await orderService.VerifyRazorpayOrderPaymentAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await orderService.VerifyRazorpayOrderPaymentAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -57,7 +58,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetPaymentStatus(string paymentId)
         {
-            var responseResult = await orderService.GetRazorpayPaymentStatusAsync(paymentId, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await orderService.GetRazorpayPaymentStatusAsync(paymentId, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -68,7 +69,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<GetOrderForViewDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByUserId(OrderDataTableForViewRequestDto modelDto)
         {
-            return Ok(await orderService.GetForListViewAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false));
+            return Ok(await orderService.GetForListViewAsync(modelDto, User.Claims.GetUserId()));
         }
 
         [Authorize(AuthenticationSchemes = AuthSchemeConstant.PublicScheme)]
@@ -77,7 +78,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetProductDocumentDetail(int orderDetailId)
         {
-            var responseResult = await orderService.GetProductDocumentDetailAsync(orderDetailId, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await orderService.GetProductDocumentDetailAsync(orderDetailId, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -94,7 +95,7 @@ namespace Ts.WebApi.Controllers.V1
             using var reader = new StreamReader(Request.Body, Encoding.UTF8);
             string requestBody = await reader.ReadToEndAsync();
 
-            var responseResult = await orderService.ProcessRazorpayWebhookAsync(requestBody, receivedSignature).ConfigureAwait(false);
+            var responseResult = await orderService.ProcessRazorpayWebhookAsync(requestBody, receivedSignature);
             if (responseResult.Data)
                 return Ok();
             logger.LogWarning("Failed to process Razorpay webhook: {ErrorMessage}", responseResult.ErrorMessage);
@@ -109,7 +110,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalRevenue(DateTimeOffset? startDate, DateTimeOffset? endDate)
         {
-            var response = await orderService.GetTotalRevenue(startDate, endDate).ConfigureAwait(false);
+            var response = await orderService.GetTotalRevenue(startDate, endDate);
             return Ok(response);
         }
 
@@ -120,8 +121,18 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(ChartResponseDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalSalesData(DateTimeOffset? startDate, DateTimeOffset? endDate)
         {
-            var response = await orderService.GetTotalSalesDataAsync(startDate, endDate).ConfigureAwait(false);
+            var response = await orderService.GetTotalSalesDataAsync(startDate, endDate);
             return Ok(response);
+        }
+
+        [Authorize(AuthenticationSchemes = AuthSchemeConstant.AdminScheme)]
+        [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.EmployeeShopIn}")]
+        [Authorize(Policy = OrderPolicy.CanView)]
+        [HttpPost("datatable")]
+        [ProducesResponseType(typeof(DataTableResponseDto<GetOrderDataTableDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DataTable(OrderDataTableRequestDto modelDto)
+        {
+            return Ok(await orderService.GetAllAsync(modelDto));
         }
     }
 }

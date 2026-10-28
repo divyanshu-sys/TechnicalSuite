@@ -27,13 +27,13 @@ namespace Ts.AdminApp.Pages.User
         {
             if (Id == null)
                 return NotFound();
-            return await GetUserPrivileges().ConfigureAwait(false);
+            return await GetUserPrivileges();
 
         }
 
         private async Task<IActionResult> GetUserPrivileges()
         {
-            var response = await applicationUserClient.GetUserPrivilegeAsync(Id).ConfigureAwait(false);
+            var response = await applicationUserClient.GetUserPrivilegeAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -47,22 +47,22 @@ namespace Ts.AdminApp.Pages.User
 
         public async Task<IActionResult> OnPost()
         {
-            if (!ModelState.IsValid) return await GetUserPrivileges().ConfigureAwait(false);
+            if (!ModelState.IsValid) return await GetUserPrivileges();
 
-            var response = await applicationUserClient.UpdateUserPrivilegeAsync(Model, Id).ConfigureAwait(false);
+            var response = await applicationUserClient.UpdateUserPrivilegeAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {
                 foreach (var error in response.ErrorMessage)
                     ModelState.AddModelError(string.Empty, error);
-                return await GetUserPrivileges().ConfigureAwait(false);
+                return await GetUserPrivileges();
             }
 
             if (response.Data)
             {
                 TempData["success"] = "User privileges updated successfully.";
                 if (Id == User.Claims.GetUserId())
-                    await HttpContext.SignOutAsync().ConfigureAwait(false);
+                    await HttpContext.SignOutAsync();
             }
             else
                 TempData["fail"] = "Problem in updating user privilege.";

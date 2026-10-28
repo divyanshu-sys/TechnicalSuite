@@ -34,7 +34,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await productClient.GetAllAsync(Model, IsShowAll).ConfigureAwait(false);
+            var response = await productClient.GetAllAsync(Model, IsShowAll);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -42,7 +42,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
 
         public async Task<IActionResult> OnGetApplicationUserDropDown()
         {
-            var response = await applicationUserClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

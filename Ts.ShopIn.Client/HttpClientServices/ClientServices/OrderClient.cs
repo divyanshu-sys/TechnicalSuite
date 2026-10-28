@@ -38,7 +38,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
             return await httpClientService
                 .GetAsync<ChartResponseDto>(finalUrl, true)
-                .ConfigureAwait(false);
+                ;
         }
 
         public async Task<ResponseMessageDto<decimal>> GetTotalRevenue(string startDate = null, string endDate = null)
@@ -59,7 +59,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
             return await httpClientService
                 .GetAsync<decimal>(finalUrl, true)
-                .ConfigureAwait(false);
+                ;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Ts.Dto;
-namespace Ts.ShopIn.Service.HttpClientServices.ClientInterfaces
+namespace Ts.ShopIn.Service.ExternalInterfaces
 {
     public interface IFileClient
     {

@@ -1,6 +1,6 @@
 ﻿using Ts.ShopIn.Service.HelperModel;
 
-namespace Ts.ShopIn.Service.DataInterfaces
+namespace Ts.ShopIn.Service.ExternalInterfaces
 {
     public interface IRazorpayService
     {

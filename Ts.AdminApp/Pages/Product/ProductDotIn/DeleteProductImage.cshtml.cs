@@ -30,7 +30,7 @@ namespace Ts.AdminApp.Pages.Product.ProductDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await productClient.DeleteProductImageAsync(Id, ImageName).ConfigureAwait(false);
+            var response = await productClient.DeleteProductImageAsync(Id, ImageName);
             if (response.Data)
             {
                 TempData["success"] = "Product's image deleted successfully.";

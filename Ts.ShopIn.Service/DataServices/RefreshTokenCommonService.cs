@@ -6,7 +6,7 @@ namespace Ts.ShopIn.Service.DataServices
     {
         public static async Task<bool> DeleteByUserIdAsync(string userId, IUnitOfWork unitOfWork)
         {
-            var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId).ConfigureAwait(false);
+            var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId);
             if (refreshToken == null) return true;
             unitOfWork.RefreshTokenRepo.Delete(refreshToken);
             return false;

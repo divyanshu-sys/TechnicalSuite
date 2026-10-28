@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Master.Country
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await countryClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await countryClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Master.Country
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await countryClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await countryClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

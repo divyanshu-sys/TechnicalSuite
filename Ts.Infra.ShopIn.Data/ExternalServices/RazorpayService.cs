@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Razorpay.Api;
-using Ts.ShopIn.Service.DataInterfaces;
+using Ts.ShopIn.Service.DataServices;
+using Ts.ShopIn.Service.ExternalInterfaces;
 using Ts.ShopIn.Service.HelperModel;
 
-namespace Ts.ShopIn.Service.DataServices
+namespace Ts.Infra.ShopIn.Data.ExternalServices
 {
     public class RazorpayService : IRazorpayService
     {

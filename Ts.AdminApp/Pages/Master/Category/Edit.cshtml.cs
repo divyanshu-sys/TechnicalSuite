@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Master.Category
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await categoryClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await categoryClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Master.Category
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await categoryClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await categoryClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -25,7 +25,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (!string.IsNullOrEmpty(EncUserId) && !string.IsNullOrEmpty(Token))
             {
-                var response = await clientUserClient.ConfirmEmailAsync(new ConfirmEmailDto { EncUserId = EncUserId, Token = Token }).ConfigureAwait(false);
+                var response = await clientUserClient.ConfirmEmailAsync(new ConfirmEmailDto { EncUserId = EncUserId, Token = Token });
                 if (response.Data)
                 {
                     TempData["success"] = "Your email confirmed successfully.";

@@ -17,7 +17,7 @@ namespace Ts.AdminApp.Pages.User
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await applicationUserClient.GetUserProfileAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetUserProfileAsync();
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await postClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await postClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

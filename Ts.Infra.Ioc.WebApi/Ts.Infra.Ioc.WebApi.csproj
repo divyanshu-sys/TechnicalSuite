@@ -8,17 +8,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Ts.Application\Ts.Application.csproj" />
-		<ProjectReference Include="..\Ts.DotCom.Service\Ts.DotCom.Service.csproj" />
-		<ProjectReference Include="..\Ts.DotIn.Service\Ts.DotIn.Service.csproj" />
 		<ProjectReference Include="..\Ts.Infra.Data\Ts.Infra.Data.csproj" />
 		<ProjectReference Include="..\Ts.Infra.DotCom.Data\Ts.Infra.DotCom.Data.csproj" />
 		<ProjectReference Include="..\Ts.Infra.DotIn.Data\Ts.Infra.DotIn.Data.csproj" />
 		<ProjectReference Include="..\Ts.Infra.ShopIn.Data\Ts.Infra.ShopIn.Data.csproj" />
-		<ProjectReference Include="..\Ts.ShopIn.Service\Ts.ShopIn.Service.csproj" />
 	</ItemGroup>
 
 </Project>

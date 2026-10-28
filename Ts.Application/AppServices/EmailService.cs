@@ -24,9 +24,9 @@ namespace Ts.Application.AppServices
         public Task SendEmailNotificationEventAsync(object sender, NotifierEventArgs e)
         {
             if (config.GetValue<bool>("SendEmailFromSendGridClient"))
-                _ = SendGridClientAsync(e.Email, e.EmailSetting, logger).ConfigureAwait(false);
+                _ = SendGridClientAsync(e.Email, e.EmailSetting, logger);
             else
-                _ = EmailAsync(e.Email, e.EmailSetting, logger).ConfigureAwait(false);
+                _ = EmailAsync(e.Email, e.EmailSetting, logger);
 
             return Task.CompletedTask;
         }
@@ -89,7 +89,7 @@ namespace Ts.Application.AppServices
                         Password = emailSetting.Password
                     };
                 smtpClient.EnableSsl = emailSetting.Ssl;
-                await smtpClient.SendMailAsync(mailMessage).ConfigureAwait(false);
+                await smtpClient.SendMailAsync(mailMessage);
                 return true;
             }
             catch (SmtpException ex)
@@ -135,12 +135,12 @@ namespace Ts.Application.AppServices
                 }
                 if (emailData.SendGridAttachments != null && emailData.SendGridAttachments.Count != 0)
                     msg.AddAttachments(emailData.SendGridAttachments);
-                var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
+                var response = await client.SendEmailAsync(msg);
                 if (response.StatusCode == HttpStatusCode.Accepted)
                     return true;
                 else
                     logger.LogError("Error Sending Email - Send Grid Client return status code - {StatusCode} with response message - {ResponseMessage}",
-                        response.StatusCode, await response.Body.ReadAsStringAsync().ConfigureAwait(false));
+                        response.StatusCode, await response.Body.ReadAsStringAsync());
 
                 return false;
             }

@@ -37,7 +37,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await storyClient.GetAllAsync(Model, IsShowAll).ConfigureAwait(false);
+            var response = await storyClient.GetAllAsync(Model, IsShowAll);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -45,7 +45,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnGetSubCategoryDropDown()
         {
-            var response = await subCategoryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await subCategoryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -53,7 +53,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnGetApplicationUserDropDown()
         {
-            var response = await applicationUserClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -61,7 +61,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnGetHrefLangDropDown()
         {
-            var response = await dropDownClient.GetHrefLangAsync().ConfigureAwait(false);
+            var response = await dropDownClient.GetHrefLangAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

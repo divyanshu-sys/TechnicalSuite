@@ -30,7 +30,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postoffice/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/postoffice/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<PostOfficeVm>>> GetAllAsync(PostOfficeDataTableRequestVm model)
@@ -58,7 +58,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<PostOfficeVm>>($"{BaseUrl}/{ApiUrl}/postoffice/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<PostOfficeVm>>($"{BaseUrl}/{ApiUrl}/postoffice/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -66,24 +66,24 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<PostOfficeVm>>> GetAllByDistrictIdAsync(int districtId)
         {
-            return await httpClientService.GetAsync<IEnumerable<PostOfficeVm>>($"{BaseUrl}/{ApiUrl}/postoffice/by-districtId/{districtId}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<PostOfficeVm>>($"{BaseUrl}/{ApiUrl}/postoffice/by-districtId/{districtId}", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownByDistrictIdAsync(int districtId)
         {
-            var vms = await GetAllByDistrictIdAsync(districtId).ConfigureAwait(false);
+            var vms = await GetAllByDistrictIdAsync(districtId);
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }
 
         public async Task<ResponseMessageDto<PostOfficeVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdatePostOfficeVm>> GetForEditAsync(int id)
         {
-            var vm = await httpClientService.GetAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice/{id}/for-edit", true).ConfigureAwait(false);
+            var vm = await httpClientService.GetAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice/{id}/for-edit", true);
 
             var updateVm = mapper.Map<ResponseMessageDto<UpdatePostOfficeVm>>(vm);
             return updateVm;
@@ -94,7 +94,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreatePostOfficeDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<PostOfficeVm>($"{BaseUrl}/{ApiUrl}/postoffice", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdatePostOfficeVm model, int postOfficeId)
@@ -102,7 +102,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdatePostOfficeDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postoffice/{postOfficeId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/postoffice/{postOfficeId}", modelDto, true);
         }
     }
 }

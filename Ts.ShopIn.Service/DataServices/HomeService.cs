@@ -32,9 +32,9 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var result = new DisplayHomeItemsDto
             {
-                BlogForListView = await CommonBlogService.GetForListViewAsync(unitOfWork, mapper, subCategoryService, config, new() { Start = 0, Length = 6 }).ConfigureAwait(false),
-                ProductForListView = await CommonProductService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, new() { Start = 0, Length = 6 }, dropDownService).ConfigureAwait(false),
-                ProductDetailForListView = await CommonProductDetailService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, new() { Start = 0, Length = 6 }, dropDownService).ConfigureAwait(false),
+                BlogForListView = await CommonBlogService.GetForListViewAsync(unitOfWork, mapper, subCategoryService, config, new() { Start = 0, Length = 6 }),
+                ProductForListView = await CommonProductService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, new() { Start = 0, Length = 6 }, dropDownService),
+                ProductDetailForListView = await CommonProductDetailService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, new() { Start = 0, Length = 6 }, dropDownService),
             };
             return result;
         }

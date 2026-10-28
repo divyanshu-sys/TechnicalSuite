@@ -20,7 +20,7 @@ using Ts.DotCom.Dto.PostDtos;
 using Ts.DotCom.Dto.PostImageDtos;
 using Ts.DotCom.Dto.PostRelativeDtos;
 using Ts.DotCom.Service.DataInterfaces;
-using Ts.DotCom.Service.HttpClientServices.ClientInterfaces;
+using Ts.DotCom.Service.ExternalInterfaces;
 using Ts.DotCom.Service.PostHelpers;
 using Ts.Dto;
 using Ts.Service.DataInterfaces;
@@ -72,29 +72,29 @@ namespace Ts.DotCom.Service.DataServices
             entity.CreatedOn = DateTime.UtcNow;
             entity.IsActive = true;
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 unitOfWork.PostRepo.Create(entity);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 entity.PostLink += "-" + entity.Id;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.CommitAsync();
 
                 responseResult.Data = mapper.Map<PostDto>(entity);
             }
             catch (DbUpdateException ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 string msg = ex.GetFriendlySqlExceptionMessage();
                 logger.LogError(ex, "Create Post failed: {Message}", msg);
                 responseResult.ErrorMessage.Add(msg);
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Create Post failed.");
                 responseResult.ErrorMessage.Add("Create Post failed.");
             }
@@ -109,7 +109,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Post you want to delete was not found.");
             else if (!isAdmin && entity.PostWorkerId != userId)
@@ -126,9 +126,9 @@ namespace Ts.DotCom.Service.DataServices
 
                 try
                 {
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
 
-                    var fileResponse = await fileClient.DeletePostImagesAsync(imageNames).ConfigureAwait(false);
+                    var fileResponse = await fileClient.DeletePostImagesAsync(imageNames);
                     if (fileResponse.ErrorMessage.Count > 0)
                     {
                         if (rowsChanged > 0)
@@ -164,15 +164,15 @@ namespace Ts.DotCom.Service.DataServices
                 model.PostWorkerId = userId;
             var responseResult = new DataTableResponseDto<GetPostDataTableDto>
             {
-                AaData = mapper.Map<List<GetPostDataTableDto>>(await unitOfWork.PostRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.PostRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetPostDataTableDto>>(await unitOfWork.PostRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.PostRepo.GetTotalCountAsync()
             };
 
-            var categories = await categoryService.GetAllAsync().ConfigureAwait(false);
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var categories = await categoryService.GetAllAsync();
+            var subCategories = await subCategoryService.GetAllAsync();
 
             var userIds = responseResult.AaData.SelectMany(x => new List<string> { x.PostWorkerId, x.PublishedById }).Distinct();
-            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds);
 
             foreach (var post in responseResult.AaData)
             {
@@ -184,7 +184,7 @@ namespace Ts.DotCom.Service.DataServices
             }
 
             if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.PostWorkerId) || modelDto.LastViewedOnStart.HasValue || modelDto.LastViewedOnEnd.HasValue)
-                responseResult.RecordsFiltered = await unitOfWork.PostRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.PostRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -197,7 +197,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetUpdatePostDto>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Post not found by supplied Id.");
             else if (!isAdmin && entity.PostWorkerId != userId)
@@ -215,7 +215,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Post does not exist to update.");
@@ -250,7 +250,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -264,7 +264,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -285,7 +285,7 @@ namespace Ts.DotCom.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
@@ -306,7 +306,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -325,7 +325,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -339,7 +339,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -358,7 +358,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -372,7 +372,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -391,7 +391,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -405,18 +405,18 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -432,7 +432,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var postImageHelperModels = JsonConvert.DeserializeObject<List<PostImageHelperModel>>(entity.PostImage?.ImageNames ?? "[]");
 
-            var fileResponse = await fileClient.UploadPostImageAsync(modelDto.ImageFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadPostImageAsync(modelDto.ImageFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -475,7 +475,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -489,7 +489,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Post not found for the deletion of image.");
@@ -510,7 +510,7 @@ namespace Ts.DotCom.Service.DataServices
             }
             postImageHelperModels.Remove(postImageHelperModel);
 
-            var fileResponse = await fileClient.DeletePostImagesAsync([imageName]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeletePostImagesAsync([imageName]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -531,7 +531,7 @@ namespace Ts.DotCom.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -544,8 +544,8 @@ namespace Ts.DotCom.Service.DataServices
 
             var model = mapper.Map<PostDataTableForViewRequest>(modelDto);
 
-            var categories = await categoryService.GetAllAsync().ConfigureAwait(false);
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var categories = await categoryService.GetAllAsync();
+            var subCategories = await subCategoryService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(modelDto.CategoryName))
             {
@@ -560,7 +560,7 @@ namespace Ts.DotCom.Service.DataServices
                     return dtos;
             }
 
-            var entities = await unitOfWork.PostRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var entities = await unitOfWork.PostRepo.GetForListViewAsync(model);
 
             foreach (var entity in entities)
             {
@@ -586,8 +586,8 @@ namespace Ts.DotCom.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetPostForViewDto>();
 
-            var categories = await categoryService.GetAllAsync().ConfigureAwait(false);
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var categories = await categoryService.GetAllAsync();
+            var subCategories = await subCategoryService.GetAllAsync();
 
             var categoryId = categories.Where(x => x.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Id;
             var subCategoryId = subCategories.Where(x => x.Name.Equals(subCategoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Id;
@@ -598,7 +598,7 @@ namespace Ts.DotCom.Service.DataServices
                 return responseResult;
             }
 
-            var entity = await unitOfWork.PostRepo.GetForViewAsync(categoryId.Value, subCategoryId.Value, postLink).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetForViewAsync(categoryId.Value, subCategoryId.Value, postLink);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Post not found by supplied postLink.");
             else
@@ -632,9 +632,9 @@ namespace Ts.DotCom.Service.DataServices
                 Start = 0,
                 Length = 15000
             };
-            var categories = await categoryService.GetAllAsync().ConfigureAwait(false);
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
-            var entities = await unitOfWork.PostRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var categories = await categoryService.GetAllAsync();
+            var subCategories = await subCategoryService.GetAllAsync();
+            var entities = await unitOfWork.PostRepo.GetForListViewAsync(model);
 
             var sitemapData = new SitemapDto
             {
@@ -658,12 +658,12 @@ namespace Ts.DotCom.Service.DataServices
 
         public async Task IncrementPostViewForPostIdsAsync(IEnumerable<int> postIds)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 var groupedIds = postIds.GroupBy(id => id)
                                         .Select(group => new { Id = group.Key, Count = group.Count() });
-                var entities = await unitOfWork.PostRepo.GetPostViewWithLockByPostIdsAsync(groupedIds.Select(x => x.Id)).ConfigureAwait(false);
+                var entities = await unitOfWork.PostRepo.GetPostViewWithLockByPostIdsAsync(groupedIds.Select(x => x.Id));
 
                 foreach (var group in groupedIds)
                 {
@@ -684,24 +684,24 @@ namespace Ts.DotCom.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing post views.");
             }
         }
 
         public async Task<int> GetTotalUniquePagesVisitedAsync(DateTimeOffset? lastViewedOnStart = null, DateTimeOffset? lastViewedOnEnd = null)
         {
-            return await unitOfWork.PostRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd).ConfigureAwait(false);
+            return await unitOfWork.PostRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd);
         }
 
         public async Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return await unitOfWork.PostRepo.GetTotalPagesVisitedLifetimeAsync().ConfigureAwait(false);
+            return await unitOfWork.PostRepo.GetTotalPagesVisitedLifetimeAsync();
         }
 
         public async Task<ResponseMessageDto<bool>> UpdatePostRelativeAsync(int postId, UpdatePostRelativeDto modelDto, string userId, bool isAdmin)
@@ -711,7 +711,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(postId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(postId);
 
             if (entity == null)
             {
@@ -770,7 +770,7 @@ namespace Ts.DotCom.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -784,7 +784,7 @@ namespace Ts.DotCom.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.PostRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Post not found for the deletion of relative.");
@@ -816,7 +816,7 @@ namespace Ts.DotCom.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -825,10 +825,10 @@ namespace Ts.DotCom.Service.DataServices
 
         public async Task IncrementPostView2ForPostIdsAsync(Dictionary<int, int> data)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entities = await unitOfWork.PostRepo.GetPostViewWithLockByPostIdsAsync(data.Select(x => x.Key)).ConfigureAwait(false);
+                var entities = await unitOfWork.PostRepo.GetPostViewWithLockByPostIdsAsync(data.Select(x => x.Key));
 
                 foreach (var item in data)
                 {
@@ -849,12 +849,12 @@ namespace Ts.DotCom.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing post views.");
             }
         }

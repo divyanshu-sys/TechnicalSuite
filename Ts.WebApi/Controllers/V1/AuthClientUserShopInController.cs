@@ -28,7 +28,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Login([FromBody] LoginDto modelDto)
         {
-            var responseResult = await clientUserService.GetAuthenticationTokenAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.GetAuthenticationTokenAsync(modelDto);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -40,7 +40,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto modelDto)
         {
-            var responseResult = await clientUserService.ForgotPasswordAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.ForgotPasswordAsync(modelDto);
             if (responseResult.Data)
                 return Accepted();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -52,7 +52,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto modelDto)
         {
-            var responseResult = await clientUserService.ResetPasswordAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.ResetPasswordAsync(modelDto);
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -64,7 +64,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto modelDto)
         {
-            var responseResult = await clientUserService.ConfirmEmailAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.ConfirmEmailAsync(modelDto);
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -75,7 +75,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto modelDto)
         {
-            var responseResult = await clientUserService.ChangePasswordAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await clientUserService.ChangePasswordAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -87,7 +87,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> RefreshApiToken([FromBody] AuthRefreshDto modelDto)
         {
-            var responseResult = await clientUserService.GetRefreshApiTokenAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.GetRefreshApiTokenAsync(modelDto);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -98,7 +98,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         public async Task<IActionResult> IsEmailAvailable(IsEmailAvailableDto modelDto)
         {
-            return Ok(await clientUserService.IsEmailAvailableAsync(modelDto.Email).ConfigureAwait(false));
+            return Ok(await clientUserService.IsEmailAvailableAsync(modelDto.Email));
         }
 
         [AllowAnonymous]
@@ -107,7 +107,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterClientUserDto modelDto)
         {
-            var responseResult = await clientUserService.RegisterUserAsync(modelDto).ConfigureAwait(false);
+            var responseResult = await clientUserService.RegisterUserAsync(modelDto);
             if (responseResult.Data != null)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);

@@ -44,7 +44,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await productdetailClient.GetAllAsync(Model, IsShowAll, IsPagesVisited).ConfigureAwait(false);
+            var response = await productdetailClient.GetAllAsync(Model, IsShowAll, IsPagesVisited);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -52,7 +52,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetShopCategoryDropDown()
         {
-            var response = await shopCategoryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await shopCategoryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -60,7 +60,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetProductDropDown()
         {
-            var response = await productClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await productClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -68,7 +68,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetExchangePolicyDropDown()
         {
-            var response = await dropDownClient.GetExchangePolicyDropDownAsync().ConfigureAwait(false);
+            var response = await dropDownClient.GetExchangePolicyDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -76,7 +76,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetDeliveryPolicyDropDown()
         {
-            var response = await dropDownClient.GetDeliveryPolicyDropDownAsync().ConfigureAwait(false);
+            var response = await dropDownClient.GetDeliveryPolicyDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -84,7 +84,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetReturnPolicyDropDown()
         {
-            var response = await dropDownClient.GetReturnPolicyDropDownAsync().ConfigureAwait(false);
+            var response = await dropDownClient.GetReturnPolicyDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -92,7 +92,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetApplicationUserDropDown()
         {
-            var response = await applicationUserClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -101,7 +101,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetTodayUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetTodayRange(TimeZoneInfoConstant.India);
-            var response = await productdetailClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await productdetailClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -110,7 +110,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetYearUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetCurrentYearRange(TimeZoneInfoConstant.India);
-            var response = await productdetailClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await productdetailClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -118,7 +118,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGetTotalPageViews()
         {
-            var response = await productdetailClient.GetTotalPagesVisitedLifetime().ConfigureAwait(false);
+            var response = await productdetailClient.GetTotalPagesVisitedLifetime();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -127,7 +127,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetTodayRevenue()
         {
             var range = TimeRangeZoneHelper.GetTodayRange(TimeZoneInfoConstant.India);
-            var response = await orderClient.GetTotalRevenue(range.Start, range.End).ConfigureAwait(false);
+            var response = await orderClient.GetTotalRevenue(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -136,7 +136,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetMonthRevenue()
         {
             var range = TimeRangeZoneHelper.GetCurrentMonthRange(TimeZoneInfoConstant.India);
-            var response = await orderClient.GetTotalRevenue(range.Start, range.End).ConfigureAwait(false);
+            var response = await orderClient.GetTotalRevenue(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -145,7 +145,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetFinYearRevenue()
         {
             var range = TimeRangeZoneHelper.GetFinancialYearRange(TimeZoneInfoConstant.India);
-            var response = await orderClient.GetTotalRevenue(range.Start, range.End).ConfigureAwait(false);
+            var response = await orderClient.GetTotalRevenue(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -154,7 +154,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         public async Task<IActionResult> OnGetFinYearSales()
         {
             var range = TimeRangeZoneHelper.GetFinancialYearRange(TimeZoneInfoConstant.India);
-            var response = await orderClient.GetSalesData(range.Start, range.End).ConfigureAwait(false);
+            var response = await orderClient.GetSalesData(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

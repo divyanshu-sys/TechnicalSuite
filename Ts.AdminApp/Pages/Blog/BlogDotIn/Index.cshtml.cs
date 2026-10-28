@@ -36,7 +36,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await blogClient.GetAllAsync(Model, IsShowAll, IsPagesVisited).ConfigureAwait(false);
+            var response = await blogClient.GetAllAsync(Model, IsShowAll, IsPagesVisited);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -44,7 +44,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnGetSubCategoryDropDown()
         {
-            var response = await subCategoryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await subCategoryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -52,7 +52,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnGetApplicationUserDropDown()
         {
-            var response = await applicationUserClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await applicationUserClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -61,7 +61,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         public async Task<IActionResult> OnGetTodayUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetTodayRange(TimeZoneInfoConstant.India);
-            var response = await blogClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await blogClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -70,7 +70,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         public async Task<IActionResult> OnGetYearUniquePageViews()
         {
             var range = TimeRangeZoneHelper.GetCurrentYearRange(TimeZoneInfoConstant.India);
-            var response = await blogClient.GetTotalUniquePagesVisited(range.Start, range.End).ConfigureAwait(false);
+            var response = await blogClient.GetTotalUniquePagesVisited(range.Start, range.End);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -78,7 +78,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnGetTotalPageViews()
         {
-            var response = await blogClient.GetTotalPagesVisitedLifetime().ConfigureAwait(false);
+            var response = await blogClient.GetTotalPagesVisitedLifetime();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

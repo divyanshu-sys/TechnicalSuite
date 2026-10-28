@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await storyClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await storyClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Story deleted successfully.";
             else

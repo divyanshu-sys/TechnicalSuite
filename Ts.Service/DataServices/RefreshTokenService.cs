@@ -29,11 +29,11 @@ namespace Ts.Service.DataServices
 
         public async Task<bool> DeleteByUserIdAsync(string userId)
         {
-            var isDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork, cache).ConfigureAwait(false);
+            var isDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork, cache);
 
             if (isDeleted) return true;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 return true;
             return false;
@@ -42,7 +42,7 @@ namespace Ts.Service.DataServices
         public async Task<RefreshTokenDto> CreateByUserIdAsync(string userId)
         {
             RefreshToken entity = RefreshTokenCommonService.CreateByUserId(userId, unitOfWork);
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 return mapper.Map<RefreshTokenDto>(entity);
 
@@ -51,7 +51,7 @@ namespace Ts.Service.DataServices
 
         public async Task<bool> ValidateReloginAsync(string userId, string refreshReloginId)
         {
-            var modelDto = await GetCacheRefreshTokenDtoAsync(userId).ConfigureAwait(false);
+            var modelDto = await GetCacheRefreshTokenDtoAsync(userId);
 
             if (modelDto == null || modelDto.RefreshReloginId != refreshReloginId) return false;
             return true;
@@ -60,11 +60,11 @@ namespace Ts.Service.DataServices
         private async Task<RefreshTokenDto> GetCacheRefreshTokenDtoAsync(string userId)
         {
             var cacheKey = $"{EntityCacheKey}_{UserIdCacheKey}_{userId}";
-            var cachedEntity = await cache.GetStringAsync(cacheKey).ConfigureAwait(false);
+            var cachedEntity = await cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cachedEntity))
                 return JsonConvert.DeserializeObject<RefreshTokenDto>(cachedEntity);
 
-            var entity = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId).ConfigureAwait(false);
+            var entity = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId);
             if (entity == null) return null;
 
             var modelDto = mapper.Map<RefreshTokenDto>(entity);
@@ -74,7 +74,7 @@ namespace Ts.Service.DataServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                .SetSlidingExpiration(_cacheExpiration)
                .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(modelDto), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(modelDto), cacheEntryOptions);
             }
 
             return modelDto;

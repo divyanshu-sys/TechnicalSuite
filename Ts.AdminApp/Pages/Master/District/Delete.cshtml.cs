@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Master.District
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await districtClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await districtClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "District deleted successfully.";
             else

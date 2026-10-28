@@ -25,7 +25,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<GetProductForListViewVm>>> GetForListViewAsync(ProductDataTableForViewRequestDto model)
         {
-            var response = await httpPublicService.PostAsync<IEnumerable<GetProductForListViewVm>>($"{BaseUrl}/{ApiUrl}/productdotin/product-list-for-view", model, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<IEnumerable<GetProductForListViewVm>>($"{BaseUrl}/{ApiUrl}/productdotin/product-list-for-view", model, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching product list for view: {ErrorMessages}", string.Join(',', response.ErrorMessage));
             return response;

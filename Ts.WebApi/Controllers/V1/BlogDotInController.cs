@@ -32,8 +32,8 @@ namespace Ts.WebApi.Controllers.V1
         public async Task<IActionResult> DataTable(BlogDataTableRequestDto modelDto, bool isShowAll)
         {
             if (isShowAll)
-                return Ok(await blogService.GetAllAsync(modelDto).ConfigureAwait(false));
-            return Ok(await blogService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false));
+                return Ok(await blogService.GetAllAsync(modelDto));
+            return Ok(await blogService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.EmployeeShopIn}")]
@@ -43,7 +43,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateBlogDto modelDto)
         {
-            var responseResult = await blogService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await blogService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(GetForEdit), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -56,7 +56,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(int id)
         {
-            var responseResult = await blogService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -69,7 +69,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateBlogDto modelDto)
         {
-            var responseResult = await blogService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -82,7 +82,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await blogService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -95,7 +95,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> PatchDescription(int id, UpdateBlogDescriptionDto modelDto)
         {
-            var responseResult = await blogService.UpdateDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.UpdateDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -108,7 +108,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateBlogWorker(int id, UpdateBlogWorkerDto modelDto)
         {
-            var responseResult = await blogService.UpdateBlogWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.UpdateBlogWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -121,7 +121,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateMainImage(int id, UpdateBlogMainImageDto modelDto)
         {
-            var responseResult = await blogService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -134,7 +134,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateBlogImage(int id, UpdateBlogImageDto modelDto)
         {
-            var responseResult = await blogService.UpdateBlogImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.UpdateBlogImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -147,7 +147,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteBlogImage(int id, string imageName)
         {
-            var responseResult = await blogService.DeleteBlogImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.DeleteBlogImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -160,7 +160,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Publish(int id, PublishBlogDto modelDto)
         {
-            var responseResult = await blogService.PublishBlogAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await blogService.PublishBlogAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -171,7 +171,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<GetBlogForListViewDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetForListView(BlogDataTableForViewRequestDto modelDto)
         {
-            return Ok(await blogService.GetForListViewAsync(modelDto).ConfigureAwait(false));
+            return Ok(await blogService.GetForListViewAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.ShopInUser}")]
@@ -180,7 +180,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForView(string subCategoryName, string blogLink)
         {
-            var responseResult = await blogService.GetForViewAsync(subCategoryName, blogLink).ConfigureAwait(false);
+            var responseResult = await blogService.GetForViewAsync(subCategoryName, blogLink);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -189,9 +189,9 @@ namespace Ts.WebApi.Controllers.V1
         [Authorize(Roles = $"{RoleConstant.ShopInUser}")]
         [HttpPost("blog-for-view-count/{blogId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateBlogForViewCount(int blogId)
+        public async Task<IActionResult> UpdateBlogForViewCount(int blogId)
         {
-            _ = blogViewCounter.IncrementAsync(blogId).ConfigureAwait(false);
+            _ = blogViewCounter.IncrementAsync(blogId);
             return NoContent();
         }
 
@@ -200,7 +200,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSitemap()
         {
-            return Ok(await blogService.GetSitemapAsync().ConfigureAwait(false));
+            return Ok(await blogService.GetSitemapAsync());
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.EmployeeShopIn}")]
@@ -209,7 +209,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalUniquePagesVisited(DateTimeOffset? lastViewedOnStart, DateTimeOffset? lastViewedOnEnd)
         {
-            var response = await blogService.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd).ConfigureAwait(false);
+            var response = await blogService.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd);
             return Ok(response);
         }
 
@@ -219,7 +219,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTotalPagesVisitedLifetime()
         {
-            var response = await blogService.GetTotalPagesVisitedLifetimeAsync().ConfigureAwait(false);
+            var response = await blogService.GetTotalPagesVisitedLifetimeAsync();
             return Ok(response);
         }
     }

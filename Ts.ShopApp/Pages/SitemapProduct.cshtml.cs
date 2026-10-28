@@ -15,7 +15,7 @@ namespace Ts.ShopApp.Pages
         }
         public async Task<IActionResult> OnGet()
         {
-            return Content((await productDetailForViewClient.GetSitemapAsync().ConfigureAwait(false)).Data, "text/xml");
+            return Content((await productDetailForViewClient.GetSitemapAsync()).Data, "text/xml");
         }
     }
 }

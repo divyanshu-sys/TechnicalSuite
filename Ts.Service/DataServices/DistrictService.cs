@@ -42,7 +42,7 @@ namespace Ts.Service.DataServices
             unitOfWork.DistrictRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = mapper.Map<DistrictDto>(entity);
                 else
@@ -65,7 +65,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.DistrictRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.DistrictRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("District you want to delete was not found.");
             else
@@ -73,7 +73,7 @@ namespace Ts.Service.DataServices
                 try
                 {
                     unitOfWork.DistrictRepo.Delete(entity);
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
                     if (rowsChanged > 0)
                         responseResult.Data = true;
                 }
@@ -93,11 +93,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<DistrictDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<GetDistrictDataTableDto>
             {
-                AaData = mapper.Map<List<GetDistrictDataTableDto>>(await unitOfWork.DistrictRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.DistrictRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetDistrictDataTableDto>>(await unitOfWork.DistrictRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.DistrictRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.DistrictRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.DistrictRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -105,7 +105,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<DistrictDto>> GetAllByStateIdAsync(int stateId)
         {
-            var entities = await unitOfWork.DistrictRepo.GetAllByStateIdAsync(stateId).ConfigureAwait(false);
+            var entities = await unitOfWork.DistrictRepo.GetAllByStateIdAsync(stateId);
             return mapper.Map<List<DistrictDto>>(entities);
         }
 
@@ -113,7 +113,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<DistrictDto>();
 
-            var state = await unitOfWork.DistrictRepo.GetAsync(id).ConfigureAwait(false);
+            var state = await unitOfWork.DistrictRepo.GetAsync(id);
             if (state == null)
                 responseResult.ErrorMessage.Add("District not found by supplied Id.");
             else
@@ -126,7 +126,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetUpdateDistrictDto>();
 
-            var state = await unitOfWork.DistrictRepo.GetAsync(id).ConfigureAwait(false);
+            var state = await unitOfWork.DistrictRepo.GetAsync(id);
             if (state == null)
                 responseResult.ErrorMessage.Add("District not found by supplied Id.");
             else
@@ -142,7 +142,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.DistrictRepo.GetAsync(districtId).ConfigureAwait(false);
+            var entity = await unitOfWork.DistrictRepo.GetAsync(districtId);
 
             if (entity == null)
             {
@@ -157,7 +157,7 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }

@@ -31,8 +31,8 @@ namespace Ts.WebApi.Controllers.V1
         public async Task<IActionResult> DataTable(ProductDataTableRequestDto modelDto, bool isShowAll)
         {
             if (isShowAll)
-                return Ok(await productService.GetAllAsync(modelDto).ConfigureAwait(false));
-            return Ok(await productService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false));
+                return Ok(await productService.GetAllAsync(modelDto));
+            return Ok(await productService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.EmployeeShopIn}")]
@@ -42,7 +42,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateProductDto modelDto)
         {
-            var responseResult = await productService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await productService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(GetForEdit), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -55,7 +55,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(int id)
         {
-            var responseResult = await productService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -68,7 +68,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateProductDto modelDto)
         {
-            var responseResult = await productService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -81,7 +81,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await productService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -94,7 +94,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateProductWorker(int id, UpdateProductWorkerDto modelDto)
         {
-            var responseResult = await productService.UpdateProductWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.UpdateProductWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -107,7 +107,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateMainImage(int id, UpdateProductMainImageDto modelDto)
         {
-            var responseResult = await productService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -120,7 +120,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateProductImage(int id, UpdateProductImageDto modelDto)
         {
-            var responseResult = await productService.UpdateProductImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.UpdateProductImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -133,7 +133,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteProductImage(int id, string imageName)
         {
-            var responseResult = await productService.DeleteProductImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.DeleteProductImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -146,7 +146,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Publish(int id, PublishProductDto modelDto)
         {
-            var responseResult = await productService.PublishProductAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await productService.PublishProductAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -157,7 +157,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<GetProductForListViewDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetForListView(ProductDataTableForViewRequestDto modelDto)
         {
-            return Ok(await productService.GetForListViewAsync(modelDto).ConfigureAwait(false));
+            return Ok(await productService.GetForListViewAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.EmployeeShopIn}")]
@@ -165,7 +165,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<DropdownItemDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllForDropDownAsync()
         {
-            return Ok(await productService.GetAllForDropDownAsync().ConfigureAwait(false));
+            return Ok(await productService.GetAllForDropDownAsync());
         }
     }
 }

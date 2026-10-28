@@ -48,11 +48,11 @@ namespace Ts.Service.DataServices
             unitOfWork.CategoryRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                 {
                     responseResult.Data = mapper.Map<CategoryDto>(entity);
-                    await cache.RemoveAsync(EntityCacheKey).ConfigureAwait(false);
+                    await cache.RemoveAsync(EntityCacheKey);
                 }
                 else
                     responseResult.ErrorMessage.Add("Create Category failed.");
@@ -72,11 +72,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<CategoryDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<CategoryDto>
             {
-                AaData = mapper.Map<List<CategoryDto>>(await unitOfWork.CategoryRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.CategoryRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<CategoryDto>>(await unitOfWork.CategoryRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.CategoryRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.CategoryRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.CategoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -84,15 +84,15 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<CategoryDto>> GetAllAsync()
         {
-            var cachedEntity = await cache.GetStringAsync(EntityCacheKey).ConfigureAwait(false);
+            var cachedEntity = await cache.GetStringAsync(EntityCacheKey);
             if (!string.IsNullOrEmpty(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<CategoryDto>>(cachedEntity);
 
-            var entities = await unitOfWork.CategoryRepo.GetAllAsync().ConfigureAwait(false);
+            var entities = await unitOfWork.CategoryRepo.GetAllAsync();
             var modelDto = mapper.Map<List<CategoryDto>>(entities);
 
             if (modelDto.Count > 0)
-                await cache.SetStringAsync(EntityCacheKey, JsonConvert.SerializeObject(modelDto)).ConfigureAwait(false);
+                await cache.SetStringAsync(EntityCacheKey, JsonConvert.SerializeObject(modelDto));
 
             return modelDto;
         }
@@ -101,7 +101,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<CategoryDto>();
 
-            var country = await unitOfWork.CategoryRepo.GetAsync(id).ConfigureAwait(false);
+            var country = await unitOfWork.CategoryRepo.GetAsync(id);
             if (country == null)
                 responseResult.ErrorMessage.Add("Category not found by supplied Id.");
             else
@@ -117,7 +117,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.CategoryRepo.GetAsync(categoryId).ConfigureAwait(false);
+            var entity = await unitOfWork.CategoryRepo.GetAsync(categoryId);
 
             if (entity == null)
             {
@@ -132,11 +132,11 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                 {
                     responseResult.Data = true;
-                    await cache.RemoveAsync(EntityCacheKey).ConfigureAwait(false);
+                    await cache.RemoveAsync(EntityCacheKey);
                 }
             }
             catch (DbUpdateException ex)

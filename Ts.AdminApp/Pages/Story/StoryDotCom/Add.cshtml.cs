@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await storyClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await storyClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

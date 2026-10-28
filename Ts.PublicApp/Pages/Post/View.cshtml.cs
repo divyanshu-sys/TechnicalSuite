@@ -27,7 +27,7 @@ namespace Ts.PublicApp.Pages.Post
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await postForViewClient.GetForViewCacheAsync(CategoryName, SubCategoryName, PostLink).ConfigureAwait(false);
+            var response = await postForViewClient.GetForViewCacheAsync(CategoryName, SubCategoryName, PostLink);
             if (response.Data == null)
                 return NotFound();
 

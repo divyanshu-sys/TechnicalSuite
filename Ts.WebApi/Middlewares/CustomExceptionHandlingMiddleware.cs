@@ -21,7 +21,7 @@ namespace Ts.WebApi.Middlewares
         {
             try
             {
-                await next(context).ConfigureAwait(false);
+                await next(context);
             }
             catch (Exception ex)
             {
@@ -35,7 +35,7 @@ namespace Ts.WebApi.Middlewares
                         IsBodyHtml = true,
                         Body = context.BuildExceptionHtmlMessage(ex)
                     };
-                    _ = emailService.SendEmailAsync(emailData, emailSetting, logger).ConfigureAwait(false);
+                    _ = emailService.SendEmailAsync(emailData, emailSetting, logger);
                 }
 
                 // Write to the response
@@ -44,9 +44,9 @@ namespace Ts.WebApi.Middlewares
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 if (webHostEnvironment.IsDevelopment())
-                    await context.Response.WriteAsync(textException).ConfigureAwait(false);
+                    await context.Response.WriteAsync(textException);
                 else
-                    await context.Response.WriteAsync($"{(ex.InnerException == null ? ex.Message : ex.InnerException.Message)}\nPlease contact developer.").ConfigureAwait(false);
+                    await context.Response.WriteAsync($"{(ex.InnerException == null ? ex.Message : ex.InnerException.Message)}\nPlease contact developer.");
             }
         }
     }

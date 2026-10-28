@@ -227,7 +227,6 @@ button {
     top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 280px;
     max-width: 90%;
     pointer-events: none;
     z-index: 100;

@@ -32,7 +32,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<GetStoryForListViewVm>>> GetForListViewAsync(StoryDataTableForViewRequestDto model)
         {
-            var response = await httpPublicService.PostAsync<IEnumerable<GetStoryForListViewVm>>($"{BaseUrl}/{ApiUrl}/storydotcom/story-list-for-view", model, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<IEnumerable<GetStoryForListViewVm>>($"{BaseUrl}/{ApiUrl}/storydotcom/story-list-for-view", model, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching story list for view: {ErrorMessage}", string.Join(',', response.ErrorMessage));
             return response;
@@ -40,7 +40,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         private async Task<ResponseMessageDto<StoryVm>> GetForViewAsync(string subCategoryName, string storyLink)
         {
-            var response = await httpPublicService.GetAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom/story-for-view/{subCategoryName}/{storyLink}", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<StoryVm>($"{BaseUrl}/{ApiUrl}/storydotcom/story-for-view/{subCategoryName}/{storyLink}", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching story for view: {ErrorMessage}", string.Join(',', response.ErrorMessage));
 
@@ -49,23 +49,23 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(StoryCacheKey + "_" + subCategoryName + "_" + storyLink, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(StoryCacheKey + "_" + subCategoryName + "_" + storyLink, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }
 
         public async Task<ResponseMessageDto<StoryVm>> GetForViewCacheAsync(string subCategoryName, string storyLink)
         {
-            var cachedData = await cache.GetStringAsync(StoryCacheKey + "_" + subCategoryName + "_" + storyLink).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(StoryCacheKey + "_" + subCategoryName + "_" + storyLink);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<StoryVm>>(cachedData);
 
-            return await GetForViewAsync(subCategoryName, storyLink).ConfigureAwait(false);
+            return await GetForViewAsync(subCategoryName, storyLink);
         }
 
         public async Task<ResponseMessageDto<string>> GetSitemapAsync()
         {
-            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/storydotcom/sitemap", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/storydotcom/sitemap", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching sitemap: {ErrorMessage}", string.Join(',', response.ErrorMessage));
             return response;
@@ -75,7 +75,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
         {
             if (isBrowser)
             {
-                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/story-for-view-count/{storyId}", null, true).ConfigureAwait(false);
+                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/storydotcom/story-for-view-count/{storyId}", null, true);
                 if (response.ErrorMessage.Count > 0)
                     logger.LogError("Error updating story view count: {ErrorMessage}", string.Join(',', response.ErrorMessage));
                 return response;

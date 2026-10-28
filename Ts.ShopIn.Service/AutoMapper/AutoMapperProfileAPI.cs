@@ -52,6 +52,8 @@ namespace Ts.ShopIn.Service.AutoMapper
             CreateMap<ProductDetailDataTableRequestDto, ProductDetailDataTableRequest>();
             CreateMap<ProductDetailDataTableForViewRequestDto, ProductDetailDataTableForViewRequest>();
 
+            CreateMap<OrderOrderDto, OrderOrder>();
+            CreateMap<OrderDataTableRequestDto, OrderDataTableRequest>();
             CreateMap<OrderDataTableForViewRequestDto, OrderDataTableForViewRequest>();
             #endregion
 
@@ -142,6 +144,7 @@ namespace Ts.ShopIn.Service.AutoMapper
 
             #region Order
             CreateMap<Order, GetOrderForViewDto>();
+            CreateMap<Order, GetOrderDataTableDto>();
             #endregion
 
             #region OrderDetail

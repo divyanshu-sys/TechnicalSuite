@@ -10,11 +10,11 @@ namespace Ts.ShopIn.Service.DataServices
         public static async Task<GetCartForListViewDto> GetCartByUserIdAsync(IUnitOfWork unitOfWork, IShopCategoryService shopCategoryService, IConfiguration configuration, string userId)
         {
             var responseResult = new GetCartForListViewDto();
-            var entities = await unitOfWork.CartRepo.GetByUserIdAsync(userId).ConfigureAwait(false);
+            var entities = await unitOfWork.CartRepo.GetByUserIdAsync(userId);
 
             if (entities.Count > 0)
             {
-                var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
+                var shopCategories = await shopCategoryService.GetAllAsync();
 
                 foreach (var item in entities)
                 {

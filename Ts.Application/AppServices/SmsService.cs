@@ -20,7 +20,7 @@ namespace Ts.Application.AppServices
 
         public Task SendSmsNotificationAsync(object sender, NotifierEventArgs e)
         {
-            _ = SmsAsync(e.Sms, logger).ConfigureAwait(false);
+            _ = SmsAsync(e.Sms, logger);
 
             return Task.CompletedTask;
         }
@@ -39,16 +39,16 @@ namespace Ts.Application.AppServices
                 baseUrl = $"{smsSetting.Url}?username={smsSetting.Username}&password={smsSetting.Password}&to={smsData.MobileNos[0]}&from={smsSetting.SenderId}&text={smsData.MessageText}";
 
             using var httpClient = new HttpClient();
-            using var response = await httpClient.GetAsync(baseUrl).ConfigureAwait(false);
+            using var response = await httpClient.GetAsync(baseUrl);
             var smsResponse = new SmsResponse
             {
-                Message = await response.Content.ReadAsStringAsync().ConfigureAwait(false)
+                Message = await response.Content.ReadAsStringAsync()
             };
             if (response.StatusCode == HttpStatusCode.OK)
                 smsResponse.IsSuccess = true;
             else
             {
-                var responseMessage = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var responseMessage = await response.Content.ReadAsStringAsync();
                 logger.LogError(
                     "Error Sending SMS - return status code - {StatusCode} with response message - {ResponseMessage}",
                     response.StatusCode,

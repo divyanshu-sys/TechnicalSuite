@@ -30,7 +30,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/district/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/district/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<DistrictVm>>> GetAllAsync(DistrictDataTableRequestVm model)
@@ -58,7 +58,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<DistrictVm>>($"{BaseUrl}/{ApiUrl}/district/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<DistrictVm>>($"{BaseUrl}/{ApiUrl}/district/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -66,24 +66,24 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<DistrictVm>>> GetAllByStateIdAsync(int stateId)
         {
-            return await httpClientService.GetAsync<IEnumerable<DistrictVm>>($"{BaseUrl}/{ApiUrl}/district/by-stateid/{stateId}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<DistrictVm>>($"{BaseUrl}/{ApiUrl}/district/by-stateid/{stateId}", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownByStateIdAsync(int stateId)
         {
-            var vms = await GetAllByStateIdAsync(stateId).ConfigureAwait(false);
+            var vms = await GetAllByStateIdAsync(stateId);
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }
 
         public async Task<ResponseMessageDto<DistrictVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateDistrictVm>> GetForEditAsync(int id)
         {
-            var vm = await httpClientService.GetAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district/{id}/for-edit", true).ConfigureAwait(false);
+            var vm = await httpClientService.GetAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district/{id}/for-edit", true);
 
             var updateVm = mapper.Map<ResponseMessageDto<UpdateDistrictVm>>(vm);
             return updateVm;
@@ -94,7 +94,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateDistrictDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<DistrictVm>($"{BaseUrl}/{ApiUrl}/district", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateDistrictVm model, int districtId)
@@ -102,7 +102,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateDistrictDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/district/{districtId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/district/{districtId}", modelDto, true);
         }
     }
 }

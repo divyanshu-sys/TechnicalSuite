@@ -31,7 +31,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public IActionResult Post(ContactFormDto modelDto)
         {
-            _ = emailMessageService.NotifyContactFormPublicAsync(modelDto, logger).ConfigureAwait(false);
+            _ = emailMessageService.NotifyContactFormPublicAsync(modelDto, logger);
             return Accepted();
         }
     }

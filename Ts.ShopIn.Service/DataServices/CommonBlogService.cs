@@ -16,7 +16,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var model = mapper.Map<BlogDataTableForViewRequest>(modelDto);
 
-            var subCategories = await subCategoryService.GetAllAsync().ConfigureAwait(false);
+            var subCategories = await subCategoryService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(modelDto.SubCategoryName))
             {
@@ -25,7 +25,7 @@ namespace Ts.ShopIn.Service.DataServices
                     return dtos;
             }
 
-            var entities = await unitOfWork.BlogRepo.GetForListViewAsync(model).ConfigureAwait(false);
+            var entities = await unitOfWork.BlogRepo.GetForListViewAsync(model);
 
             foreach (var entity in entities)
             {

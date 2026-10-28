@@ -38,17 +38,17 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<LoginDto>(model);
             modelDto.IpAddress = ipAddress;
 
-            return await httpClientService.PostAsync<AuthTokenDto>($"{BaseUrl}/{ApiUrl}/authapplicationuser", modelDto).ConfigureAwait(false);
+            return await httpClientService.PostAsync<AuthTokenDto>($"{BaseUrl}/{ApiUrl}/authapplicationuser", modelDto);
         }
 
         public async Task<ResponseMessageDto<bool>> ForgotPasswordAsync(ForgotPasswordDto model)
         {
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/forgot-password", model).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/forgot-password", model);
         }
 
         public async Task<ResponseMessageDto<bool>> ConfirmEmailAsync(ConfirmEmailDto model)
         {
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/confirm-email", model).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/confirm-email", model);
         }
 
         public async Task<ResponseMessageDto<bool>> ResetPasswordAsync(ResetPasswordVm model, string encUserId, string token)
@@ -63,7 +63,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             modelDto.EncUserId = encUserId;
             modelDto.Token = token;
 
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/reset-password", modelDto).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/reset-password", modelDto);
         }
 
         public async Task<ResponseMessageDto<bool>> ChangePasswordAsync(ChangePasswordVm model)
@@ -72,7 +72,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<ChangePasswordDto>(model);
             modelDto.IpAddress = ipAddress;
 
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/change-password", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/change-password", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> IsEmailAvailableAsync(string email)
@@ -81,7 +81,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             {
                 Email = email.Trim()
             };
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/is-email-available", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/is-email-available", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<ApplicationUserVm>>> GetAllAsync(ApplicationUserDataTableRequestVm model)
@@ -111,7 +111,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ApplicationUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ApplicationUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -144,7 +144,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ClientUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser/shopin-datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<ClientUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser/shopin-datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -157,17 +157,17 @@ namespace Ts.Client.HttpClientServices.ClientServices
             modelDto.IpAddress = ipAddress;
             modelDto.Address.IpAddress = ipAddress;
 
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/register-user", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/authapplicationuser/register-user", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<ApplicationUserVm>> GetUserProfileAsync()
         {
-            return await httpClientService.GetAsync<ApplicationUserVm>($"{BaseUrl}/{ApiUrl}/applicationuser/profile", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<ApplicationUserVm>($"{BaseUrl}/{ApiUrl}/applicationuser/profile", true);
         }
 
         public async Task<ResponseMessageDto<UpdateApplicationUserVm>> GetForEditAsync(string userId)
         {
-            var vm = await httpClientService.GetAsync<ApplicationUserVm>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/for-edit", true).ConfigureAwait(false);
+            var vm = await httpClientService.GetAsync<ApplicationUserVm>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/for-edit", true);
 
             var updateVm = mapper.Map<ResponseMessageDto<UpdateApplicationUserVm>>(vm);
             return updateVm;
@@ -179,43 +179,43 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var modelDto = mapper.Map<UpdateApplicationUserDto>(model);
             modelDto.IpAddress = ipAddress;
             modelDto.Address.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/for-edit", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/for-edit", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> ChangeEmailAsync(ChangeEmailVm model)
         {
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/change-email", model, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/change-email", model, true);
         }
 
         public async Task<ResponseMessageDto<bool>> ConfirmChangeEmailAsync(ConfirmChangeEmailDto model)
         {
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/confirm-change-email", model).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/confirm-change-email", model);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateUserEmailAsync(ChangeEmailVm model, string userId)
         {
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/update-email", model, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/update-email", model, true);
         }
 
         public async Task<ResponseMessageDto<UpdatePrivilegeVm>> GetUserPrivilegeAsync(string userId)
         {
-            return await httpClientService.GetAsync<UpdatePrivilegeVm>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/user-privilege", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<UpdatePrivilegeVm>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/user-privilege", true);
         }
 
         public async Task<ResponseMessageDto<bool>> UpdateUserPrivilegeAsync(UpdatePrivilegeVm model, string userId)
         {
             var modelDto = mapper.Map<UpdateApplicationUserPrivilegeDto>(model);
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/user-privilege", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/applicationuser/{userId}/user-privilege", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<ApplicationUserVm>>> GetAllAsync()
         {
-            return await httpClientService.GetAsync<IEnumerable<ApplicationUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<ApplicationUserVm>>($"{BaseUrl}/{ApiUrl}/applicationuser", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<string, string>>>> GetAllForDropDownAsync()
         {
-            var vms = await GetAllAsync().ConfigureAwait(false);
+            var vms = await GetAllAsync();
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<string, string>>>>(vms);
             return dropDown;
         }

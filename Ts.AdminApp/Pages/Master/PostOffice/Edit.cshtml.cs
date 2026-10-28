@@ -24,7 +24,7 @@ namespace Ts.AdminApp.Pages.Master.PostOffice
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await postOfficeClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await postOfficeClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -40,7 +40,7 @@ namespace Ts.AdminApp.Pages.Master.PostOffice
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await postOfficeClient.PutAsync(Model, Id).ConfigureAwait(false);
+            var response = await postOfficeClient.PutAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {

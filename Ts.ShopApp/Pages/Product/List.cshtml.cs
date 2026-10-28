@@ -28,7 +28,7 @@ namespace Ts.ShopApp.Pages.Product
                 Start = 0,
                 Length = 12,
                 ShopCategoryName = ShopCategoryName
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return NotFound();

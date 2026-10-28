@@ -1,31 +1,28 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Timeout;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
 using System.Reflection;
 using Ts.Application.AppInterfaces;
 using Ts.Application.AppServices;
+using Ts.Infra.Data.Resilience;
 using Ts.Service.DataInterfaces;
 using Ts.Service.DataServices;
-using DotComClientInterfaces = Ts.DotCom.Service.HttpClientServices.ClientInterfaces;
-using DotComClientServices = Ts.DotCom.Service.HttpClientServices.ClientServices;
+using Ts.Service.HttpClientServices;
 using DotComDataInterfaces = Ts.DotCom.Service.DataInterfaces;
 using DotComDataServices = Ts.DotCom.Service.DataServices;
 using DotComHostedServices = Ts.DotCom.Service.HostedServices;
-using DotComHttpClientServices = Ts.DotCom.Service.HttpClientServices;
-using DotInClientInterfaces = Ts.DotIn.Service.HttpClientServices.ClientInterfaces;
-using DotInClientServices = Ts.DotIn.Service.HttpClientServices.ClientServices;
 using DotInDataInterfaces = Ts.DotIn.Service.DataInterfaces;
 using DotInDataServices = Ts.DotIn.Service.DataServices;
 using DotInHostedServices = Ts.DotIn.Service.HostedServices;
-using DotInHttpClientServices = Ts.DotIn.Service.HttpClientServices;
-using ShopInClientInterfaces = Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
-using ShopInClientServices = Ts.ShopIn.Service.HttpClientServices.ClientServices;
 using ShopInDataInterfaces = Ts.ShopIn.Service.DataInterfaces;
 using ShopInDataServices = Ts.ShopIn.Service.DataServices;
 using ShopInHostedServices = Ts.ShopIn.Service.HostedServices;
-using ShopInHttpClientServices = Ts.ShopIn.Service.HttpClientServices;
 namespace Ts.WebApi.Configurations
 {
     public static class ServiceContainer
@@ -66,7 +63,7 @@ namespace Ts.WebApi.Configurations
             services.AddScoped<ShopInDataInterfaces.IProductDetailService, ShopInDataServices.ProductDetailService>();
             services.AddScoped<ShopInDataInterfaces.IHomeService, ShopInDataServices.HomeService>();
             services.AddScoped<ShopInDataInterfaces.ICartService, ShopInDataServices.CartService>();
-            services.AddScoped<ShopInDataInterfaces.IRazorpayService, ShopInDataServices.RazorpayService>();
+            services.AddScoped<ShopIn.Service.ExternalInterfaces.IRazorpayService, Infra.ShopIn.Data.ExternalServices.RazorpayService>();
             services.AddScoped<ShopInDataInterfaces.IOrderService, ShopInDataServices.OrderService>();
             #endregion
 
@@ -77,16 +74,13 @@ namespace Ts.WebApi.Configurations
             #endregion
 
             #region Register Http client
-            services.AddHttpClient();
+            services.Configure<WebApiResilienceSetting>(configuration.GetSection(nameof(WebApiResilienceSetting)));
 
-            services.AddScoped<DotInHttpClientServices.IHttpFileClientService, DotInHttpClientServices.HttpFileClientService>();
-            services.AddScoped<DotInClientInterfaces.IFileClient, DotInClientServices.FileClient>();
+            services.AddHttpClient<IHttpFileClientService, HttpFileClientService>("ShopInHttpClient").AddResilience();
 
-            services.AddScoped<DotComHttpClientServices.IHttpFileClientService, DotComHttpClientServices.HttpFileClientService>();
-            services.AddScoped<DotComClientInterfaces.IFileClient, DotComClientServices.FileClient>();
-
-            services.AddScoped<ShopInHttpClientServices.IHttpFileClientService, ShopInHttpClientServices.HttpFileClientService>();
-            services.AddScoped<ShopInClientInterfaces.IFileClient, ShopInClientServices.FileClient>();
+            services.AddScoped<DotIn.Service.ExternalInterfaces.IFileClient, Infra.DotIn.Data.ExternalServices.FileClient>();
+            services.AddScoped<DotCom.Service.ExternalInterfaces.IFileClient, Infra.DotCom.Data.ExternalServices.FileClient>();
+            services.AddScoped<ShopIn.Service.ExternalInterfaces.IFileClient, Infra.ShopIn.Data.ExternalServices.FileClient>();
             #endregion
 
             #region Register API Versioning
@@ -161,6 +155,67 @@ namespace Ts.WebApi.Configurations
             }
         }
         #endregion
+
+        private static IHttpClientBuilder AddResilience(this IHttpClientBuilder httpClientBuilder)
+        {
+            httpClientBuilder.AddResilienceHandler("srcapi-request", (builder, context) =>
+            {
+                var options = context.ServiceProvider
+                                     .GetRequiredService<IOptions<WebApiResilienceSetting>>()
+                                     .Value;
+
+                var policy = options.Rest.File;
+
+                builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+                {
+                    FailureRatio = policy.FailureRatio,
+                    MinimumThroughput = policy.MinimumThroughput,
+                    SamplingDuration = TimeSpan.FromSeconds(policy.SamplingDurationSeconds),
+                    BreakDuration = TimeSpan.FromSeconds(policy.BreakDurationSeconds),
+                    ShouldHandle = static args =>
+                    {
+                        if (args.Outcome.Exception is HttpRequestException or TimeoutRejectedException)
+                            return ValueTask.FromResult(true);
+
+                        return ValueTask.FromResult(
+                            args.Outcome.Result is HttpResponseMessage r &&
+                            (
+                                r.StatusCode is HttpStatusCode.RequestTimeout or
+                                HttpStatusCode.TooManyRequests ||
+                                (int)r.StatusCode >= 500
+                            )
+                        );
+                    },
+                    OnOpened = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.SrcApi");
+                        logger.LogWarning("SrcApi circuit OPENED for {BreakDuration}. Reason: {Reason}",
+                            args.BreakDuration,
+                            args.Outcome.Exception?.Message ?? args.Outcome.Result?.StatusCode.ToString());
+                        return ValueTask.CompletedTask;
+                    },
+                    OnHalfOpened = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.SrcApi");
+                        logger.LogWarning("SrcApi circuit is HALF-OPEN (testing).");
+                        return ValueTask.CompletedTask;
+                    },
+                    OnClosed = args =>
+                    {
+                        var logger = context.ServiceProvider
+                                            .GetRequiredService<ILoggerFactory>()
+                                            .CreateLogger("Resilience.SrcApi");
+                        logger.LogInformation("SrcApi circuit CLOSED (service recovered).");
+                        return ValueTask.CompletedTask;
+                    }
+                });
+            });
+            return httpClientBuilder;
+        }
     }
 
     public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>

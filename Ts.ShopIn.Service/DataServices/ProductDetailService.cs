@@ -24,8 +24,8 @@ using Ts.ShopIn.Dto.ProductDetailDocumentDtos;
 using Ts.ShopIn.Dto.ProductDetailDtos;
 using Ts.ShopIn.Dto.ProductDetailImageDtos;
 using Ts.ShopIn.Service.DataInterfaces;
+using Ts.ShopIn.Service.ExternalInterfaces;
 using Ts.ShopIn.Service.Helpers;
-using Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
 namespace Ts.ShopIn.Service.DataServices
 {
     public class ProductDetailService : IProductDetailService
@@ -73,7 +73,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             modelDto.HtmlEncodeObject();
             var entity = mapper.Map<ProductDetail>(modelDto);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             if (CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies).Contains(entity.DeliveryPolicyId))
                 entity.Stock = 0;
 
@@ -91,22 +91,22 @@ namespace Ts.ShopIn.Service.DataServices
                 };
 
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
                 unitOfWork.ProductDetailRepo.Create(entity);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 entity.ProductDetailLink += "-" + entity.Id;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.CommitAsync();
 
                 responseResult.Data = mapper.Map<ProductDetailDto>(entity);
             }
             catch (DbUpdateException ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 string msg = ex.GetFriendlySqlExceptionMessage();
                 logger.LogError(ex, "Create ProductDetail failed: {Message}", msg);
                 responseResult.ErrorMessage.Add(msg);
@@ -114,7 +114,7 @@ namespace Ts.ShopIn.Service.DataServices
             catch (Exception ex)
             {
                 logger.LogError(ex, "Create ProductDetail failed.");
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 responseResult.ErrorMessage.Add("Create ProductDetail failed.");
             }
 
@@ -128,21 +128,21 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("ProductDetail you want to delete was not found.");
             else if (!isAdmin && entity.ProductDetailWorkerId != userId)
                 responseResult.ErrorMessage.Add("Unauthorized to delete this productdetail.");
             else
             {
-                var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+                var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
                 var downloadableIds = CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies);
                 if (downloadableIds.Contains(entity.DeliveryPolicyId))
                 {
-                    var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+                    var orderStatuses = await dropDownService.GetOrderStatusesAsync();
                     var orderStatus = orderStatuses.SingleOrDefault(x => x.Name == OrderStatusConstant.OrderCompleted);
 
-                    var orderDetail = await unitOfWork.OrderDetailRepo.GetLatestFirstByProductDetailIdAsync(id, orderStatus.Id).ConfigureAwait(false);
+                    var orderDetail = await unitOfWork.OrderDetailRepo.GetLatestFirstByProductDetailIdAsync(id, orderStatus.Id);
                     if (orderDetail != null)
                     {
                         var deliveryPolicy = deliveryPolicies.SingleOrDefault(x => x.Id == entity.DeliveryPolicyId);
@@ -163,9 +163,9 @@ namespace Ts.ShopIn.Service.DataServices
 
                 unitOfWork.ProductDetailRepo.Delete(entity);
 
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
 
-                var fileResponse = await fileClient.DeleteProductDetailImagesAsync(imageNames).ConfigureAwait(false);
+                var fileResponse = await fileClient.DeleteProductDetailImagesAsync(imageNames);
                 if (fileResponse.ErrorMessage.Count > 0)
                 {
                     if (rowsChanged > 0)
@@ -180,7 +180,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                 if (entity.ProductDetailDocument != null)
                 {
-                    var documentFileResponse = await fileClient.DeleteProductDetailDocumentsAsync([entity.ProductDetailDocument.Document]).ConfigureAwait(false);
+                    var documentFileResponse = await fileClient.DeleteProductDetailDocumentsAsync([entity.ProductDetailDocument.Document]);
                     if (fileResponse.ErrorMessage.Count > 0)
                     {
                         if (rowsChanged > 0)
@@ -209,15 +209,15 @@ namespace Ts.ShopIn.Service.DataServices
                 model.ProductDetailWorkerId = userId;
             var responseResult = new DataTableResponseDto<GetProductDetailDataTableDto>
             {
-                AaData = mapper.Map<List<GetProductDetailDataTableDto>>(await unitOfWork.ProductDetailRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.ProductDetailRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetProductDetailDataTableDto>>(await unitOfWork.ProductDetailRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.ProductDetailRepo.GetTotalCountAsync()
             };
 
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var shopCategories = await shopCategoryService.GetAllAsync();
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
 
             var userIds = responseResult.AaData.SelectMany(x => new List<string> { x.ProductDetailWorkerId, x.PublishedById }).Distinct();
-            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds);
 
             foreach (var productdetail in responseResult.AaData)
             {
@@ -232,7 +232,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
 
             if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.ProductDetailWorkerId) || modelDto.LastViewedOnStart.HasValue || modelDto.LastViewedOnEnd.HasValue)
-                responseResult.RecordsFiltered = await unitOfWork.ProductDetailRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.ProductDetailRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -245,14 +245,14 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetUpdateProductDetailDto>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("ProductDetail not found by supplied Id.");
             else if (!isAdmin && entity.ProductDetailWorkerId != userId)
                 responseResult.ErrorMessage.Add("Unauthorized to update this productdetail.");
             else
             {
-                var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+                var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
                 responseResult.Data = mapper.Map<GetUpdateProductDetailDto>(entity);
                 responseResult.Data.DeliveryPolicy = deliveryPolicies.SingleOrDefault(x => x.Id == entity.DeliveryPolicyId);
             }
@@ -267,7 +267,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("ProductDetail does not exist to update.");
@@ -303,7 +303,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             var deliveryPolicy = deliveryPolicies.SingleOrDefault(x => x.Id == entity.DeliveryPolicyId);
             if (entity.IsPublished && CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies).Contains(deliveryPolicy.Id) && entity.ProductDetailDocument == null)
             {
@@ -316,7 +316,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -335,7 +335,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -351,7 +351,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             modelDto.HtmlEncodeObject();
             mapper.Map(modelDto, entity);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             var deliveryPolicy = deliveryPolicies.SingleOrDefault(x => x.Id == entity.DeliveryPolicyId);
             if (CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies).Contains(deliveryPolicy.Id))
                 entity.Stock = 0;
@@ -385,7 +385,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
@@ -406,7 +406,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -425,7 +425,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -439,7 +439,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -458,7 +458,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -472,7 +472,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -491,7 +491,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -505,18 +505,18 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -532,7 +532,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var productdetailImageHelperModels = JsonConvert.DeserializeObject<List<ProductDetailImageHelperModel>>(entity.ProductDetailImage?.ImageNames ?? "[]");
 
-            var fileResponse = await fileClient.UploadProductDetailImageAsync(modelDto.ImageFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadProductDetailImageAsync(modelDto.ImageFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -573,7 +573,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -587,7 +587,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("ProductDetail not found for the deletion of image.");
@@ -608,7 +608,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
             productdetailImageHelperModels.Remove(productdetailImageHelperModel);
 
-            var fileResponse = await fileClient.DeleteProductDetailImagesAsync([imageName]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeleteProductDetailImagesAsync([imageName]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -629,7 +629,7 @@ namespace Ts.ShopIn.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -643,19 +643,19 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateDocumentFileSizeAsync(modelDto.DocumentFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateDocumentFileSizeAsync(modelDto.DocumentFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.DocumentFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateDocumentFileExtensionAsync(modelDto.DocumentFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateDocumentFileExtensionAsync(modelDto.DocumentFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.DocumentFileExtensionInValidMsg);
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(productdetailId);
 
             if (entity == null)
             {
@@ -675,7 +675,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var fileResponse = await fileClient.UploadProductDetailDocumentAsync(modelDto.DocumentFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadProductDetailDocumentAsync(modelDto.DocumentFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -700,7 +700,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -714,7 +714,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("ProductDetail not found for the deletion of document.");
@@ -732,7 +732,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var fileResponse = await fileClient.DeleteProductDetailDocumentsAsync([entity.ProductDetailDocument.Document]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeleteProductDetailDocumentsAsync([entity.ProductDetailDocument.Document]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -744,7 +744,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             entity.ProductDetailDocument = null;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -753,14 +753,14 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<IEnumerable<GetProductDetailForListViewDto>> GetForListViewAsync(ProductDetailDataTableForViewRequestDto modelDto)
         {
-            return await CommonProductDetailService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, modelDto, dropDownService).ConfigureAwait(false);
+            return await CommonProductDetailService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, modelDto, dropDownService);
         }
 
         public async Task<ResponseMessageDto<GetForViewProductDetailDto>> GetForViewAsync(string subCategoryName, string productdetailLink)
         {
             var responseResult = new ResponseMessageDto<GetForViewProductDetailDto>();
 
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
+            var shopCategories = await shopCategoryService.GetAllAsync();
 
             var shopCategoryId = shopCategories.Where(x => x.Name.Equals(subCategoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Id;
 
@@ -770,16 +770,16 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             var downloadableIds = CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies);
 
-            var entity = await unitOfWork.ProductDetailRepo.GetForViewAsync(shopCategoryId.Value, productdetailLink, downloadableIds).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetForViewAsync(shopCategoryId.Value, productdetailLink, downloadableIds);
             if (entity == null)
                 responseResult.ErrorMessage.Add("ProductDetail not found by supplied productdetailLink.");
             else
             {
-                var exchangePolicies = await dropDownService.GetExchangePoliciesAsync().ConfigureAwait(false);
-                var returnPolicies = await dropDownService.GetReturnPoliciesAsync().ConfigureAwait(false);
+                var exchangePolicies = await dropDownService.GetExchangePoliciesAsync();
+                var returnPolicies = await dropDownService.GetReturnPoliciesAsync();
 
                 responseResult.Data = mapper.Map<GetForViewProductDetailDto>(entity);
                 responseResult.Data.Mrp = CommonProductDetailService.RoundingToDecimal(responseResult.Data.Mrp, responseResult.Data.CurrencyLetter);
@@ -852,10 +852,10 @@ namespace Ts.ShopIn.Service.DataServices
                 Start = 0,
                 Length = 15000
             };
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var shopCategories = await shopCategoryService.GetAllAsync();
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             var downloadableIds = CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies);
-            var entities = await unitOfWork.ProductDetailRepo.GetForListViewAsync(model, downloadableIds).ConfigureAwait(false);
+            var entities = await unitOfWork.ProductDetailRepo.GetForListViewAsync(model, downloadableIds);
 
             var sitemapData = new SitemapDto
             {
@@ -880,20 +880,20 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<int> GetTotalUniquePagesVisitedAsync(DateTimeOffset? lastViewedOnStart = null, DateTimeOffset? lastViewedOnEnd = null)
         {
-            return await unitOfWork.ProductDetailRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd).ConfigureAwait(false);
+            return await unitOfWork.ProductDetailRepo.GetTotalUniquePagesVisitedAsync(lastViewedOnStart, lastViewedOnEnd);
         }
 
         public async Task<int> GetTotalPagesVisitedLifetimeAsync()
         {
-            return await unitOfWork.ProductDetailRepo.GetTotalPagesVisitedLifetimeAsync().ConfigureAwait(false);
+            return await unitOfWork.ProductDetailRepo.GetTotalPagesVisitedLifetimeAsync();
         }
 
         public async Task IncrementProductDetailView2ForProductDetailIdsAsync(Dictionary<int, int> data)
         {
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entities = await unitOfWork.ProductDetailRepo.GetProductDetailViewWithLockByProductDetailIdsAsync(data.Select(x => x.Key)).ConfigureAwait(false);
+                var entities = await unitOfWork.ProductDetailRepo.GetProductDetailViewWithLockByProductDetailIdsAsync(data.Select(x => x.Key));
 
                 foreach (var item in data)
                 {
@@ -914,12 +914,12 @@ namespace Ts.ShopIn.Service.DataServices
                         });
                     }
                 }
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Exception occurred while incrementing productdetail views.");
             }
         }
@@ -931,7 +931,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<DownloadDocumentDto>();
 
-            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductDetailRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("ProductDetail was not found.");
             else if (entity.ProductDetailDocument == null)

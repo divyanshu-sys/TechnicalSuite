@@ -11,9 +11,9 @@ namespace Ts.Service.DataServices
         public static async Task<bool> DeleteByUserIdAsync(string userId, IUnitOfWork unitOfWork, IDistributedCache cache)
         {
             var cacheKey = $"{EntityCacheKey}_{UserIdCacheKey}_{userId}";
-            await cache.RemoveAsync(cacheKey).ConfigureAwait(false);
+            await cache.RemoveAsync(cacheKey);
 
-            var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId).ConfigureAwait(false);
+            var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId);
             if (refreshToken == null) return true;
             unitOfWork.RefreshTokenRepo.Delete(refreshToken);
             return false;

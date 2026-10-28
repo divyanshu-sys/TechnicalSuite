@@ -7,12 +7,13 @@ using Ts.Application.Helpers;
 using Ts.Common.Constant.AppConstants;
 using Ts.Common.HelperExtensions;
 using Ts.Dto;
-namespace Ts.ShopIn.Service.HttpClientServices
+namespace Ts.Service.HttpClientServices
 {
     public class HttpFileClientService : IHttpFileClientService
     {
         private readonly IConfiguration configuration;
         private readonly HttpClient httpClient;
+        private bool disposedValue;
 
         public HttpFileClientService(IConfiguration configuration, HttpClient httpClient)
         {
@@ -25,20 +26,20 @@ namespace Ts.ShopIn.Service.HttpClientServices
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                await ConfigureAuthHeaderAsync().ConfigureAwait(false);
+                await ConfigureAuthHeaderAsync();
 
-            var responseMessage = await httpClient.PostAsync(url, content).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PostAsync(url, content);
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> PutAsync<T>(string url, object model, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                await ConfigureAuthHeaderAsync().ConfigureAwait(false);
+                await ConfigureAuthHeaderAsync();
 
-            var responseMessage = await httpClient.PutAsync(url, model.ToJsonStringContent()).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PutAsync(url, model.ToJsonStringContent());
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         private Task ConfigureAuthHeaderAsync()
@@ -59,7 +60,7 @@ namespace Ts.ShopIn.Service.HttpClientServices
 
         private async Task<ResponseMessageDto<T>> ReadResponseAsync<T>(HttpResponseMessage httpResponseMessage, ResponseMessageDto<T> response)
         {
-            var responseData = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
@@ -78,9 +79,23 @@ namespace Ts.ShopIn.Service.HttpClientServices
             return response;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    httpClient.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            httpClient.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

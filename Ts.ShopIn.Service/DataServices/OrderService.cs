@@ -20,8 +20,8 @@ using Ts.ShopIn.Dto.OrderDtos;
 using Ts.ShopIn.Dto.PaymentDtos;
 using Ts.ShopIn.Dto.ProductDetailDocumentDtos;
 using Ts.ShopIn.Service.DataInterfaces;
+using Ts.ShopIn.Service.ExternalInterfaces;
 using Ts.ShopIn.Service.HelperModel;
-using Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
 
 namespace Ts.ShopIn.Service.DataServices
 {
@@ -69,38 +69,38 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetRazorpayOrderDto>();
 
-            var user = await unitOfWork.ClientUserRepo.GetForCartOrderAsync(userId).ConfigureAwait(false);
+            var user = await unitOfWork.ClientUserRepo.GetForCartOrderAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
                 return responseResult;
             }
 
-            var userCartData = await CartCommonService.GetCartByUserIdAsync(unitOfWork, shopCategoryService, configuration, userId).ConfigureAwait(false);
+            var userCartData = await CartCommonService.GetCartByUserIdAsync(unitOfWork, shopCategoryService, configuration, userId);
             if (userCartData.TotalAvailableItemCount == 0)
             {
                 responseResult.ErrorMessage.Add("Please add available item to you cart.");
                 return responseResult;
             }
 
-            var paymentModes = await dropDownService.GetPaymentModesAsync().ConfigureAwait(false);
+            var paymentModes = await dropDownService.GetPaymentModesAsync();
             var paymentMode = paymentModes.FirstOrDefault(x => x.Name == PaymentModeConstant.Online);
 
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
 
-            var currencyTypes = await dropDownService.GetCurrencyTypesAsync().ConfigureAwait(false);
+            var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
             var currencyType = currencyTypes.FirstOrDefault(x => x.Letter == userCartData.CurrencyLetter);
 
-            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync().ConfigureAwait(false);
+            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
             var paymentGatewayType = paymentGatewayTypes.FirstOrDefault(x => x.Name == PaymentGatewayTypeConstant.Razorpay);
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var siteSetting = await unitOfWork.NextOrderSettingRepo.GetWithLockFirstOrDefaultAsync().ConfigureAwait(false);
+                var siteSetting = await unitOfWork.NextOrderSettingRepo.GetWithLockFirstOrDefaultAsync();
                 if (siteSetting == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Site setting not found. Please contact admin.");
                     return responseResult;
                 }
@@ -114,11 +114,11 @@ namespace Ts.ShopIn.Service.DataServices
 
                 if (userCartData.TotalAvailableItemAmount > 0)
                 {
-                    razorpayOrder = await razorpayService.CreateOrderAsync(userCartData.TotalAvailableItemAmount, userCartData.CurrencyLetter, orderNumber, apiKey, keySecret).ConfigureAwait(false);
+                    razorpayOrder = await razorpayService.CreateOrderAsync(userCartData.TotalAvailableItemAmount, userCartData.CurrencyLetter, orderNumber, apiKey, keySecret);
 
                     if (razorpayOrder == null)
                     {
-                        await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                        await unitOfWork.RollbackAsync();
                         responseResult.ErrorMessage.Add("Failed to create order. Please try again.");
                         return responseResult;
                     }
@@ -190,12 +190,12 @@ namespace Ts.ShopIn.Service.DataServices
                 }
                 else
                 {
-                    await unitOfWork.CartRepo.DeleteByUserIdAsync(userId).ConfigureAwait(false);
+                    await unitOfWork.CartRepo.DeleteByUserIdAsync(userId);
                 }
 
                 unitOfWork.OrderRepo.Create(order);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                await unitOfWork.CommitAsync();
 
                 if (userCartData.TotalAvailableItemAmount > 0)
                 {
@@ -218,7 +218,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error creating order.");
                 responseResult.ErrorMessage.Add("Database operation failed. please try again.");
             }
@@ -233,24 +233,24 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var razorpayPayment = await razorpayService.VerifyOrderPaymentAsync(modelDto.Razorpay_Payment_Id, modelDto.Razorpay_Order_Id, modelDto.Razorpay_Signature, apiKey, keySecret).ConfigureAwait(false);
+            var razorpayPayment = await razorpayService.VerifyOrderPaymentAsync(modelDto.Razorpay_Payment_Id, modelDto.Razorpay_Order_Id, modelDto.Razorpay_Signature, apiKey, keySecret);
             if (razorpayPayment == null)
             {
                 responseResult.ErrorMessage.Add("Payment verification failed. Please check your order page after sometime.");
                 return responseResult;
             }
 
-            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync().ConfigureAwait(false);
-            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync().ConfigureAwait(false);
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
+            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(null, razorpayPayment.OrderId, userId).ConfigureAwait(false);
+                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(null, razorpayPayment.OrderId, userId);
                 if (entity == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Payment not found.");
                     return responseResult;
                 }
@@ -266,23 +266,23 @@ namespace Ts.ShopIn.Service.DataServices
                 var isValidTransition = RazorpayPaymentStatusConstant.IsValidTransition(oldPaymentStatus?.Name, newPaymentStatus.Name);
 
                 if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Failed)
-                    await unitOfWork.CartRepo.DeleteByUserIdAsync(userId).ConfigureAwait(false);
+                    await unitOfWork.CartRepo.DeleteByUserIdAsync(userId);
 
                 if (entity.Razorpay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                 {
                     SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
-                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync();
 
                     if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Authorized)
-                        _ = emailShopInMessageService.NotifyOrderStatusAsync(RazorpayPaymentStatusConstant.GetPaymentStatusConstantStatusMessageBy(newPaymentStatus.Name), entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger).ConfigureAwait(false);
+                        _ = emailShopInMessageService.NotifyOrderStatusAsync(RazorpayPaymentStatusConstant.GetPaymentStatusConstantStatusMessageBy(newPaymentStatus.Name), entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger);
                 }
 
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.CommitAsync();
                 responseResult.Data = true;
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error verifying payment.");
                 responseResult.ErrorMessage.Add("Payment is successfull, database operation failed. Please check your order after sometime.");
             }
@@ -297,24 +297,24 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetPaymentStatusDto>();
 
-            var razorpayPayment = await razorpayService.GetPaymentByPaymentIdAsync(razorpayPaymentId, apiKey, keySecret).ConfigureAwait(false);
+            var razorpayPayment = await razorpayService.GetPaymentByPaymentIdAsync(razorpayPaymentId, apiKey, keySecret);
             if (razorpayPayment == null)
             {
                 responseResult.ErrorMessage.Add("Payment verification failed. Please contact admin.");
                 return responseResult;
             }
 
-            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync().ConfigureAwait(false);
-            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync().ConfigureAwait(false);
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
+            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(razorpayPaymentId, razorpayPayment.OrderId, userId).ConfigureAwait(false);
+                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(razorpayPaymentId, razorpayPayment.OrderId, userId);
                 if (entity == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Payment not found.");
                     return responseResult;
                 }
@@ -338,15 +338,15 @@ namespace Ts.ShopIn.Service.DataServices
                     {
                         SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
 
-                        await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                        await unitOfWork.CommitAsync().ConfigureAwait(false);
+                        await unitOfWork.SaveChangesAsync();
+                        await unitOfWork.CommitAsync();
 
                         if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Authorized)
-                            _ = emailShopInMessageService.NotifyOrderStatusAsync(paymentStatusMessage, entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger).ConfigureAwait(false);
+                            _ = emailShopInMessageService.NotifyOrderStatusAsync(paymentStatusMessage, entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger);
                     }
                     else
                     {
-                        await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                        await unitOfWork.RollbackAsync();
                     }
 
                     responseResult.Data = new()
@@ -357,14 +357,14 @@ namespace Ts.ShopIn.Service.DataServices
                 }
                 else
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("No Payment Gateway Type found for the payment.");
                     return responseResult;
                 }
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error fetching payment status.");
                 responseResult.ErrorMessage.Add("Database operation failed. Please check your order after sometime.");
             }
@@ -379,13 +379,13 @@ namespace Ts.ShopIn.Service.DataServices
 
             var result = new List<GetOrderForViewDto>();
 
-            var currencyTypes = await dropDownService.GetCurrencyTypesAsync().ConfigureAwait(false);
-            var orderstatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
+            var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
+            var orderstatuses = await dropDownService.GetOrderStatusesAsync();
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
+            var shopCategories = await shopCategoryService.GetAllAsync();
 
             var model = mapper.Map<OrderDataTableForViewRequest>(modelDto);
-            var entities = await unitOfWork.OrderRepo.GetForListViewAsync(model, userId, orderstatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderInitiated).Id).ConfigureAwait(false);
+            var entities = await unitOfWork.OrderRepo.GetForListViewAsync(model, userId, orderstatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderInitiated).Id);
 
             foreach (var order in entities)
             {
@@ -452,11 +452,11 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<DownloadDocumentDto>();
 
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
             var orderStatusCompleted = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderCompleted);
             var orderStatusRefundFailed = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderPaymentRefundFailed);
 
-            var entity = await unitOfWork.OrderDetailRepo.GetByAsync(orderDetailId, userId, orderStatusCompleted.Id, orderStatusRefundFailed.Id).ConfigureAwait(false);
+            var entity = await unitOfWork.OrderDetailRepo.GetByAsync(orderDetailId, userId, orderStatusCompleted.Id, orderStatusRefundFailed.Id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("OrderDetail was not found.");
@@ -475,7 +475,7 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
             var deliveryPolicy = deliveryPolicies.FirstOrDefault(x => x.Id == entity.DeliveryPolicyId);
 
             var days = (DateTime.UtcNow - entity.UpdatedOn).Value.Days;
@@ -502,24 +502,24 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<bool>();
 
-            var razorpayPayment = await razorpayService.VerifyWebhookAsync(requestBody, receivedSignature, webhookSecret).ConfigureAwait(false);
+            var razorpayPayment = await razorpayService.VerifyWebhookAsync(requestBody, receivedSignature, webhookSecret);
             if (razorpayPayment == null)
             {
                 responseResult.ErrorMessage.Add("Webhook payment verification failed.");
                 return responseResult;
             }
 
-            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync().ConfigureAwait(false);
-            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync().ConfigureAwait(false);
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
+            var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(null, razorpayPayment.OrderId, null).ConfigureAwait(false);
+                var entity = await unitOfWork.PaymentRepo.GetRazorpayPaymentWithLockByAsync(null, razorpayPayment.OrderId, null);
                 if (entity == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Payment not found.");
                     return responseResult;
                 }
@@ -538,22 +538,22 @@ namespace Ts.ShopIn.Service.DataServices
                 {
                     SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
 
-                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                    await unitOfWork.CommitAsync().ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync();
+                    await unitOfWork.CommitAsync();
 
                     if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Authorized)
-                        _ = emailShopInMessageService.NotifyOrderStatusAsync(RazorpayPaymentStatusConstant.GetPaymentStatusConstantStatusMessageBy(newPaymentStatus.Name), entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger).ConfigureAwait(false);
+                        _ = emailShopInMessageService.NotifyOrderStatusAsync(RazorpayPaymentStatusConstant.GetPaymentStatusConstantStatusMessageBy(newPaymentStatus.Name), entity.Order.OrderNumber, entity.Order.OrderedBy.Email, entity.Order.ClientName, logger);
                 }
                 else
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                 }
 
                 responseResult.Data = true;
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error processing razorpay webhook.");
                 responseResult.ErrorMessage.Add("Payment verification is successfull, database operation failed.");
             }
@@ -623,20 +623,20 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<decimal> GetTotalRevenue(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
         {
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
             var orderCompleted = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderCompleted);
             var orderRefundFailed = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderPaymentRefundFailed);
 
-            return await unitOfWork.OrderDetailRepo.GetTotalPriceAsync(startDate, endDate, orderCompleted.Id, orderRefundFailed.Id).ConfigureAwait(false);
+            return await unitOfWork.OrderDetailRepo.GetTotalPriceAsync(startDate, endDate, orderCompleted.Id, orderRefundFailed.Id);
         }
 
         public async Task<ChartResponseDto> GetTotalSalesDataAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
         {
-            var orderStatuses = await dropDownService.GetOrderStatusesAsync().ConfigureAwait(false);
+            var orderStatuses = await dropDownService.GetOrderStatusesAsync();
             var orderCompleted = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderCompleted);
             var orderRefundFailed = orderStatuses.FirstOrDefault(x => x.Name == OrderStatusConstant.OrderPaymentRefundFailed);
 
-            var data = await unitOfWork.OrderDetailRepo.GetTotalPriceByMonthsAsync(startDate, endDate, orderCompleted.Id, orderRefundFailed.Id).ConfigureAwait(false);
+            var data = await unitOfWork.OrderDetailRepo.GetTotalPriceByMonthsAsync(startDate, endDate, orderCompleted.Id, orderRefundFailed.Id);
 
             var chartResponseDto = new ChartResponseDto
             {
@@ -645,6 +645,23 @@ namespace Ts.ShopIn.Service.DataServices
             };
 
             return chartResponseDto;
+        }
+
+        public async Task<DataTableResponseDto<GetOrderDataTableDto>> GetAllAsync(OrderDataTableRequestDto modelDto)
+        {
+            var model = mapper.Map<OrderDataTableRequest>(modelDto);
+
+            var responseResult = new DataTableResponseDto<GetOrderDataTableDto>
+            {
+                AaData = mapper.Map<List<GetOrderDataTableDto>>(await unitOfWork.OrderRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.OrderRepo.GetTotalCountAsync()
+            };
+
+            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+                responseResult.RecordsFiltered = await unitOfWork.OrderRepo.GetRecordsFilteredAsync(model);
+            else
+                responseResult.RecordsFiltered = responseResult.RecordsTotal;
+            return responseResult;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Ts.ShopApp.Pages.Account
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await clientUserClient.GetForEditAsync().ConfigureAwait(false);
+            var response = await clientUserClient.GetForEditAsync();
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -34,7 +34,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await clientUserClient.UpdateForEditAsync(Model).ConfigureAwait(false);
+            var response = await clientUserClient.UpdateForEditAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

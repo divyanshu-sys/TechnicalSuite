@@ -14,7 +14,7 @@
             context.Response.Headers.CacheControl = "no-cache, no-store";
             context.Response.Headers.Pragma = "no-cache";
 
-            await _next(context).ConfigureAwait(false);
+            await _next(context);
         }
     }
 

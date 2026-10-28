@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Ts.Dto;
-namespace Ts.DotIn.Service.HttpClientServices.ClientInterfaces
+namespace Ts.DotCom.Service.ExternalInterfaces
 {
     public interface IFileClient
     {

@@ -17,7 +17,7 @@ namespace Ts.ShopApp.Pages.Account
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await clientUserClient.GetUserProfileAsync().ConfigureAwait(false);
+            var response = await clientUserClient.GetUserProfileAsync();
 
             if (response.ErrorMessage.Count != 0)
             {

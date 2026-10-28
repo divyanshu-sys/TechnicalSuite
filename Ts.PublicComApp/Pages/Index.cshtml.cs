@@ -22,7 +22,7 @@ namespace Ts.PublicComApp.Pages
             {
                 Start = 0,
                 Length = 8
-            }).ConfigureAwait(false);
+            });
             Model = response.Data;
             return Page();
         }

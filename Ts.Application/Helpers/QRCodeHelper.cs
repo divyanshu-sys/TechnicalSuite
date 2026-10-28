@@ -1,6 +1,4 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using ZXing.QrCode;
+﻿using ZXing.QrCode;
 namespace Ts.Application.Helpers
 {
     public static class QRCodeHelper
@@ -13,9 +11,9 @@ namespace Ts.Application.Helpers
                 Options = new QrCodeEncodingOptions { Height = height, Width = width, Margin = margin }
             };
             var pixelData = qrWriter.Write(content);
-            var image = Image.LoadPixelData<Rgba32>(pixelData.Pixels, width, height);
+            // Create an image from the pixel data
             using var ms = new MemoryStream();
-            image.SaveAsPng(ms);
+            // And save in ms variable
             var bitmapBytes = ms.ToArray();
             return bitmapBytes;
         }

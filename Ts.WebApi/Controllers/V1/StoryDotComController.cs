@@ -33,8 +33,8 @@ namespace Ts.WebApi.Controllers.V1
         public async Task<IActionResult> DataTable(StoryDataTableRequestDto modelDto, bool isShowAll)
         {
             if (isShowAll)
-                return Ok(await storyService.GetAllAsync(modelDto).ConfigureAwait(false));
-            return Ok(await storyService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false));
+                return Ok(await storyService.GetAllAsync(modelDto));
+            return Ok(await storyService.GetAllAsync(modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.Employee}")]
@@ -44,7 +44,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateStoryDto modelDto)
         {
-            var responseResult = await storyService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await storyService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(GetForEdit), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -57,7 +57,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForEdit(int id)
         {
-            var responseResult = await storyService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.GetForEditAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -70,7 +70,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateStoryDto modelDto)
         {
-            var responseResult = await storyService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -83,7 +83,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await storyService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.DeleteAsync(id, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -96,7 +96,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> AddDescription(int id, UpdateStoryDescriptionDto modelDto)
         {
-            var responseResult = await storyService.AddDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.AddDescriptionAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -109,7 +109,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateDescription(int id, string descriptionId, UpdateStoryDescriptionDto modelDto)
         {
-            var responseResult = await storyService.UpdateDescriptionAsync(id, descriptionId, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateDescriptionAsync(id, descriptionId, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -122,7 +122,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteDescription(int id, string descriptionId)
         {
-            var responseResult = await storyService.DeleteDescriptionAsync(id, descriptionId, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.DeleteDescriptionAsync(id, descriptionId, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -135,7 +135,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateStoryWorker(int id, UpdateStoryWorkerDto modelDto)
         {
-            var responseResult = await storyService.UpdateStoryWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateStoryWorkerAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -148,7 +148,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateMainImage(int id, UpdateStoryMainImageDto modelDto)
         {
-            var responseResult = await storyService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateMainImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -161,7 +161,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateStoryImage(int id, UpdateStoryImageDto modelDto)
         {
-            var responseResult = await storyService.UpdateStoryImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateStoryImageAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -174,7 +174,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteStoryImage(int id, string imageName)
         {
-            var responseResult = await storyService.DeleteStoryImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.DeleteStoryImageAsync(id, imageName, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -187,7 +187,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Publish(int id, PublishStoryDto modelDto)
         {
-            var responseResult = await storyService.PublishStoryAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.PublishStoryAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -198,7 +198,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<GetStoryForListViewDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetForListView(StoryDataTableForViewRequestDto modelDto)
         {
-            return Ok(await storyService.GetForListViewAsync(modelDto).ConfigureAwait(false));
+            return Ok(await storyService.GetForListViewAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.DotComSiteUser}")]
@@ -207,7 +207,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> GetForView(string subCategoryName, string storyLink)
         {
-            var responseResult = await storyService.GetForViewAsync(subCategoryName, storyLink).ConfigureAwait(false);
+            var responseResult = await storyService.GetForViewAsync(subCategoryName, storyLink);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -218,7 +218,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateStoryForViewCount(int storyId)
         {
-            _ = storyViewCounter.IncrementAsync(storyId).ConfigureAwait(false);
+            _ = storyViewCounter.IncrementAsync(storyId);
             return NoContent();
         }
 
@@ -227,7 +227,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSitemap()
         {
-            return Ok(await storyService.GetSitemapAsync().ConfigureAwait(false));
+            return Ok(await storyService.GetSitemapAsync());
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}, {RoleConstant.Employee}")]
@@ -237,7 +237,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateStoryRelative(int id, UpdateStoryRelativeDto modelDto)
         {
-            var responseResult = await storyService.UpdateStoryRelativeAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.UpdateStoryRelativeAsync(id, modelDto, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -250,7 +250,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> DeleteStoryRelative(int id, string hrefLang)
         {
-            var responseResult = await storyService.DeleteStoryRelativeAsync(id, hrefLang, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator)).ConfigureAwait(false);
+            var responseResult = await storyService.DeleteStoryRelativeAsync(id, hrefLang, User.Claims.GetUserId(), User.IsInRole(RoleConstant.Administrator));
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);

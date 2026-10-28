@@ -48,11 +48,11 @@ namespace Ts.Service.DataServices
             unitOfWork.SubCategoryRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                 {
                     responseResult.Data = mapper.Map<SubCategoryDto>(entity);
-                    await cache.RemoveAsync(EntityCacheKey).ConfigureAwait(false);
+                    await cache.RemoveAsync(EntityCacheKey);
                 }
                 else
                     responseResult.ErrorMessage.Add("Create Sub Category failed.");
@@ -72,11 +72,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<SubCategoryDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<SubCategoryDto>
             {
-                AaData = mapper.Map<List<SubCategoryDto>>(await unitOfWork.SubCategoryRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.SubCategoryRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<SubCategoryDto>>(await unitOfWork.SubCategoryRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.SubCategoryRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.SubCategoryRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.SubCategoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -84,14 +84,14 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<SubCategoryDto>> GetAllAsync()
         {
-            var cachedEntity = await cache.GetStringAsync(EntityCacheKey).ConfigureAwait(false);
+            var cachedEntity = await cache.GetStringAsync(EntityCacheKey);
             if (!string.IsNullOrEmpty(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<SubCategoryDto>>(cachedEntity);
 
-            var entities = await unitOfWork.SubCategoryRepo.GetAllAsync().ConfigureAwait(false);
+            var entities = await unitOfWork.SubCategoryRepo.GetAllAsync();
             var modelDto = mapper.Map<List<SubCategoryDto>>(entities);
 
-            await cache.SetStringAsync(EntityCacheKey, JsonConvert.SerializeObject(modelDto)).ConfigureAwait(false);
+            await cache.SetStringAsync(EntityCacheKey, JsonConvert.SerializeObject(modelDto));
 
             return modelDto;
         }
@@ -100,7 +100,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<SubCategoryDto>();
 
-            var country = await unitOfWork.SubCategoryRepo.GetAsync(id).ConfigureAwait(false);
+            var country = await unitOfWork.SubCategoryRepo.GetAsync(id);
             if (country == null)
                 responseResult.ErrorMessage.Add("Sub Category not found by supplied Id.");
             else
@@ -115,7 +115,7 @@ namespace Ts.Service.DataServices
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.SubCategoryRepo.GetAsync(subCategoryId).ConfigureAwait(false);
+            var entity = await unitOfWork.SubCategoryRepo.GetAsync(subCategoryId);
 
             if (entity == null)
             {
@@ -130,11 +130,11 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                 {
                     responseResult.Data = true;
-                    await cache.RemoveAsync(EntityCacheKey).ConfigureAwait(false);
+                    await cache.RemoveAsync(EntityCacheKey);
                 }
             }
             catch (DbUpdateException ex)

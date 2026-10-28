@@ -37,12 +37,12 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            return await GetForEditAsync().ConfigureAwait(false);
+            return await GetForEditAsync();
         }
 
         private async Task<IActionResult> GetForEditAsync()
         {
-            var response = await productDetailClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await productDetailClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -56,26 +56,26 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            if (!ModelState.IsValid) return await GetForEditAsync().ConfigureAwait(false);
+            if (!ModelState.IsValid) return await GetForEditAsync();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(Model.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(Model.ImageFile))
             {
                 ModelState.AddModelError(string.Empty, fileValidationService.ImageFileSizeInvalidMsg);
-                return await GetForEditAsync().ConfigureAwait(false);
+                return await GetForEditAsync();
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(Model.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(Model.ImageFile))
             {
                 ModelState.AddModelError(string.Empty, fileValidationService.ImageFileExtensionInValidMsg);
-                return await GetForEditAsync().ConfigureAwait(false);
+                return await GetForEditAsync();
             }
 
-            var response = await productDetailClient.UpdateProductDetailImageAsync(Model, Id).ConfigureAwait(false);
+            var response = await productDetailClient.UpdateProductDetailImageAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {
                 foreach (var error in response.ErrorMessage)
                     ModelState.AddModelError(string.Empty, error);
-                return await GetForEditAsync().ConfigureAwait(false);
+                return await GetForEditAsync();
             }
 
             if (response.Data)

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
-using Ts.DotCom.Service.HttpClientServices.ClientInterfaces;
+using Ts.DotCom.Service.ExternalInterfaces;
 using Ts.Dto;
-namespace Ts.DotCom.Service.HttpClientServices.ClientServices
+using Ts.Service.HttpClientServices;
+namespace Ts.Infra.DotCom.Data.ExternalServices
 {
     public class FileClient : IFileClient
     {
@@ -25,7 +26,7 @@ namespace Ts.DotCom.Service.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeletePostImagesAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeletePostImageApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeletePostImageApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadPostImageAsync(IFormFile file, string oldFileName = null)
@@ -40,12 +41,12 @@ namespace Ts.DotCom.Service.HttpClientServices.ClientServices
             if (!string.IsNullOrEmpty(oldFileName))
                 content.Add(new StringContent(oldFileName), "oldFileName");
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadPostImageApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadPostImageApiUrl}", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteStoryImagesAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeleteStoryImageApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeleteStoryImageApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadStoryImageAsync(IFormFile file, string oldFileName = null)
@@ -60,7 +61,7 @@ namespace Ts.DotCom.Service.HttpClientServices.ClientServices
             if (!string.IsNullOrEmpty(oldFileName))
                 content.Add(new StringContent(oldFileName), "oldFileName");
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadStoryImageApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadStoryImageApiUrl}", content, true);
         }
     }
 }

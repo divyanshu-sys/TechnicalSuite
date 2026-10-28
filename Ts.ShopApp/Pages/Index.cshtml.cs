@@ -19,7 +19,7 @@ namespace Ts.ShopApp.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await homeClient.DisplayItemsCacheAsync().ConfigureAwait(false);
+            var response = await homeClient.DisplayItemsCacheAsync();
             Model = response.Data;
             if (response.ErrorMessage.Count != 0)
                 TempData["fail"] = response.ErrorMessage.ToHtmlBreakString();

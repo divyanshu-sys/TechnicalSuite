@@ -26,7 +26,7 @@ namespace Ts.ShopApp.Pages.Blog
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await blogForViewClient.GetForViewCacheAsync(SubCategoryName, BlogLink).ConfigureAwait(false);
+            var response = await blogForViewClient.GetForViewCacheAsync(SubCategoryName, BlogLink);
             if (response.Data == null)
                 return NotFound();
 

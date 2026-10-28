@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.Category
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await categoryClient.GetAllAsync(Model).ConfigureAwait(false);
+            var response = await categoryClient.GetAllAsync(Model);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

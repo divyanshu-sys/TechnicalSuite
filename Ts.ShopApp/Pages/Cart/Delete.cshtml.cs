@@ -24,7 +24,7 @@ namespace Ts.ShopApp.Pages.Cart
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await cartClient.DeleteAsync(ProductDetailId).ConfigureAwait(false);
+            var response = await cartClient.DeleteAsync(ProductDetailId);
             if (response.Data)
                 TempData["success"] = "Item removed successfully.";
             else

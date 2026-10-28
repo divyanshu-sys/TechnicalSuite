@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await productdetailClient.GetForUpdateDescriptionAsync(Id).ConfigureAwait(false);
+            var response = await productdetailClient.GetForUpdateDescriptionAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -42,7 +42,7 @@ namespace Ts.AdminApp.Pages.ProductDetail.ProductDetailDotIn
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
 
-            var response = await productdetailClient.UpdateDescriptionAsync(Model, Id).ConfigureAwait(false);
+            var response = await productdetailClient.UpdateDescriptionAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());

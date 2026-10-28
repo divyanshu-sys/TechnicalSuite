@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await postClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await postClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Post deleted successfully.";
             else

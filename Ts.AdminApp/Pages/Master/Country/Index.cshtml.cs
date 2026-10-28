@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.Country
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await countryClient.GetAllAsync(Model).ConfigureAwait(false);
+            var response = await countryClient.GetAllAsync(Model);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

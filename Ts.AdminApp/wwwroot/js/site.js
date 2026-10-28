@@ -36,6 +36,10 @@ $(function () {
     //});
 });
 
+const RoleConstant = {
+    Administrator:'Administrator'
+};
+
 let spinnerButton = ' <div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
 function showBtnLoader(btnId) {
     $(btnId).append(spinnerButton).attr('disabled', true);

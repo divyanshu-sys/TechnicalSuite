@@ -4,8 +4,9 @@ using System.Net.Http.Headers;
 using Ts.Application.AppConstants;
 using Ts.Application.Helpers;
 using Ts.Dto;
-using Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
-namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
+using Ts.Service.HttpClientServices;
+using Ts.ShopIn.Service.ExternalInterfaces;
+namespace Ts.Infra.ShopIn.Data.ExternalServices
 {
     public class FileClient : IFileClient
     {
@@ -37,7 +38,7 @@ namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteBlogImagesAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeleteBlogImageApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeleteBlogImageApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadBlogImageAsync(IFormFile file, string oldFileName = null)
@@ -47,12 +48,12 @@ namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
             // Add the file content
             using Stream fileStream = FileContent(file, oldFileName, content);
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadBlogImageApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadBlogImageApiUrl}", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteProductImagesAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeleteProductImageApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeleteProductImageApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadProductImageAsync(IFormFile file, string oldFileName = null)
@@ -62,12 +63,12 @@ namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
             // Add the file content
             using Stream fileStream = FileContent(file, oldFileName, content);
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductImageApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductImageApiUrl}", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteProductDetailImagesAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeleteProductDetailImageApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeleteProductDetailImageApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadProductDetailImageAsync(IFormFile file, string oldFileName = null)
@@ -77,12 +78,12 @@ namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
             // Add the file content
             using Stream fileStream = FileContent(file, oldFileName, content);
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductDetailImageApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductDetailImageApiUrl}", content, true);
         }
 
         public async Task<ResponseMessageDto<bool>> DeleteProductDetailDocumentsAsync(IEnumerable<string> fileNames)
         {
-            return await httpFileClientService.PutAsync<bool>($"{DeleteProductDetailDocumentApiUrl}", fileNames, true).ConfigureAwait(false);
+            return await httpFileClientService.PutAsync<bool>($"{DeleteProductDetailDocumentApiUrl}", fileNames, true);
         }
 
         public async Task<ResponseMessageDto<string>> UploadProductDetailDocumentAsync(IFormFile file, string oldFileName = null)
@@ -92,7 +93,7 @@ namespace Ts.ShopIn.Service.HttpClientServices.ClientServices
             // Add the file content
             using Stream fileStream = FileContent(file, oldFileName, content);
 
-            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductDetailDocumentApiUrl}", content, true).ConfigureAwait(false);
+            return await httpFileClientService.PostMultipartAsync<string>($"{UploadProductDetailDocumentApiUrl}", content, true);
         }
 
         private static Stream FileContent(IFormFile file, string oldFileName, MultipartFormDataContent content)

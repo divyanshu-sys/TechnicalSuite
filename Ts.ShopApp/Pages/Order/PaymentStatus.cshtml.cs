@@ -22,7 +22,7 @@ namespace Ts.ShopApp.Pages.Order
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await orderClient.GetPaymentStatusAsync(PaymentId).ConfigureAwait(false);
+            var response = await orderClient.GetPaymentStatusAsync(PaymentId);
 
             if (response.ErrorMessage.Count != 0)
             {

@@ -29,7 +29,7 @@ namespace Ts.AdminApp.Pages.Post.PostDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await postClient.DeletePostImageAsync(Id, ImageName).ConfigureAwait(false);
+            var response = await postClient.DeletePostImageAsync(Id, ImageName);
             if (response.Data)
             {
                 TempData["success"] = "Post's image deleted successfully.";

@@ -33,24 +33,24 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<GetPostForListViewVm>>> DisplayItemsCacheAsync(PostDataTableForViewRequestDto model)
         {
-            var cachedData = await cache.GetStringAsync(HomeCacheKey).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(HomeCacheKey);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<IEnumerable<GetPostForListViewVm>>>(cachedData);
-            var response = await GetForListViewAsync(model).ConfigureAwait(false);
+            var response = await GetForListViewAsync(model);
 
             if (response.ErrorMessage.Count == 0)
             {
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(HomeCacheKey, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(HomeCacheKey, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }
 
         public async Task<ResponseMessageDto<IEnumerable<GetPostForListViewVm>>> GetForListViewAsync(PostDataTableForViewRequestDto model)
         {
-            var response = await httpPublicService.PostAsync<IEnumerable<GetPostForListViewVm>>($"{BaseUrl}/{ApiUrl}/postdotcom/post-list-for-view", model, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<IEnumerable<GetPostForListViewVm>>($"{BaseUrl}/{ApiUrl}/postdotcom/post-list-for-view", model, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching post list for view: {ErrorMessage}", string.Join(',', response.ErrorMessage));
             return response;
@@ -58,7 +58,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
 
         private async Task<ResponseMessageDto<PostVm>> GetForViewAsync(string categoryName, string subCategoryName, string postLink)
         {
-            var response = await httpPublicService.GetAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotcom/post-for-view/{categoryName}/{subCategoryName}/{postLink}", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<PostVm>($"{BaseUrl}/{ApiUrl}/postdotcom/post-for-view/{categoryName}/{subCategoryName}/{postLink}", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching post for view: {ErrorMessage}", string.Join(',', response.ErrorMessage));
 
@@ -67,23 +67,23 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(PostCacheKey + "_" + categoryName + "_" + subCategoryName + "_" + postLink, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(PostCacheKey + "_" + categoryName + "_" + subCategoryName + "_" + postLink, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }
 
         public async Task<ResponseMessageDto<PostVm>> GetForViewCacheAsync(string categoryName, string subCategoryName, string postLink)
         {
-            var cachedData = await cache.GetStringAsync(PostCacheKey + "_" + categoryName + "_" + subCategoryName + "_" + postLink).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(PostCacheKey + "_" + categoryName + "_" + subCategoryName + "_" + postLink);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<PostVm>>(cachedData);
 
-            return await GetForViewAsync(categoryName, subCategoryName, postLink).ConfigureAwait(false);
+            return await GetForViewAsync(categoryName, subCategoryName, postLink);
         }
 
         public async Task<ResponseMessageDto<string>> GetSitemapAsync()
         {
-            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/postdotcom/sitemap", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/postdotcom/sitemap", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching sitemap: {ErrorMessage}", string.Join(',', response.ErrorMessage));
             return response;
@@ -93,7 +93,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
         {
             if (isBrowser)
             {
-                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotcom/post-for-view-count/{postId}", null, true).ConfigureAwait(false);
+                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/postdotcom/post-for-view-count/{postId}", null, true);
                 if (response.ErrorMessage.Count > 0)
                     logger.LogError("Error updating post view count: {ErrorMessage}", string.Join(',', response.ErrorMessage));
                 return response;

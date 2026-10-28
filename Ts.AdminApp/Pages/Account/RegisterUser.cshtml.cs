@@ -49,7 +49,7 @@ namespace Ts.AdminApp.Pages.Account
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await applicationUserClient.RegisterUserAsync(Model).ConfigureAwait(false);
+            var response = await applicationUserClient.RegisterUserAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -68,7 +68,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<JsonResult> OnGetIsEmailAvailable()
         {
-            var response = await applicationUserClient.IsEmailAvailableAsync(Model.Email).ConfigureAwait(false);
+            var response = await applicationUserClient.IsEmailAvailableAsync(Model.Email);
             if (response.ErrorMessage.Count != 0)
                 return new JsonResult(response.ErrorMessage);
             else if (response.Data)
@@ -78,7 +78,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<IActionResult> OnGetCountryDropDown()
         {
-            var response = await countryClient.GetAllForDropDownAsync().ConfigureAwait(false);
+            var response = await countryClient.GetAllForDropDownAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -86,7 +86,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<IActionResult> OnGetStateDropDownByCountryId()
         {
-            var response = await stateClient.GetAllForDropDownByCountryIdAsync(CountryId).ConfigureAwait(false);
+            var response = await stateClient.GetAllForDropDownByCountryIdAsync(CountryId);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -94,7 +94,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<IActionResult> OnGetDistrictDropDownByStateId()
         {
-            var response = await districtClient.GetAllForDropDownByStateIdAsync(StateId).ConfigureAwait(false);
+            var response = await districtClient.GetAllForDropDownByStateIdAsync(StateId);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -102,7 +102,7 @@ namespace Ts.AdminApp.Pages.Account
 
         public async Task<IActionResult> OnGetPostOfficeDropDownByDistrictId()
         {
-            var response = await postOfficeClient.GetAllForDropDownByDistrictIdAsync(DistrictId).ConfigureAwait(false);
+            var response = await postOfficeClient.GetAllForDropDownByDistrictIdAsync(DistrictId);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

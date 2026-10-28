@@ -28,7 +28,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DataTableResponseDto<GetStateDataTableDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DataTable(StateDataTableRequestDto modelDto)
         {
-            return Ok(await stateService.GetAllAsync(modelDto).ConfigureAwait(false));
+            return Ok(await stateService.GetAllAsync(modelDto));
         }
 
         [Authorize(Roles = $"{RoleConstant.Administrator}")]
@@ -38,7 +38,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateStateDto modelDto)
         {
-            var responseResult = await stateService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await stateService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(Get), new { id = responseResult.Data.Id }, responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -51,7 +51,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Get(int id)
         {
-            var responseResult = await stateService.GetAsync(id).ConfigureAwait(false);
+            var responseResult = await stateService.GetAsync(id);
             if (responseResult.Data != null)
                 return Ok(responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -64,7 +64,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Put(int id, UpdateStateDto modelDto)
         {
-            var responseResult = await stateService.UpdateAsync(id, modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await stateService.UpdateAsync(id, modelDto, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -77,7 +77,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseResult = await stateService.DeleteAsync(id, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await stateService.DeleteAsync(id, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -87,7 +87,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<StateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllByCountryId(int countryId)
         {
-            var responseResult = await stateService.GetAllByCountryIdAsync(countryId).ConfigureAwait(false);
+            var responseResult = await stateService.GetAllByCountryIdAsync(countryId);
             return Ok(responseResult);
         }
     }

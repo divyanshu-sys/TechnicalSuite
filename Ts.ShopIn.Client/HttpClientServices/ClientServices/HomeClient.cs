@@ -32,15 +32,15 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<DisplayHomeItemsVm>> DisplayItemsCacheAsync()
         {
-            var cachedData = await cache.GetStringAsync(HomeCacheKey).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(HomeCacheKey);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<DisplayHomeItemsVm>>(cachedData);
-            return await DisplayItemsAsync().ConfigureAwait(false);
+            return await DisplayItemsAsync();
         }
 
         private async Task<ResponseMessageDto<DisplayHomeItemsVm>> DisplayItemsAsync()
         {
-            var response = await httpPublicService.GetAsync<DisplayHomeItemsVm>($"{BaseUrl}/{ApiUrl}/shopinapp/home-list-for-view", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<DisplayHomeItemsVm>($"{BaseUrl}/{ApiUrl}/shopinapp/home-list-for-view", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching display items: {ErrorMessages}", string.Join(',', response.ErrorMessage));
 
@@ -49,7 +49,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(HomeCacheKey, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(HomeCacheKey, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }

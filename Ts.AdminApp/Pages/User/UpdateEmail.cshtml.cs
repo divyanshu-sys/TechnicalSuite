@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.User
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await applicationUserClient.UpdateUserEmailAsync(Model, Id).ConfigureAwait(false);
+            var response = await applicationUserClient.UpdateUserEmailAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -45,7 +45,7 @@ namespace Ts.AdminApp.Pages.User
 
         public async Task<JsonResult> OnGetIsEmailAvailable()
         {
-            var response = await applicationUserClient.IsEmailAvailableAsync(Model.Email).ConfigureAwait(false);
+            var response = await applicationUserClient.IsEmailAvailableAsync(Model.Email);
             if (response.ErrorMessage.Count != 0)
                 return new JsonResult(response.ErrorMessage);
             else if (response.Data)

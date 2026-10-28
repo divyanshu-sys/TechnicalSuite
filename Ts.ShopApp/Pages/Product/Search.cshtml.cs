@@ -28,7 +28,7 @@ namespace Ts.ShopApp.Pages.Product
                 Start = 0,
                 Length = 12,
                 Search = Q
-            }).ConfigureAwait(false);
+            });
 
             Model = response.Data;
             return Page();

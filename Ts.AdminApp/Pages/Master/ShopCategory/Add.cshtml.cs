@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.ShopCategory
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await shopCategoryClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await shopCategoryClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

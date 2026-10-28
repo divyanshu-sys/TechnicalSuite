@@ -16,11 +16,11 @@ namespace Ts.ShopIn.Service.DataServices
 
             var model = mapper.Map<ProductDataTableForViewRequest>(modelDto);
 
-            var shopCategories = await shopCategoryService.GetAllAsync().ConfigureAwait(false);
-            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync().ConfigureAwait(false);
+            var shopCategories = await shopCategoryService.GetAllAsync();
+            var deliveryPolicies = await dropDownService.GetDeliveryPoliciesAsync();
 
             var downloadableIds = CommonProductDetailService.GetDownloadableIdsForDeliveryPolicy(deliveryPolicies);
-            var entities = await unitOfWork.ProductRepo.GetForListViewAsync(model, downloadableIds).ConfigureAwait(false);
+            var entities = await unitOfWork.ProductRepo.GetForListViewAsync(model, downloadableIds);
 
             foreach (var entity in entities)
             {

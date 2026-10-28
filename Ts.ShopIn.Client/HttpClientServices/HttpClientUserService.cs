@@ -18,6 +18,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
         private const string ApiVersion = "1";
         private const string ApiUrl = $"api/v{ApiVersion}";
         private readonly string ApiBaseUri;
+        private bool disposedValue;
 
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly HttpClient httpClient;
@@ -35,84 +36,84 @@ namespace Ts.ShopIn.Client.HttpClientServices
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.PostAsync(url, model.ToJsonStringContent()).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PostAsync(url, model.ToJsonStringContent());
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> PutAsync<T>(string url, object model, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.PutAsync(url, model.ToJsonStringContent()).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PutAsync(url, model.ToJsonStringContent());
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> PutMultipartAsync<T>(string url, MultipartFormDataContent content, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.PutAsync(url, content).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PutAsync(url, content);
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> GetAsync<T>(string url, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.GetAsync(url).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.GetAsync(url);
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> DeleteAsync<T>(string url, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.DeleteAsync(url).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.DeleteAsync(url);
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         public async Task<ResponseMessageDto<T>> PatchAsync<T>(string url, object model, bool addAuthHeader = false)
         {
             var response = new ResponseMessageDto<T>();
             if (addAuthHeader)
-                if (!await ConfigureAuthHeaderAsync().ConfigureAwait(false))
+                if (!await ConfigureAuthHeaderAsync())
                 {
                     response.ErrorMessage.Add("Token expired. Please try relogin.");
                     return response;
                 }
 
-            var responseMessage = await httpClient.PatchAsync(url, model.ToJsonStringContent()).ConfigureAwait(false);
-            return await ReadResponseAsync(responseMessage, response).ConfigureAwait(false);
+            var responseMessage = await httpClient.PatchAsync(url, model.ToJsonStringContent());
+            return await ReadResponseAsync(responseMessage, response);
         }
 
         private async Task<bool> ConfigureAuthHeaderAsync()
@@ -128,14 +129,14 @@ namespace Ts.ShopIn.Client.HttpClientServices
 
                 if (refreshTokenExpiryAtDate < DateTime.UtcNow.AddSeconds(30)) // RefreshToken has expired
                 {
-                    await httpContextAccessor.HttpContext.SignOutAsync().ConfigureAwait(false);
+                    await httpContextAccessor.HttpContext.SignOutAsync();
                     return false;
                 }
 
                 var httpResponseMessage = await httpClient.PostAsync($"{ApiBaseUri}/{ApiUrl}/authclientusershopin/refresh-token",
                     new AuthRefreshDto { EncodedRefreshToken = httpContextAccessor.HttpContext.User.Claims.GetRefreshToken() }
-                    .ToJsonStringContent()).ConfigureAwait(false);
-                var responseData = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    .ToJsonStringContent());
+                var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     apiToken = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<ApiTokenDto>(responseData)?.Token : default;
@@ -159,13 +160,13 @@ namespace Ts.ShopIn.Client.HttpClientServices
                             IsPersistent = httpContextAccessor.HttpContext.User.Claims.GetIsPersistent()
                         };
 
-                        await httpContextAccessor.HttpContext.SignOutAsync().ConfigureAwait(false);
-                        await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties).ConfigureAwait(false);
+                        await httpContextAccessor.HttpContext.SignOutAsync();
+                        await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties);
                     }
                 }
                 else
                 {
-                    await httpContextAccessor.HttpContext.SignOutAsync().ConfigureAwait(false);
+                    await httpContextAccessor.HttpContext.SignOutAsync();
                     return false;
                 }
             }
@@ -176,7 +177,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
 
         private async Task<ResponseMessageDto<T>> ReadResponseAsync<T>(HttpResponseMessage httpResponseMessage, ResponseMessageDto<T> response)
         {
-            var responseData = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
@@ -188,7 +189,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
                 response.ErrorMessage.Add("You are not authenticated. Please try relogin.");
-                await httpContextAccessor.HttpContext.SignOutAsync().ConfigureAwait(false);
+                await httpContextAccessor.HttpContext.SignOutAsync();
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
                 response.ErrorMessage.Add("You are not authorised. Please try relogin.");
@@ -200,9 +201,23 @@ namespace Ts.ShopIn.Client.HttpClientServices
             return response;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    httpClient.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            httpClient.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

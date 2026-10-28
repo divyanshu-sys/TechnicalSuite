@@ -20,7 +20,7 @@ namespace Ts.Application.Client.AppCustomAttributes
 
         public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next)
         {
-            await next.Invoke().ConfigureAwait(false);
+            await next.Invoke();
         }
 
         public async Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
@@ -49,11 +49,11 @@ namespace Ts.Application.Client.AppCustomAttributes
                                 SiteKey = _siteKey
                             }
                         };
-                        var response = await httpClient.PostAsync(GoogleCaptchaConstant.GoogleCaptchaUrl, new StringContent(JsonConvert.SerializeObject(requestData))).ConfigureAwait(false);
+                        var response = await httpClient.PostAsync(GoogleCaptchaConstant.GoogleCaptchaUrl, new StringContent(JsonConvert.SerializeObject(requestData)));
 
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
-                            var responseData = JsonConvert.DeserializeObject<ReCaptchaResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                            var responseData = JsonConvert.DeserializeObject<ReCaptchaResponse>(await response.Content.ReadAsStringAsync());
 
                             if (responseData == null || !responseData.TokenProperties.Valid || responseData.RiskAnalysis.Score < 0.7f)
                                 context.ModelState.AddModelError(string.Empty, "Invalid request.");

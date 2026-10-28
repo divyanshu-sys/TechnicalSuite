@@ -41,7 +41,7 @@ namespace Ts.Service.DataServices
             unitOfWork.CountryRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = mapper.Map<CountryDto>(entity);
                 else
@@ -64,7 +64,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.CountryRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.CountryRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Country you want to delete was not found.");
             else
@@ -72,7 +72,7 @@ namespace Ts.Service.DataServices
                 try
                 {
                     unitOfWork.CountryRepo.Delete(entity);
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
                     if (rowsChanged > 0)
                         responseResult.Data = true;
                 }
@@ -92,11 +92,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<CountryDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<CountryDto>
             {
-                AaData = mapper.Map<List<CountryDto>>(await unitOfWork.CountryRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.CountryRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<CountryDto>>(await unitOfWork.CountryRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.CountryRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.CountryRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.CountryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -104,7 +104,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<CountryDto>> GetAllAsync()
         {
-            var entities = await unitOfWork.CountryRepo.GetAllAsync().ConfigureAwait(false);
+            var entities = await unitOfWork.CountryRepo.GetAllAsync();
             return mapper.Map<List<CountryDto>>(entities);
         }
 
@@ -112,7 +112,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<CountryDto>();
 
-            var country = await unitOfWork.CountryRepo.GetAsync(id).ConfigureAwait(false);
+            var country = await unitOfWork.CountryRepo.GetAsync(id);
             if (country == null)
                 responseResult.ErrorMessage.Add("Country not found by supplied Id.");
             else
@@ -128,7 +128,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.CountryRepo.GetAsync(countryId).ConfigureAwait(false);
+            var entity = await unitOfWork.CountryRepo.GetAsync(countryId);
 
             if (entity == null)
             {
@@ -143,7 +143,7 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }

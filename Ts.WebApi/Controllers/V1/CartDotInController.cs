@@ -26,7 +26,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post(CreateCartDto modelDto)
         {
-            var responseResult = await cartService.CreateAsync(modelDto, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await cartService.CreateAsync(modelDto, User.Claims.GetUserId());
             if (responseResult.Data != null)
                 return CreatedAtAction(nameof(GetByUserId), responseResult.Data);
             return UnprocessableEntity(responseResult.ErrorMessage);
@@ -36,7 +36,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(GetCartForListViewDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByUserId()
         {
-            var responseResult = await cartService.GetByUserIdAsync(User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await cartService.GetByUserIdAsync(User.Claims.GetUserId());
             return Ok(responseResult);
         }
 
@@ -45,7 +45,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Delete(int productDetailId)
         {
-            var responseResult = await cartService.DeleteAsync(productDetailId, User.Claims.GetUserId()).ConfigureAwait(false);
+            var responseResult = await cartService.DeleteAsync(productDetailId, User.Claims.GetUserId());
             if (responseResult.Data)
                 return NoContent();
             return UnprocessableEntity(responseResult.ErrorMessage);

@@ -83,16 +83,16 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var refreshToken = await unitOfWork.RefreshTokenRepo.GetAsync(authRefreshEncodeDto.RefreshId).ConfigureAwait(false);
+            var refreshToken = await unitOfWork.RefreshTokenRepo.GetAsync(authRefreshEncodeDto.RefreshId);
             if (refreshToken == null)
             {
                 responseResult.ErrorMessage.Add("Refresh token not found.");
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(refreshToken.UserId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(refreshToken.UserId);
             if (user != null && user.CanLogin && user.EmailConfirmed &&
-                (!user.LockoutEnabled || !await userManager.IsLockedOutAsync(user).ConfigureAwait(false)))
+                (!user.LockoutEnabled || !await userManager.IsLockedOutAsync(user)))
             {
                 var apiToken = GetApiToken(user, DateTime.UtcNow, refreshToken.RefreshReloginId, authRefreshEncodeDto.ExpireAt.Value);
                 responseResult.Data = apiToken;
@@ -110,9 +110,9 @@ namespace Ts.ShopIn.Service.DataServices
 
             ClientUser user;
             if (Regex.IsMatch(modelDto.Email, RegxConstant.Email))
-                user = await userManager.FindByEmailAsync(modelDto.Email).ConfigureAwait(false);
+                user = await userManager.FindByEmailAsync(modelDto.Email);
             else
-                user = await userManager.FindByNameAsync(modelDto.Email).ConfigureAwait(false);
+                user = await userManager.FindByNameAsync(modelDto.Email);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("Invalid login user.");
@@ -125,17 +125,17 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            if (user.LockoutEnabled && await userManager.IsLockedOutAsync(user).ConfigureAwait(false))
+            if (user.LockoutEnabled && await userManager.IsLockedOutAsync(user))
             {
                 responseResult.ErrorMessage.Add("Your account is lockedout! Please contact administrator.");
                 return responseResult;
             }
 
-            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, modelDto.Password).ConfigureAwait(false);
+            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, modelDto.Password);
 
             if (isPasswordCorrect && !user.EmailConfirmed)
             {
-                bool success = await SendEmailConfirmationAsync(user).ConfigureAwait(false);
+                bool success = await SendEmailConfirmationAsync(user);
                 responseResult.ErrorMessage.Add("Email not confirmed yet! Please check your email account and gets email confirmed.");
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending email verification link.");
@@ -152,7 +152,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                 int maxLoginFailedAccessAttempts = int.Parse(config["MaxLoginFailedAccessAttempts"]);
 
-                var accessResult = await userManager.AccessFailedAsync(user).ConfigureAwait(false);
+                var accessResult = await userManager.AccessFailedAsync(user);
                 if (!accessResult.Succeeded && accessResult.Errors.Any())
                 {
                     foreach (var error in accessResult.Errors)
@@ -160,28 +160,28 @@ namespace Ts.ShopIn.Service.DataServices
                     return responseResult;
                 }
 
-                var accessFailedCount = await userManager.GetAccessFailedCountAsync(user).ConfigureAwait(false);
+                var accessFailedCount = await userManager.GetAccessFailedCountAsync(user);
 
-                if (await userManager.IsLockedOutAsync(user).ConfigureAwait(false))
+                if (await userManager.IsLockedOutAsync(user))
                     responseResult.ErrorMessage.Add("Your account is lockedout!");
                 else
                     responseResult.ErrorMessage.Add($"Invalid login. {maxLoginFailedAccessAttempts - accessFailedCount} attempts left.");
             }
             else
             {
-                var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                var refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                 try
                 {
                     refreshToken ??= RefreshTokenCommonService.CreateByUserId(user.Id, unitOfWork);
-                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync();
                 }
                 catch (DbUpdateException ex)
                 {
-                    refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                    refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                     if (refreshToken == null)
                     {
                         await Task.Delay(50);
-                        refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id).ConfigureAwait(false);
+                        refreshToken = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(user.Id);
                     }
                     logger.LogError(ex, "An error occurred while updating the refresh token for user {UserId}.", user.Id);
                 }
@@ -191,7 +191,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                 var apiToken = GetApiToken(user, utcDateTime, refreshToken.RefreshReloginId, refreshTokenExpiryAt);
 
-                var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
+                var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user);
                 if (!resetAccessFailedCountResult.Succeeded && resetAccessFailedCountResult.Errors.Any())
                 {
                     foreach (var error in resetAccessFailedCountResult.Errors)
@@ -207,7 +207,7 @@ namespace Ts.ShopIn.Service.DataServices
                     LoggedOn = utcDateTime,
                     IpAddress = modelDto.IpAddress
                 });
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
 
                 responseResult.Data = new()
                 {
@@ -228,14 +228,14 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<bool>();
 
-            var user = await userManager.FindByEmailAsync(modelDto.Email).ConfigureAwait(false);
+            var user = await userManager.FindByEmailAsync(modelDto.Email);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else if (!user.CanLogin)
                 responseResult.ErrorMessage.Add("You cannot login. Please contact administrator.");
             else if (!user.EmailConfirmed)
             {
-                bool success = await SendEmailConfirmationAsync(user).ConfigureAwait(false);
+                bool success = await SendEmailConfirmationAsync(user);
                 responseResult.ErrorMessage.Add("Email not confirmed yet! Please check your email account and gets email confirmed.");
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending email verification link.");
@@ -243,11 +243,11 @@ namespace Ts.ShopIn.Service.DataServices
             else
             {
                 var encryptUserId = resetPasswordProtector.Protect(user.Id, TimeSpan.FromMinutes(Convert.ToDouble(config["ResetPasswordLinkValidFromMinutes"])));
-                var resetPasswordToken = await userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+                var resetPasswordToken = await userManager.GeneratePasswordResetTokenAsync(user);
                 var tokenGeneratedBytes = Encoding.UTF8.GetBytes(resetPasswordToken);
                 var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
                 var resetPasswordLink = $"{config["ShopInAppUrl"]}/resetpassword?encUserId={encryptUserId}&token={codeEncoded}";
-                var success = await emailMessageService.PasswordResetLinkAsync(resetPasswordLink, user.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+                var success = await emailMessageService.PasswordResetLinkAsync(resetPasswordLink, user.Email, user.FirstName, user.LastName, logger);
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending reset password link.");
                 else
@@ -264,7 +264,7 @@ namespace Ts.ShopIn.Service.DataServices
             try
             {
                 var userId = resetPasswordProtector.Unprotect(modelDto.EncUserId);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -274,17 +274,17 @@ namespace Ts.ShopIn.Service.DataServices
                 else
                 {
                     // Remove Refresh Token and Forcing User to relogin
-                    var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork).ConfigureAwait(false);
-                    if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync().ConfigureAwait(false) > 0)
+                    var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork);
+                    if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync() > 0)
                     {
                         var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                        var resetResult = await userManager.ResetPasswordAsync(user, codeDecoded, modelDto.Password).ConfigureAwait(false);
+                        var resetResult = await userManager.ResetPasswordAsync(user, codeDecoded, modelDto.Password);
                         if (resetResult.Succeeded)
                         {
                             responseResult.Data = true;
 
-                            var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user).ConfigureAwait(false);
+                            var resetAccessFailedCountResult = await userManager.ResetAccessFailedCountAsync(user);
                             if (!resetAccessFailedCountResult.Succeeded)
                                 if (resetAccessFailedCountResult.Errors.Any())
                                     foreach (var error in resetAccessFailedCountResult.Errors)
@@ -292,8 +292,8 @@ namespace Ts.ShopIn.Service.DataServices
                         }
                         else
                             if (resetResult.Errors.Any())
-                            foreach (var error in resetResult.Errors)
-                                responseResult.ErrorMessage.Add(error.Description);
+                                foreach (var error in resetResult.Errors)
+                                    responseResult.ErrorMessage.Add(error.Description);
                     }
                     else
                         responseResult.ErrorMessage.Add("Failed to reset password.");
@@ -315,7 +315,7 @@ namespace Ts.ShopIn.Service.DataServices
             try
             {
                 var userId = confirmMailProtector.Unprotect(modelDto.EncUserId);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -324,15 +324,15 @@ namespace Ts.ShopIn.Service.DataServices
                 {
                     var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                     var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                    var resetResult = await userManager.ConfirmEmailAsync(user, codeDecoded).ConfigureAwait(false);
+                    var resetResult = await userManager.ConfirmEmailAsync(user, codeDecoded);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
             }
             catch (Exception ex)
@@ -357,29 +357,29 @@ namespace Ts.ShopIn.Service.DataServices
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else if (!user.CanLogin)
                 responseResult.ErrorMessage.Add("You cannot login. Please contact administrator.");
-            else if (!await userManager.CheckPasswordAsync(user, modelDto.CurrentPassword).ConfigureAwait(false))
+            else if (!await userManager.CheckPasswordAsync(user, modelDto.CurrentPassword))
                 responseResult.ErrorMessage.Add("Current Password is not correct.");
             else if (!user.EmailConfirmed)
                 responseResult.ErrorMessage.Add("Your email is not verified. Please contact administrator.");
             else
             {
                 // Remove Refresh Token and Forcing User to relogin
-                var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork).ConfigureAwait(false);
-                if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync().ConfigureAwait(false) > 0)
+                var isRefreshTokenDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(user.Id, unitOfWork);
+                if (isRefreshTokenDeleted || await unitOfWork.SaveChangesAsync() > 0)
                 {
-                    var resetResult = await userManager.ChangePasswordAsync(user, modelDto.CurrentPassword, modelDto.Password).ConfigureAwait(false);
+                    var resetResult = await userManager.ChangePasswordAsync(user, modelDto.CurrentPassword, modelDto.Password);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
 
                         user.UpdatedOn = DateTime.UtcNow;
                         user.IpAddress = modelDto.IpAddress;
-                        var updateUserResult = await userManager.UpdateAsync(user).ConfigureAwait(false);
+                        var updateUserResult = await userManager.UpdateAsync(user);
                         if (!updateUserResult.Succeeded)
                             if (updateUserResult.Errors.Any())
                                 foreach (var error in updateUserResult.Errors)
@@ -387,8 +387,8 @@ namespace Ts.ShopIn.Service.DataServices
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
                 else
                     responseResult.ErrorMessage.Add("Failed to change password.");
@@ -402,11 +402,11 @@ namespace Ts.ShopIn.Service.DataServices
             var model = mapper.Map<ClientUserDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<ClientUserDto>
             {
-                AaData = mapper.Map<List<ClientUserDto>>(await unitOfWork.ClientUserRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.ClientUserRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<ClientUserDto>>(await unitOfWork.ClientUserRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.ClientUserRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.ClientUserRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.ClientUserRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -414,20 +414,20 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<bool> IsEmailAvailableAsync(string email)
         {
-            return await userManager.FindByEmailAsync(email).ConfigureAwait(false) == null;
+            return await userManager.FindByEmailAsync(email) == null;
         }
 
         public async Task<ResponseMessageDto<ClientUserDto>> RegisterUserAsync(RegisterClientUserDto modelDto)
         {
             var responseResult = new ResponseMessageDto<ClientUserDto>();
 
-            await unitOfWork.BeginTransactionAsync().ConfigureAwait(false);
+            await unitOfWork.BeginTransactionAsync();
             try
             {
-                var siteSetting = await unitOfWork.NextUserSettingRepo.GetWithLockFirstOrDefaultAsync().ConfigureAwait(false);
+                var siteSetting = await unitOfWork.NextUserSettingRepo.GetWithLockFirstOrDefaultAsync();
                 if (siteSetting == null)
                 {
-                    await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                    await unitOfWork.RollbackAsync();
                     responseResult.ErrorMessage.Add("Site setting not found. Please contact administrator.");
                     return responseResult;
                 }
@@ -441,20 +441,20 @@ namespace Ts.ShopIn.Service.DataServices
                 user.UserName = randomService.GenerateUserName(user.FirstName, 3, siteSetting.NextUserNumber.ToString());
 
                 siteSetting.NextUserNumber += 1;
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                var createResult = await userManager.CreateAsync(user).ConfigureAwait(false);
-                await unitOfWork.CommitAsync().ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync();
+                var createResult = await userManager.CreateAsync(user);
+                await unitOfWork.CommitAsync();
 
                 if (createResult.Succeeded)
                 {
                     responseResult.Data = mapper.Map<ClientUserDto>(user);
-                    var addPasswordResult = await userManager.AddPasswordAsync(user, modelDto.Password).ConfigureAwait(false);
+                    var addPasswordResult = await userManager.AddPasswordAsync(user, modelDto.Password);
                     if (addPasswordResult.Succeeded)
                     {
-                        bool success = await SendEmailConfirmationAsync(user).ConfigureAwait(false);
+                        bool success = await SendEmailConfirmationAsync(user);
                         if (!success)
                             responseResult.ErrorMessage.Add("Problem in sending email verification link.");
-                        _ = emailMessageService.NotifyUserRegistrationToAdministratorAsync(user.FirstName, user.LastName, user.UserName, logger).ConfigureAwait(false);
+                        _ = emailMessageService.NotifyUserRegistrationToAdministratorAsync(user.FirstName, user.LastName, user.UserName, logger);
                     }
                     if (addPasswordResult.Errors.Any())
                         foreach (var error in addPasswordResult.Errors)
@@ -466,7 +466,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackAsync().ConfigureAwait(false);
+                await unitOfWork.RollbackAsync();
                 logger.LogError(ex, "Error while registering user.");
             }
 
@@ -477,7 +477,7 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<ClientUserDto>();
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
@@ -497,7 +497,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var date = DateTime.UtcNow;
 
-            var user = await userManager.FindByIdAsync(editUserId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(editUserId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User does not exist to update.");
@@ -506,7 +506,7 @@ namespace Ts.ShopIn.Service.DataServices
             mapper.Map(modelDto, user);
             user.UpdatedOn = date;
 
-            var updateResult = await userManager.UpdateAsync(user).ConfigureAwait(false);
+            var updateResult = await userManager.UpdateAsync(user);
             if (updateResult.Succeeded)
                 responseResult.Data = true;
             else if (updateResult.Errors.Any())
@@ -520,7 +520,7 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<ClientUserDto>();
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 responseResult.ErrorMessage.Add("User not found.");
@@ -535,13 +535,13 @@ namespace Ts.ShopIn.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await IsEmailAvailableAsync(modelDto.Email).ConfigureAwait(false))
+            if (!await IsEmailAvailableAsync(modelDto.Email))
             {
                 responseResult.ErrorMessage.Add("Email is already in use.");
                 return responseResult;
             }
 
-            var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
                 responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
             else
@@ -549,11 +549,11 @@ namespace Ts.ShopIn.Service.DataServices
                 var changeEmailTimeSpan = TimeSpan.FromMinutes(Convert.ToDouble(config["ChangeEmailLinkValidFromMinutes"]));
                 var encryptEmail = changeEmailProtector.Protect(modelDto.Email, changeEmailTimeSpan);
                 var encryptUserId = changeEmailProtector.Protect(userId, changeEmailTimeSpan);
-                var changeEmailToken = await userManager.GenerateChangeEmailTokenAsync(user, modelDto.Email).ConfigureAwait(false);
+                var changeEmailToken = await userManager.GenerateChangeEmailTokenAsync(user, modelDto.Email);
                 var tokenGeneratedBytes = Encoding.UTF8.GetBytes(changeEmailToken);
                 var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
                 var changeEmailLink = $"{config["ShopInAppUrl"]}/confirm-change-email?encUserId={encryptUserId}&encEmail={encryptEmail}&token={codeEncoded}";
-                var success = await emailMessageService.ChangeEmailLinkAsync(changeEmailLink, modelDto.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+                var success = await emailMessageService.ChangeEmailLinkAsync(changeEmailLink, modelDto.Email, user.FirstName, user.LastName, logger);
                 if (!success)
                     responseResult.ErrorMessage.Add("Problem in sending change email link.");
                 else
@@ -571,7 +571,7 @@ namespace Ts.ShopIn.Service.DataServices
             {
                 var userId = changeEmailProtector.Unprotect(modelDto.EncUserId);
                 var email = changeEmailProtector.Unprotect(modelDto.EncEmail);
-                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
                     responseResult.ErrorMessage.Add("Sorry! User does not found in our system.");
                 else if (!user.CanLogin)
@@ -580,15 +580,15 @@ namespace Ts.ShopIn.Service.DataServices
                 {
                     var codeDecodedBytes = WebEncoders.Base64UrlDecode(modelDto.Token);
                     var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-                    var resetResult = await userManager.ChangeEmailAsync(user, email, codeDecoded).ConfigureAwait(false);
+                    var resetResult = await userManager.ChangeEmailAsync(user, email, codeDecoded);
                     if (resetResult.Succeeded)
                     {
                         responseResult.Data = true;
                     }
                     else
                         if (resetResult.Errors.Any())
-                        foreach (var error in resetResult.Errors)
-                            responseResult.ErrorMessage.Add(error.Description);
+                            foreach (var error in resetResult.Errors)
+                                responseResult.ErrorMessage.Add(error.Description);
                 }
             }
             catch (Exception ex)
@@ -602,15 +602,15 @@ namespace Ts.ShopIn.Service.DataServices
 
         private async Task<bool> SendEmailConfirmationAsync(ClientUser user)
         {
-            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user).ConfigureAwait(false);
-            bool success = await emailMessageService.EmailConfirmationLinkAsync(confirmEmailLink, user.Email, user.FirstName, user.LastName, logger).ConfigureAwait(false);
+            string confirmEmailLink = await GetEmailConfirmationLinkAsync(user);
+            bool success = await emailMessageService.EmailConfirmationLinkAsync(confirmEmailLink, user.Email, user.FirstName, user.LastName, logger);
             return success;
         }
 
         private async Task<string> GetEmailConfirmationLinkAsync(ClientUser user)
         {
             var encryptUserId = confirmMailProtector.Protect(user.Id, TimeSpan.FromMinutes(Convert.ToDouble(config["ConfirmEmailLinkValidFromMinutes"])));
-            var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var tokenGeneratedBytes = Encoding.UTF8.GetBytes(confirmEmailToken);
             var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
             var confirmEmailLink = $"{config["ShopInAppUrl"]}/confirmemail?encUserId={encryptUserId}&token={codeEncoded}";

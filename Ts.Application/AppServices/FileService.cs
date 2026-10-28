@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 using System.IO.Compression;
 using Ts.Application.AppConstants;
 using Ts.Application.AppInterfaces;
@@ -28,27 +26,25 @@ namespace Ts.Application.AppServices
         public async Task<FileStatus<string>> UploadByResizeImageAsync(ImageUploadData imageUploadData, string folderPath, bool isPublic = true, string oldFileName = null)
         {
             var fileStatus = new FileStatus<string>();
-            if (!await fileValidationService.ValidateImageFileSizeAsync(imageUploadData.UploadFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(imageUploadData.UploadFile))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return fileStatus;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(imageUploadData.UploadFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(imageUploadData.UploadFile))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return fileStatus;
             }
 
             if (!string.IsNullOrEmpty(oldFileName))
-                await DeleteOldFileAsync(folderPath, oldFileName, isPublic).ConfigureAwait(false);
+                await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
             string uniqueName = GetUniqueFileName(imageUploadData.UploadFile.FileName);
-            var filePath = await CreateFilePathAsync(folderPath, isPublic, uniqueName).ConfigureAwait(false);
+            var filePath = await CreateFilePathAsync(folderPath, isPublic, uniqueName);
             CreateFolderIfNotExist(filePath);
 
-            using var image = Image.Load(imageUploadData.UploadFile.OpenReadStream());
-            image.Mutate(x => x.Resize(imageUploadData.Width, imageUploadData.Height));
-            image.Save(filePath);
+            // Resize the image and save it to the specified path: filePath variable
 
             if (File.Exists(filePath))
                 fileStatus.Data = uniqueName;
@@ -58,12 +54,12 @@ namespace Ts.Application.AppServices
         public async Task<FileStatus<string>> UploadDocumentAsync(IFormFile file, string folderPath, bool isPublic = true, string oldFileName = null)
         {
             var fileStatus = new FileStatus<string>();
-            if (!await fileValidationService.ValidateDocumentFileSizeAsync(file).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateDocumentFileSizeAsync(file))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return fileStatus;
             }
-            if (!await fileValidationService.ValidateDocumentFileExtensionAsync(file).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateDocumentFileExtensionAsync(file))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 fileStatus.ErrorMessage.Add(fileValidationService.DocumentFileExtensionInValidMsg);
@@ -71,30 +67,30 @@ namespace Ts.Application.AppServices
             }
 
             if (!string.IsNullOrEmpty(oldFileName))
-                await DeleteOldFileAsync(folderPath, oldFileName, isPublic).ConfigureAwait(false);
+                await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
-            fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic).ConfigureAwait(false);
+            fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic);
             return fileStatus;
         }
 
         public async Task<FileStatus<string>> UploadImageAsync(IFormFile file, string folderPath, bool isPublic = true, string oldFileName = null)
         {
             var fileStatus = new FileStatus<string>();
-            if (!await fileValidationService.ValidateImageFileSizeAsync(file).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(file))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return fileStatus;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(file).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(file))
             {
                 fileStatus.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return fileStatus;
             }
 
             if (!string.IsNullOrEmpty(oldFileName))
-                await DeleteOldFileAsync(folderPath, oldFileName, isPublic).ConfigureAwait(false);
+                await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
-            fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic).ConfigureAwait(false);
+            fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic);
             return fileStatus;
         }
 
@@ -125,13 +121,13 @@ namespace Ts.Application.AppServices
         private async Task<string> CreateFileAsync(IFormFile file, string folderPath, bool isPublic)
         {
             string uniqueName = GetUniqueFileName(file.FileName);
-            var filePath = await CreateFilePathAsync(folderPath, isPublic, uniqueName).ConfigureAwait(false);
+            var filePath = await CreateFilePathAsync(folderPath, isPublic, uniqueName);
             CreateFolderIfNotExist(filePath);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(stream).ConfigureAwait(false);
-                await stream.DisposeAsync().ConfigureAwait(false);
+                await file.CopyToAsync(stream);
+                await stream.DisposeAsync();
             }
             if (File.Exists(filePath))
                 return uniqueName;
@@ -140,7 +136,7 @@ namespace Ts.Application.AppServices
 
         private async Task DeleteOldFileAsync(string folderPath, string oldFileName, bool isPublic)
         {
-            var deleteFilePath = await CreateFilePathAsync(folderPath, isPublic, oldFileName).ConfigureAwait(false);
+            var deleteFilePath = await CreateFilePathAsync(folderPath, isPublic, oldFileName);
 
             if (File.Exists(deleteFilePath))
                 File.Delete(deleteFilePath);
@@ -152,7 +148,7 @@ namespace Ts.Application.AppServices
 
             foreach (var fileName in fileNames)
             {
-                var deleteFilePath = await CreateFilePathAsync(folderPath, isPublic, fileName).ConfigureAwait(false);
+                var deleteFilePath = await CreateFilePathAsync(folderPath, isPublic, fileName);
 
                 if (File.Exists(deleteFilePath))
                     File.Delete(deleteFilePath);
@@ -202,7 +198,7 @@ namespace Ts.Application.AppServices
                 getFilePath = Path.Combine(env.ContentRootPath, filePath);
 
             if (File.Exists(getFilePath))
-                fileStatus.Data = await File.ReadAllBytesAsync(getFilePath).ConfigureAwait(false);
+                fileStatus.Data = await File.ReadAllBytesAsync(getFilePath);
             else
                 fileStatus.ErrorMessage.Add("File does not exsit.");
             return fileStatus;

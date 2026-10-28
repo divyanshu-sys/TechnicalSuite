@@ -17,7 +17,7 @@ using Ts.ShopIn.Dto.DataTableDtos.ProductDataTableDtos;
 using Ts.ShopIn.Dto.ProductDtos;
 using Ts.ShopIn.Dto.ProductImageDtos;
 using Ts.ShopIn.Service.DataInterfaces;
-using Ts.ShopIn.Service.HttpClientServices.ClientInterfaces;
+using Ts.ShopIn.Service.ExternalInterfaces;
 
 namespace Ts.ShopIn.Service.DataServices
 {
@@ -64,9 +64,9 @@ namespace Ts.ShopIn.Service.DataServices
             entity.IsActive = true;
 
             unitOfWork.ProductRepo.Create(entity);
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync();
 
-            await unitOfWork.CommitAsync().ConfigureAwait(false);
+            await unitOfWork.CommitAsync();
 
             responseResult.Data = mapper.Map<ProductDto>(entity);
 
@@ -80,7 +80,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Product you want to delete was not found.");
             else if (!isAdmin && entity.ProductWorkerId != userId)
@@ -95,9 +95,9 @@ namespace Ts.ShopIn.Service.DataServices
 
                 unitOfWork.ProductRepo.Delete(entity);
 
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
 
-                var fileResponse = await fileClient.DeleteProductImagesAsync(imageNames).ConfigureAwait(false);
+                var fileResponse = await fileClient.DeleteProductImagesAsync(imageNames);
                 if (fileResponse.ErrorMessage.Count > 0)
                 {
                     if (rowsChanged > 0)
@@ -125,12 +125,12 @@ namespace Ts.ShopIn.Service.DataServices
                 model.ProductWorkerId = userId;
             var responseResult = new DataTableResponseDto<GetProductDataTableDto>
             {
-                AaData = mapper.Map<List<GetProductDataTableDto>>(await unitOfWork.ProductRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.ProductRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetProductDataTableDto>>(await unitOfWork.ProductRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.ProductRepo.GetTotalCountAsync()
             };
 
             var userIds = responseResult.AaData.SelectMany(x => new List<string> { x.ProductWorkerId, x.PublishedById }).Distinct();
-            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds).ConfigureAwait(false);
+            var applicationUsers = await applicationUserService.GetUsersByUserIdsAsync(userIds);
 
             foreach (var product in responseResult.AaData)
             {
@@ -140,7 +140,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
 
             if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.ProductWorkerId))
-                responseResult.RecordsFiltered = await unitOfWork.ProductRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.ProductRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -153,7 +153,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<GetUpdateProductDto>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("Product not found by supplied Id.");
             else if (!isAdmin && entity.ProductWorkerId != userId)
@@ -171,7 +171,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(productId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(productId);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Product does not exist to update.");
@@ -200,7 +200,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -214,7 +214,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(productId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(productId);
 
             if (entity == null)
             {
@@ -235,7 +235,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
@@ -256,7 +256,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(productId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(productId);
 
             if (entity == null)
             {
@@ -275,7 +275,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -289,7 +289,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(productId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(productId);
 
             if (entity == null)
             {
@@ -308,7 +308,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -322,18 +322,18 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileSizeAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileSizeInvalidMsg);
                 return responseResult;
             }
-            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile).ConfigureAwait(false))
+            if (!await fileValidationService.ValidateImageFileExtensionAsync(modelDto.ImageFile))
             {
                 responseResult.ErrorMessage.Add(fileValidationService.ImageFileExtensionInValidMsg);
                 return responseResult;
             }
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(productId).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(productId);
 
             if (entity == null)
             {
@@ -349,7 +349,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var productImageHelperModels = JsonConvert.DeserializeObject<List<ProductImageHelperModel>>(entity.ProductImage?.ImageNames ?? "[]");
 
-            var fileResponse = await fileClient.UploadProductImageAsync(modelDto.ImageFile).ConfigureAwait(false);
+            var fileResponse = await fileClient.UploadProductImageAsync(modelDto.ImageFile);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -390,7 +390,7 @@ namespace Ts.ShopIn.Service.DataServices
             entity.UpdatedById = userId;
             entity.UpdatedOn = DateTime.UtcNow;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -404,7 +404,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.ProductRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.ProductRepo.GetAsync(id);
             if (entity == null)
             {
                 responseResult.ErrorMessage.Add("Product not found for the deletion of image.");
@@ -425,7 +425,7 @@ namespace Ts.ShopIn.Service.DataServices
             }
             productImageHelperModels.Remove(productImageHelperModel);
 
-            var fileResponse = await fileClient.DeleteProductImagesAsync([imageName]).ConfigureAwait(false);
+            var fileResponse = await fileClient.DeleteProductImagesAsync([imageName]);
             if (fileResponse.ErrorMessage.Count > 0)
             {
                 foreach (var error in fileResponse.ErrorMessage)
@@ -446,7 +446,7 @@ namespace Ts.ShopIn.Service.DataServices
                 entity.UpdatedOn = DateTime.UtcNow;
             }
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 responseResult.Data = true;
 
@@ -455,12 +455,12 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<IEnumerable<GetProductForListViewDto>> GetForListViewAsync(ProductDataTableForViewRequestDto modelDto)
         {
-            return await CommonProductService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, modelDto, dropDownService).ConfigureAwait(false);
+            return await CommonProductService.GetForListViewAsync(unitOfWork, mapper, shopCategoryService, config, modelDto, dropDownService);
         }
 
         public async Task<IEnumerable<DropdownItemDto>> GetAllForDropDownAsync()
         {
-            var dtos = await unitOfWork.ProductRepo.GetAllAsync().ConfigureAwait(false);
+            var dtos = await unitOfWork.ProductRepo.GetAllAsync();
 
             var modelDto = dtos
                         .Select(x => new DropdownItemDto

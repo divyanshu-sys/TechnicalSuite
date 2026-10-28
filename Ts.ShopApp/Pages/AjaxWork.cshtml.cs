@@ -55,7 +55,7 @@ namespace Ts.ShopApp.Pages
                 Length = Length,
                 SubCategoryName = SubCategoryName,
                 Search = Search
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();
@@ -64,7 +64,7 @@ namespace Ts.ShopApp.Pages
 
         public async Task<IActionResult> OnPostUpdateBlogForViewCount()
         {
-            var response = await blogForViewClient.UpdateBlogForViewCountAsync(BlogId, Request.Headers.ContainsKey("sec-ch-ua")).ConfigureAwait(false);
+            var response = await blogForViewClient.UpdateBlogForViewCountAsync(BlogId, Request.Headers.ContainsKey("sec-ch-ua"));
             if (response?.Data == true)
                 return new NoContentResult();
             if (response == null)
@@ -80,7 +80,7 @@ namespace Ts.ShopApp.Pages
                 Length = Length,
                 ShopCategoryName = ShopCategoryName,
                 Search = Search
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();
@@ -89,7 +89,7 @@ namespace Ts.ShopApp.Pages
 
         public async Task<IActionResult> OnPostUpdateProductDetailForViewCount()
         {
-            var response = await productDetailForViewClient.UpdateProductDetailForViewCountAsync(ProductDetailId, Request.Headers.ContainsKey("sec-ch-ua")).ConfigureAwait(false);
+            var response = await productDetailForViewClient.UpdateProductDetailForViewCountAsync(ProductDetailId, Request.Headers.ContainsKey("sec-ch-ua"));
             if (response?.Data == true)
                 return new NoContentResult();
             if (response == null)
@@ -104,7 +104,7 @@ namespace Ts.ShopApp.Pages
                 Start = Start,
                 Length = Length,
                 Search = Search
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();

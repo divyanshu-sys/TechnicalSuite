@@ -25,7 +25,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await blogClient.GetForUpdateDescriptionAsync(Id).ConfigureAwait(false);
+            var response = await blogClient.GetForUpdateDescriptionAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -41,7 +41,7 @@ namespace Ts.AdminApp.Pages.Blog.BlogDotIn
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
 
-            var response = await blogClient.UpdateDescriptionAsync(Model, Id).ConfigureAwait(false);
+            var response = await blogClient.UpdateDescriptionAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());

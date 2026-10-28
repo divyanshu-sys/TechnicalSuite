@@ -33,7 +33,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await clientUserClient.RegisterUserAsync(Model).ConfigureAwait(false);
+            var response = await clientUserClient.RegisterUserAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -52,7 +52,7 @@ namespace Ts.ShopApp.Pages.Account
 
         public async Task<JsonResult> OnGetIsEmailAvailable()
         {
-            var response = await clientUserClient.IsEmailAvailableAsync(Model.Email).ConfigureAwait(false);
+            var response = await clientUserClient.IsEmailAvailableAsync(Model.Email);
             if (response.ErrorMessage.Count != 0)
                 return new JsonResult(response.ErrorMessage);
             else if (response.Data)

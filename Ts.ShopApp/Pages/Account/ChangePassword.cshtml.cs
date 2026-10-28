@@ -24,7 +24,7 @@ namespace Ts.ShopApp.Pages.Account
 
             if (!ModelState.IsValid) return Page();
 
-            var response = await clientUserClient.ChangePasswordAsync(Model).ConfigureAwait(false);
+            var response = await clientUserClient.ChangePasswordAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -36,7 +36,7 @@ namespace Ts.ShopApp.Pages.Account
             if (response.Data)
             {
                 TempData["success"] = "Password changed successfully.";
-                await HttpContext.SignOutAsync().ConfigureAwait(false);
+                await HttpContext.SignOutAsync();
                 return RedirectToPage("/index");
             }
 

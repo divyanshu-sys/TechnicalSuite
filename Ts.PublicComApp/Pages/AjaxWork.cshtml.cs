@@ -54,7 +54,7 @@ namespace Ts.PublicComApp.Pages
                 CategoryName = CategoryName,
                 SubCategoryName = SubCategoryName,
                 Search = Search
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();
@@ -69,7 +69,7 @@ namespace Ts.PublicComApp.Pages
                 Length = Length,
                 SubCategoryName = SubCategoryName,
                 Search = Search
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();
@@ -78,7 +78,7 @@ namespace Ts.PublicComApp.Pages
 
         public async Task<IActionResult> OnPostUpdatePostForViewCount()
         {
-            var response = await postForViewClient.UpdatePostForViewCountAsync(PostId, Request.Headers.ContainsKey("sec-ch-ua")).ConfigureAwait(false);
+            var response = await postForViewClient.UpdatePostForViewCountAsync(PostId, Request.Headers.ContainsKey("sec-ch-ua"));
             if (response?.Data == true)
                 return new NoContentResult();
             if (response == null)
@@ -88,7 +88,7 @@ namespace Ts.PublicComApp.Pages
 
         public async Task<IActionResult> OnPostUpdateStoryForViewCount()
         {
-            var response = await storyForViewClient.UpdateStoryForViewCountAsync(StoryId, Request.Headers.ContainsKey("sec-ch-ua")).ConfigureAwait(false);
+            var response = await storyForViewClient.UpdateStoryForViewCountAsync(StoryId, Request.Headers.ContainsKey("sec-ch-ua"));
             if (response?.Data == true)
                 return new NoContentResult();
             if (response == null)

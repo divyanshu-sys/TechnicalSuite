@@ -26,7 +26,7 @@ namespace Ts.PublicApp.Pages.Post
                 Start = 0,
                 Length = 12,
                 Search = Q
-            }).ConfigureAwait(false);
+            });
 
             Model = response.Data;
             return Page();

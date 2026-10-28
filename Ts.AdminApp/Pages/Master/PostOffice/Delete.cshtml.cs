@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Master.PostOffice
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await postOfficeClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await postOfficeClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "Post Office deleted successfully.";
             else

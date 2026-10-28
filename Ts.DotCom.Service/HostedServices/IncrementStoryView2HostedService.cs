@@ -29,10 +29,10 @@ namespace Ts.DotCom.Service.HostedServices
 
                 if (snapshot.Count > 0)
                 {
-                    await ProcessWorkAsync(snapshot).ConfigureAwait(false);
+                    await ProcessWorkAsync(snapshot);
                     logger.LogInformation($"DotIn - Database Processing: Incremented total views.");
                 }
-                await Task.Delay(TimeSpan.FromMinutes(2), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMinutes(2), cancellationToken);
             }
 
             logger.LogInformation("DotIn - IncrementStoryView Hosted Service stopping.");
@@ -44,7 +44,7 @@ namespace Ts.DotCom.Service.HostedServices
             var storyService = scope.ServiceProvider.GetRequiredService<IStoryService>();
             try
             {
-                await storyService.IncrementStoryView2ForStoryIdsAsync(data).ConfigureAwait(false);
+                await storyService.IncrementStoryView2ForStoryIdsAsync(data);
             }
             catch (Exception ex)
             {

@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.SubCategory
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await subCategoryClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await subCategoryClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

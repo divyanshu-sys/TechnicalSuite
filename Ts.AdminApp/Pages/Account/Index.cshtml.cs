@@ -54,7 +54,7 @@ namespace Ts.AdminApp.Pages.Account
 
             if (!ModelState.IsValid) return Page();
 
-            var response = await applicationUserClient.LoginAsync(Model).ConfigureAwait(false);
+            var response = await applicationUserClient.LoginAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -93,7 +93,7 @@ namespace Ts.AdminApp.Pages.Account
                     IsPersistent = Model.RememberMe
                 };
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties).ConfigureAwait(false);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties);
                 TempData["notify"] = "Welcome to Technical Suite.";
             }
             if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))

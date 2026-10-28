@@ -24,7 +24,7 @@ namespace Ts.ShopApp.Pages.Cart
 
         public async Task<IActionResult> OnGet()
         {
-            var response = await cartClient.GetByUserAsync().ConfigureAwait(false);
+            var response = await cartClient.GetByUserAsync();
             if (response.ErrorMessage.Count != 0)
                 TempData["fail"] = response.ErrorMessage.ToHtmlBreakString();
             else
@@ -34,7 +34,7 @@ namespace Ts.ShopApp.Pages.Cart
 
         public async Task<IActionResult> OnPostCheckout()
         {
-            var response = await orderClient.CreateRazorpayOrderAsync().ConfigureAwait(false);
+            var response = await orderClient.CreateRazorpayOrderAsync();
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);
@@ -43,7 +43,7 @@ namespace Ts.ShopApp.Pages.Cart
         public async Task<IActionResult> OnPostVerifyOrderPayment()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.ToErrorMessageHtmlString());
-            var response = await orderClient.VerifyRazorpayOrderPaymentAsync(Model).ConfigureAwait(false);
+            var response = await orderClient.VerifyRazorpayOrderPaymentAsync(Model);
             if (response.Data)
                 return new NoContentResult();
             return BadRequest(response.ErrorMessage.ToHtmlBreakString());

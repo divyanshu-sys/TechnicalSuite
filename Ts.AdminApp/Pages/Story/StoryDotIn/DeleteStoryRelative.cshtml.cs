@@ -30,7 +30,7 @@ namespace Ts.AdminApp.Pages.Story.StoryDotIn
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await storyClient.DeleteStoryRelativeAsync(Id, HrefLang).ConfigureAwait(false);
+            var response = await storyClient.DeleteStoryRelativeAsync(Id, HrefLang);
             if (response.Data)
             {
                 TempData["success"] = "Story's relative deleted successfully.";

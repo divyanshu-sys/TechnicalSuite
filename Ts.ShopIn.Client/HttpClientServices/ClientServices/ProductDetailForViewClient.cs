@@ -32,7 +32,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<GetProductDetailForListViewVm>>> GetForListViewAsync(ProductDetailDataTableForViewRequestDto model)
         {
-            var response = await httpPublicService.PostAsync<IEnumerable<GetProductDetailForListViewVm>>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-list-for-view", model, true).ConfigureAwait(false);
+            var response = await httpPublicService.PostAsync<IEnumerable<GetProductDetailForListViewVm>>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-list-for-view", model, true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching product detail for list view: {ErrorMessages}", string.Join(',', response.ErrorMessage));
             return response;
@@ -40,7 +40,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         private async Task<ResponseMessageDto<ProductDetailVm>> GetForViewAsync(string shopCategoryName, string productdetailLink)
         {
-            var response = await httpPublicService.GetAsync<ProductDetailVm>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-for-view/{shopCategoryName}/{productdetailLink}", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<ProductDetailVm>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-for-view/{shopCategoryName}/{productdetailLink}", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching product detail for view: {ErrorMessages}", string.Join(',', response.ErrorMessage));
 
@@ -49,23 +49,23 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                 var cacheEntryOptions = new DistributedCacheEntryOptions()
                     .SetSlidingExpiration(_cacheExpiration)
                     .SetAbsoluteExpiration(_absoluteExpiration);
-                await cache.SetStringAsync(ProductDetailCacheKey + "_" + shopCategoryName + "_" + productdetailLink, JsonConvert.SerializeObject(response), cacheEntryOptions).ConfigureAwait(false);
+                await cache.SetStringAsync(ProductDetailCacheKey + "_" + shopCategoryName + "_" + productdetailLink, JsonConvert.SerializeObject(response), cacheEntryOptions);
             }
             return response;
         }
 
         public async Task<ResponseMessageDto<ProductDetailVm>> GetForViewCacheAsync(string shopCategoryName, string productdetailLink)
         {
-            var cachedData = await cache.GetStringAsync(ProductDetailCacheKey + "_" + shopCategoryName + "_" + productdetailLink).ConfigureAwait(false);
+            var cachedData = await cache.GetStringAsync(ProductDetailCacheKey + "_" + shopCategoryName + "_" + productdetailLink);
             if (!string.IsNullOrEmpty(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<ProductDetailVm>>(cachedData);
 
-            return await GetForViewAsync(shopCategoryName, productdetailLink).ConfigureAwait(false);
+            return await GetForViewAsync(shopCategoryName, productdetailLink);
         }
 
         public async Task<ResponseMessageDto<string>> GetSitemapAsync()
         {
-            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/productdetaildotin/sitemap", true).ConfigureAwait(false);
+            var response = await httpPublicService.GetAsync<string>($"{BaseUrl}/{ApiUrl}/productdetaildotin/sitemap", true);
             if (response.ErrorMessage.Count > 0)
                 logger.LogError("Error fetching sitemap: {ErrorMessages}", string.Join(',', response.ErrorMessage));
             return response;
@@ -75,7 +75,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
         {
             if (isBrowser)
             {
-                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-for-view-count/{productdetailId}", null, true).ConfigureAwait(false);
+                var response = await httpPublicService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/productdetaildotin/productdetail-for-view-count/{productdetailId}", null, true);
                 if (response.ErrorMessage.Count > 0)
                     logger.LogError("Error updating product detail view count: {ErrorMessages}", string.Join(',', response.ErrorMessage));
                 return response;

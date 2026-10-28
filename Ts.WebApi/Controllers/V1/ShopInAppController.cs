@@ -31,7 +31,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public IActionResult ShopIn(ContactFormDto modelDto)
         {
-            _ = emailShopInMessageService.NotifyContactFormPublicAsync(modelDto, logger).ConfigureAwait(false);
+            _ = emailShopInMessageService.NotifyContactFormPublicAsync(modelDto, logger);
             return Accepted();
         }
 
@@ -40,7 +40,7 @@ namespace Ts.WebApi.Controllers.V1
         [ProducesResponseType(typeof(DisplayHomeItemsDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayItems()
         {
-            return Ok(await homeService.DisplayItemsAsync().ConfigureAwait(false));
+            return Ok(await homeService.DisplayItemsAsync());
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Ts.ShopApp.Pages.Order
             {
                 Start = Start,
                 Length = Length,
-            }).ConfigureAwait(false);
+            });
 
             if (response.Data.Count() == 0)
                 return new NoContentResult();
@@ -39,7 +39,7 @@ namespace Ts.ShopApp.Pages.Order
 
         public async Task<IActionResult> OnPostDocumentDetail()
         {
-            var response = await orderClient.GetDocumentDetailAsync(OrderDetailId).ConfigureAwait(false);
+            var response = await orderClient.GetDocumentDetailAsync(OrderDetailId);
             if (response.ErrorMessage.Count != 0)
                 return BadRequest(response.ErrorMessage.ToHtmlBreakString());
             return new JsonResult(response.Data);

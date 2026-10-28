@@ -53,7 +53,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<CategoryVm>>($"{BaseUrl}/{ApiUrl}/category/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<CategoryVm>>($"{BaseUrl}/{ApiUrl}/category/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -61,24 +61,24 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<CategoryVm>>> GetAllAsync()
         {
-            return await httpClientService.GetAsync<IEnumerable<CategoryVm>>($"{BaseUrl}/{ApiUrl}/category", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<CategoryVm>>($"{BaseUrl}/{ApiUrl}/category", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownAsync()
         {
-            var vms = await GetAllAsync().ConfigureAwait(false);
+            var vms = await GetAllAsync();
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }
 
         public async Task<ResponseMessageDto<CategoryVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<CategoryVm>($"{BaseUrl}/{ApiUrl}/category/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<CategoryVm>($"{BaseUrl}/{ApiUrl}/category/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateCategoryVm>> GetForEditAsync(int id)
         {
-            var vm = await GetAsync(id).ConfigureAwait(false);
+            var vm = await GetAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateCategoryVm>>(vm);
             return updateVm;
         }
@@ -88,7 +88,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateCategoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<CategoryVm>($"{BaseUrl}/{ApiUrl}/category", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<CategoryVm>($"{BaseUrl}/{ApiUrl}/category", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateCategoryVm model, int categoryId)
@@ -96,7 +96,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateCategoryDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/category/{categoryId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/category/{categoryId}", modelDto, true);
         }
     }
 }

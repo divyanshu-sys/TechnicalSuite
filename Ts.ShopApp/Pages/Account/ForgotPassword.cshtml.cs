@@ -31,7 +31,7 @@ namespace Ts.ShopApp.Pages.Account
                 return RedirectToPage("/index");
 
             if (!ModelState.IsValid) return Page();
-            var response = await clientUserClient.ForgotPasswordAsync(Model).ConfigureAwait(false);
+            var response = await clientUserClient.ForgotPasswordAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

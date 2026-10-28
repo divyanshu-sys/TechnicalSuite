@@ -18,11 +18,11 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<bool> DeleteByUserIdAsync(string userId)
         {
-            var isDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork).ConfigureAwait(false);
+            var isDeleted = await RefreshTokenCommonService.DeleteByUserIdAsync(userId, unitOfWork);
 
             if (isDeleted) return true;
 
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 return true;
             return false;
@@ -31,7 +31,7 @@ namespace Ts.ShopIn.Service.DataServices
         public async Task<RefreshTokenDto> CreateByUserIdAsync(string userId)
         {
             RefreshToken entity = RefreshTokenCommonService.CreateByUserId(userId, unitOfWork);
-            var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            var rowsChanged = await unitOfWork.SaveChangesAsync();
             if (rowsChanged > 0)
                 return mapper.Map<RefreshTokenDto>(entity);
 

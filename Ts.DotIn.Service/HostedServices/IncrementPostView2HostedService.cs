@@ -29,10 +29,10 @@ namespace Ts.DotIn.Service.HostedServices
 
                 if (snapshot.Count > 0)
                 {
-                    await ProcessWorkAsync(snapshot).ConfigureAwait(false);
+                    await ProcessWorkAsync(snapshot);
                     logger.LogInformation($"DotIn - Database Processing: Incremented total views.");
                 }
-                await Task.Delay(TimeSpan.FromMinutes(2.03), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMinutes(2.03), cancellationToken);
             }
 
             logger.LogInformation("DotIn - IncrementPostView Hosted Service stopping.");
@@ -44,7 +44,7 @@ namespace Ts.DotIn.Service.HostedServices
             var postService = scope.ServiceProvider.GetRequiredService<IPostService>();
             try
             {
-                await postService.IncrementPostView2ForPostIdsAsync(data).ConfigureAwait(false);
+                await postService.IncrementPostView2ForPostIdsAsync(data);
             }
             catch (Exception ex)
             {

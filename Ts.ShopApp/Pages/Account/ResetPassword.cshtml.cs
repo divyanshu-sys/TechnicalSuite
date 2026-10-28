@@ -42,7 +42,7 @@ namespace Ts.ShopApp.Pages.Account
                 return NotFound();
 
             if (!ModelState.IsValid) return Page();
-            var response = await clientUserClient.ResetPasswordAsync(Model, EncUserId, Token).ConfigureAwait(false);
+            var response = await clientUserClient.ResetPasswordAsync(Model, EncUserId, Token);
 
             if (response.Data)
                 TempData["success"] = "Password reset successfully.";

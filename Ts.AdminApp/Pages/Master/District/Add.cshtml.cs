@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.District
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await districtClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await districtClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

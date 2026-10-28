@@ -23,7 +23,7 @@ namespace Ts.AdminApp.Pages.Master.State
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await stateClient.PostAsync(Model).ConfigureAwait(false);
+            var response = await stateClient.PostAsync(Model);
 
             if (response.ErrorMessage.Count != 0)
             {

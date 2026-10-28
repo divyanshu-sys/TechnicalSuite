@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.Master.State
 
         public async Task<IActionResult> OnPost()
         {
-            var response = await stateClient.DeleteAsync(Id).ConfigureAwait(false);
+            var response = await stateClient.DeleteAsync(Id);
             if (response.Data)
                 TempData["success"] = "State deleted successfully.";
             else

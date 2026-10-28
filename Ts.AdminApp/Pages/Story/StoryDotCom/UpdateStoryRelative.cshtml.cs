@@ -27,12 +27,12 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnGet()
         {
-            return await GetForEditAsync().ConfigureAwait(false);
+            return await GetForEditAsync();
         }
 
         private async Task<IActionResult> GetForEditAsync()
         {
-            var response = await storyClient.GetForEditAsync(Id).ConfigureAwait(false);
+            var response = await storyClient.GetForEditAsync(Id);
 
             if (response.ErrorMessage.Count != 0)
             {
@@ -46,15 +46,15 @@ namespace Ts.AdminApp.Pages.Story.StoryDotCom
 
         public async Task<IActionResult> OnPost()
         {
-            if (!ModelState.IsValid) return await GetForEditAsync().ConfigureAwait(false);
+            if (!ModelState.IsValid) return await GetForEditAsync();
 
-            var response = await storyClient.UpdateStoryRelativeAsync(Model, Id).ConfigureAwait(false);
+            var response = await storyClient.UpdateStoryRelativeAsync(Model, Id);
 
             if (response.ErrorMessage.Count != 0)
             {
                 foreach (var error in response.ErrorMessage)
                     ModelState.AddModelError(string.Empty, error);
-                return await GetForEditAsync().ConfigureAwait(false);
+                return await GetForEditAsync();
             }
 
             if (response.Data)

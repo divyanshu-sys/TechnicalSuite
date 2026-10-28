@@ -16,7 +16,7 @@ namespace Ts.Service.ApiSecurity
         {
             var userId = context.User.Claims.GetUserId();
             var refreshReloginId = context.User.Claims.GetRefreshReloginId();
-            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(refreshReloginId) && await refreshTokenService.ValidateReloginAsync(userId, refreshReloginId).ConfigureAwait(false))
+            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(refreshReloginId) && await refreshTokenService.ValidateReloginAsync(userId, refreshReloginId))
                 context.Succeed(requirement);
         }
     }

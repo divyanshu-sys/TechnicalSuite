@@ -30,7 +30,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id)
         {
-            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/state/{id}", true).ConfigureAwait(false);
+            return await httpClientService.DeleteAsync<bool>($"{BaseUrl}/{ApiUrl}/state/{id}", true);
         }
 
         public async Task<ResponseMessageDto<DataTableResponseVm<StateVm>>> GetAllAsync(StateDataTableRequestVm model)
@@ -58,7 +58,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
                     postModel.OrderList.Add(sort);
                 }
             }
-            var responseData = await httpClientService.PostAsync<DataTableResponseVm<StateVm>>($"{BaseUrl}/{ApiUrl}/state/datatable", postModel, true).ConfigureAwait(false);
+            var responseData = await httpClientService.PostAsync<DataTableResponseVm<StateVm>>($"{BaseUrl}/{ApiUrl}/state/datatable", postModel, true);
             if (responseData.Data != null)
                 responseData.Data.Draw = model.Draw;
             return responseData;
@@ -66,24 +66,24 @@ namespace Ts.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<IEnumerable<StateVm>>> GetAllByCountryIdAsync(int countryId)
         {
-            return await httpClientService.GetAsync<IEnumerable<StateVm>>($"{BaseUrl}/{ApiUrl}/state/by-countryId/{countryId}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<IEnumerable<StateVm>>($"{BaseUrl}/{ApiUrl}/state/by-countryId/{countryId}", true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>> GetAllForDropDownByCountryIdAsync(int countryId)
         {
-            var vms = await GetAllByCountryIdAsync(countryId).ConfigureAwait(false);
+            var vms = await GetAllByCountryIdAsync(countryId);
             var dropDown = mapper.Map<ResponseMessageDto<IEnumerable<KeyValuePair<int, string>>>>(vms);
             return dropDown;
         }
 
         public async Task<ResponseMessageDto<StateVm>> GetAsync(int id)
         {
-            return await httpClientService.GetAsync<StateVm>($"{BaseUrl}/{ApiUrl}/state/{id}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<StateVm>($"{BaseUrl}/{ApiUrl}/state/{id}", true);
         }
 
         public async Task<ResponseMessageDto<UpdateStateVm>> GetForEditAsync(int id)
         {
-            var vm = await GetAsync(id).ConfigureAwait(false);
+            var vm = await GetAsync(id);
             var updateVm = mapper.Map<ResponseMessageDto<UpdateStateVm>>(vm);
             return updateVm;
         }
@@ -93,7 +93,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<CreateStateDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PostAsync<StateVm>($"{BaseUrl}/{ApiUrl}/state", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<StateVm>($"{BaseUrl}/{ApiUrl}/state", modelDto, true);
         }
 
         public async Task<ResponseMessageDto<bool>> PutAsync(UpdateStateVm model, int stateId)
@@ -101,7 +101,7 @@ namespace Ts.Client.HttpClientServices.ClientServices
             var ipAddress = Convert.ToString(httpContextAccessor.HttpContext.Connection.RemoteIpAddress);
             var modelDto = mapper.Map<UpdateStateDto>(model);
             modelDto.IpAddress = ipAddress;
-            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/state/{stateId}", modelDto, true).ConfigureAwait(false);
+            return await httpClientService.PutAsync<bool>($"{BaseUrl}/{ApiUrl}/state/{stateId}", modelDto, true);
         }
     }
 }

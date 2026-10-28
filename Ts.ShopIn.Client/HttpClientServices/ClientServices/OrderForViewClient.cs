@@ -25,27 +25,27 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
 
         public async Task<ResponseMessageDto<GetRazorpayOrderDto>> CreateRazorpayOrderAsync()
         {
-            return await httpClientService.PostAsync<GetRazorpayOrderDto>($"{BaseUrl}/{ApiUrl}/orderdotin/create-razorpay-order", null, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<GetRazorpayOrderDto>($"{BaseUrl}/{ApiUrl}/orderdotin/create-razorpay-order", null, true);
         }
 
         public async Task<ResponseMessageDto<IEnumerable<OrderVm>>> GetByUserAsync(OrderDataTableForViewRequestDto model)
         {
-            return await httpClientService.PostAsync<IEnumerable<OrderVm>>($"{BaseUrl}/{ApiUrl}/orderdotin/getbyuser", model, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<IEnumerable<OrderVm>>($"{BaseUrl}/{ApiUrl}/orderdotin/getbyuser", model, true);
         }
 
         public async Task<ResponseMessageDto<GetPaymentStatusDto>> GetPaymentStatusAsync(string paymentId)
         {
-            return await httpClientService.GetAsync<GetPaymentStatusDto>($"{BaseUrl}/{ApiUrl}/orderdotin/paymentstatus/{paymentId}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<GetPaymentStatusDto>($"{BaseUrl}/{ApiUrl}/orderdotin/paymentstatus/{paymentId}", true);
         }
 
         public async Task<ResponseMessageDto<bool>> VerifyRazorpayOrderPaymentAsync(VerifyRazorpayPaymentDto model)
         {
-            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/orderdotin/verify-razorpay-order-payment", model, true).ConfigureAwait(false);
+            return await httpClientService.PostAsync<bool>($"{BaseUrl}/{ApiUrl}/orderdotin/verify-razorpay-order-payment", model, true);
         }
 
         public async Task<ResponseMessageDto<DownloadDocumentDto>> GetDocumentDetailAsync(int OrderDetailId)
         {
-            return await httpClientService.GetAsync<DownloadDocumentDto>($"{BaseUrl}/{ApiUrl}/orderdotin/document/{OrderDetailId}", true).ConfigureAwait(false);
+            return await httpClientService.GetAsync<DownloadDocumentDto>($"{BaseUrl}/{ApiUrl}/orderdotin/document/{OrderDetailId}", true);
         }
     }
 }

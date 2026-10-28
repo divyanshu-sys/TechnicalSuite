@@ -42,7 +42,7 @@ namespace Ts.Service.DataServices
             unitOfWork.PostOfficeRepo.Create(entity);
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = mapper.Map<PostOfficeDto>(entity);
                 else
@@ -65,7 +65,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostOfficeRepo.GetAsync(id).ConfigureAwait(false);
+            var entity = await unitOfWork.PostOfficeRepo.GetAsync(id);
             if (entity == null)
                 responseResult.ErrorMessage.Add("PostOffice you want to delete was not found.");
             else
@@ -73,7 +73,7 @@ namespace Ts.Service.DataServices
                 try
                 {
                     unitOfWork.PostOfficeRepo.Delete(entity);
-                    var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                    var rowsChanged = await unitOfWork.SaveChangesAsync();
                     if (rowsChanged > 0)
                         responseResult.Data = true;
                 }
@@ -93,11 +93,11 @@ namespace Ts.Service.DataServices
             var model = mapper.Map<PostOfficeDataTableRequest>(modelDto);
             var responseResult = new DataTableResponseDto<GetPostOfficeDataTableDto>
             {
-                AaData = mapper.Map<List<GetPostOfficeDataTableDto>>(await unitOfWork.PostOfficeRepo.GetAllAsync(model).ConfigureAwait(false)),
-                RecordsTotal = await unitOfWork.PostOfficeRepo.GetTotalCountAsync().ConfigureAwait(false)
+                AaData = mapper.Map<List<GetPostOfficeDataTableDto>>(await unitOfWork.PostOfficeRepo.GetAllAsync(model)),
+                RecordsTotal = await unitOfWork.PostOfficeRepo.GetTotalCountAsync()
             };
             if (!string.IsNullOrEmpty(modelDto.Search?.Value))
-                responseResult.RecordsFiltered = await unitOfWork.PostOfficeRepo.GetRecordsFilteredAsync(model).ConfigureAwait(false);
+                responseResult.RecordsFiltered = await unitOfWork.PostOfficeRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
@@ -105,7 +105,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<PostOfficeDto>> GetAllByDistrictIdAsync(int districtId)
         {
-            var entities = await unitOfWork.PostOfficeRepo.GetAllByDistrictIdAsync(districtId).ConfigureAwait(false);
+            var entities = await unitOfWork.PostOfficeRepo.GetAllByDistrictIdAsync(districtId);
             return mapper.Map<List<PostOfficeDto>>(entities);
         }
 
@@ -113,7 +113,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<PostOfficeDto>();
 
-            var state = await unitOfWork.PostOfficeRepo.GetAsync(id).ConfigureAwait(false);
+            var state = await unitOfWork.PostOfficeRepo.GetAsync(id);
             if (state == null)
                 responseResult.ErrorMessage.Add("PostOffice not found by supplied Id.");
             else
@@ -126,7 +126,7 @@ namespace Ts.Service.DataServices
         {
             var responseResult = new ResponseMessageDto<GetUpdatePostOfficeDto>();
 
-            var state = await unitOfWork.PostOfficeRepo.GetAsync(id).ConfigureAwait(false);
+            var state = await unitOfWork.PostOfficeRepo.GetAsync(id);
             if (state == null)
                 responseResult.ErrorMessage.Add("PostOffice not found by supplied Id.");
             else
@@ -142,7 +142,7 @@ namespace Ts.Service.DataServices
 
             var responseResult = new ResponseMessageDto<bool>();
 
-            var entity = await unitOfWork.PostOfficeRepo.GetAsync(postOfficeId).ConfigureAwait(false);
+            var entity = await unitOfWork.PostOfficeRepo.GetAsync(postOfficeId);
 
             if (entity == null)
             {
@@ -157,7 +157,7 @@ namespace Ts.Service.DataServices
 
             try
             {
-                var rowsChanged = await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                var rowsChanged = await unitOfWork.SaveChangesAsync();
                 if (rowsChanged > 0)
                     responseResult.Data = true;
             }
