@@ -161,6 +161,12 @@ namespace Ts.ShopIn.Service.DataServices
                 imageNames.AddRange(from productdetailImageHelperModel in productdetailImageHelperModels
                                     select productdetailImageHelperModel.Name);
 
+                var documentName = string.Empty;
+                if (entity.ProductDetailDocument != null)
+                {
+                    documentName = entity.ProductDetailDocument.Document;
+                }
+
                 unitOfWork.ProductDetailRepo.Delete(entity);
 
                 var rowsChanged = await unitOfWork.SaveChangesAsync();
@@ -178,15 +184,15 @@ namespace Ts.ShopIn.Service.DataServices
                     return responseResult;
                 }
 
-                if (entity.ProductDetailDocument != null)
+                if (!string.IsNullOrWhiteSpace(documentName))
                 {
-                    var documentFileResponse = await fileClient.DeleteProductDetailDocumentsAsync([entity.ProductDetailDocument.Document]);
-                    if (fileResponse.ErrorMessage.Count > 0)
+                    var documentFileResponse = await fileClient.DeleteProductDetailDocumentsAsync([documentName]);
+                    if (documentFileResponse.ErrorMessage.Count > 0)
                     {
                         if (rowsChanged > 0)
                             responseResult.ErrorMessage.Add("ProductDetail is deleted but unable to delete its all documents!");
 
-                        foreach (var error in fileResponse.ErrorMessage)
+                        foreach (var error in documentFileResponse.ErrorMessage)
                         {
                             responseResult.ErrorMessage.Add(error);
                         }
