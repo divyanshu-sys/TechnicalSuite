@@ -58,10 +58,22 @@ namespace Ts.ShopIn.Service.DataServices
                 IsAvailable = entity.IsAvailable && entity.IsPublished,
                 ExchangePolicyId = entity.ExchangePolicyId,
                 DeliveryPolicyId = entity.DeliveryPolicyId,
-                ReturnPolicyId = entity.ReturnPolicyId,
+                ReturnPolicyId = entity.ReturnPolicyId
             };
             productDetail.Mrp = RoundingToDecimal(entity.Mrp, productDetail.CurrencyLetter);
             productDetail.Price = RoundingToDecimal(entity.Price, productDetail.CurrencyLetter);
+            return productDetail;
+        }
+
+        public static GetProductDetailForListViewDto SetProductDetailForListOrderViewDto(IConfiguration config, ProductDetail entity)
+        {
+            var productDetail = new GetProductDetailForListViewDto
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                ProductDetailLink = entity.ProductDetailLink,
+                MainImageUrl = entity.MainImage == null ? null : $"{config.GetValue<string>("SrcApiShopIn:ProductDetailImageUrl")}/{entity.MainImage}"
+            };
             return productDetail;
         }
 

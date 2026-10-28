@@ -31,7 +31,7 @@
         <h2>@CategoryConstant.Products <a class="view-all" asp-page="/product/list" title="View all @CategoryConstant.Products">View All <i class="fa fa-arrow-right"></i></a></h2>
     </div>
     <div class="width-left-100per">
-        <partial name="_ProductDetailGalleryCasePartial" model="Model.Model.ProductDetailForListView" />
+        <partial name="_ProductDetailGalleryCasePartial" model="Model.Model?.ProductDetailForListView" />
     </div>
 </div>
 <partial name="AdsPartials/_ResponsiveAd3Partial" model="true" />
@@ -40,7 +40,7 @@
         <h2>@CategoryConstant.Blogs <a class="view-all" asp-page="/blog/list" title="View all @CategoryConstant.Blogs">View All <i class="fa fa-arrow-right"></i></a></h2>
     </div>
     <div class="width-left-100per">
-        <partial name="_BlogGalleryCasePartial" model="Model.Model.BlogForListView" />
+        <partial name="_BlogGalleryCasePartial" model="Model.Model?.BlogForListView" />
     </div>
 </div>
 <partial name="AdsPartials/_MultiplexAd1Partial" model="true" />

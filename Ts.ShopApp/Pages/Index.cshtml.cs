@@ -21,8 +21,6 @@ namespace Ts.ShopApp.Pages
         {
             var response = await homeClient.DisplayItemsCacheAsync();
             Model = response.Data;
-            if (response.ErrorMessage.Count != 0)
-                TempData["fail"] = response.ErrorMessage.ToHtmlBreakString();
             return Page();
         }
     }
