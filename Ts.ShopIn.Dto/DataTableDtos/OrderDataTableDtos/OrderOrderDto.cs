@@ -2,6 +2,6 @@
 {
     public class OrderOrderDto
     {
-        public bool CreatedOn { get; set; }
+        public bool OrderedOn { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using Ts.ShopIn.Dto.BlogDtos;
 using Ts.ShopIn.Dto.CartDtos;
 using Ts.ShopIn.Dto.ClientUserDtos;
 using Ts.ShopIn.Dto.DataTableDtos.BlogDataTableDtos;
+using Ts.ShopIn.Dto.DataTableDtos.OrderDataTableDtos;
 using Ts.ShopIn.Dto.DataTableDtos.ProductDataTableDtos;
 using Ts.ShopIn.Dto.DataTableDtos.ProductDetailDataTableDtos;
 using Ts.ShopIn.Dto.ProductDetailDtos;
@@ -32,6 +33,7 @@ namespace Ts.ShopIn.Client.AutoMapper
             CreateMap<BlogDataTableRequestVm, BlogDataTableRequestDto>();
             CreateMap<ProductDataTableRequestVm, ProductDataTableRequestDto>();
             CreateMap<ProductDetailDataTableRequestVm, ProductDetailDataTableRequestDto>();
+            CreateMap<OrderDataTableRequestVm, OrderDataTableRequestDto>();
             #endregion
 
             CreateMap(typeof(ResponseMessageDto<>), typeof(ResponseMessageDto<>));
