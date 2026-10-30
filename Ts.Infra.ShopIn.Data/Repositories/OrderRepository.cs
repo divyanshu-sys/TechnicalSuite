@@ -130,7 +130,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             var queriableEntity = dbContext.Orders.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.OrderNumber.Contains(requestModel.Search.Value));
 
             return queriableEntity;

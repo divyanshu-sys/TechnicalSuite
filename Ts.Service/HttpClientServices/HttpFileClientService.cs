@@ -62,19 +62,19 @@ namespace Ts.Service.HttpClientServices
         {
             var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
             else if (httpResponseMessage.StatusCode == HttpStatusCode.UnprocessableEntity)
-                response.ErrorMessage = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
+                response.ErrorMessage = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Created || httpResponseMessage.StatusCode == HttpStatusCode.Accepted || httpResponseMessage.StatusCode == HttpStatusCode.NoContent)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
                 response.ErrorMessage.Add("File Api! You are not authenticated.");
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
                 response.ErrorMessage.Add("File Api! You are not authorised.");
             else
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
 
             return response;
         }

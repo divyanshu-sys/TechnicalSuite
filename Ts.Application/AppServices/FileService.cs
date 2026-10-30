@@ -37,7 +37,7 @@ namespace Ts.Application.AppServices
                 return fileStatus;
             }
 
-            if (!string.IsNullOrEmpty(oldFileName))
+            if (!string.IsNullOrWhiteSpace(oldFileName))
                 await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
             string uniqueName = GetUniqueFileName(imageUploadData.UploadFile.FileName);
@@ -66,7 +66,7 @@ namespace Ts.Application.AppServices
                 return fileStatus;
             }
 
-            if (!string.IsNullOrEmpty(oldFileName))
+            if (!string.IsNullOrWhiteSpace(oldFileName))
                 await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
             fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic);
@@ -87,7 +87,7 @@ namespace Ts.Application.AppServices
                 return fileStatus;
             }
 
-            if (!string.IsNullOrEmpty(oldFileName))
+            if (!string.IsNullOrWhiteSpace(oldFileName))
                 await DeleteOldFileAsync(folderPath, oldFileName, isPublic);
 
             fileStatus.Data = await CreateFileAsync(file, folderPath, isPublic);
@@ -179,7 +179,7 @@ namespace Ts.Application.AppServices
             using var archive = new ZipArchive(file.OpenReadStream());
             foreach (var entry in archive.Entries)
             {
-                if (!string.IsNullOrEmpty(Path.GetExtension(entry.FullName)))
+                if (!string.IsNullOrWhiteSpace(Path.GetExtension(entry.FullName)))
                     entry.ExtractToFile(Path.Combine(uploadFolder, entry.FullName), true);
                 else
                     Directory.CreateDirectory(Path.Combine(uploadFolder, entry.FullName));

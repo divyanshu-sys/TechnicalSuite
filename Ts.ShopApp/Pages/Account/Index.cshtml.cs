@@ -36,7 +36,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                if (!string.IsNullOrWhiteSpace(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                     return Redirect(ReturnUrl);
                 return RedirectToPage("/index");
             }
@@ -47,7 +47,7 @@ namespace Ts.ShopApp.Pages.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                if (!string.IsNullOrWhiteSpace(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                     return Redirect(ReturnUrl);
                 return RedirectToPage("/index");
             }
@@ -96,7 +96,7 @@ namespace Ts.ShopApp.Pages.Account
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, properties);
                 TempData["success"] = "Welcome to Shop.TechnicalSuite.in";
             }
-            if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+            if (!string.IsNullOrWhiteSpace(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                 return Redirect(ReturnUrl);
             return RedirectToPage("/index");
         }

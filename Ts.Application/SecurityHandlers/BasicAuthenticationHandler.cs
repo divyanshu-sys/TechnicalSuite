@@ -29,7 +29,7 @@ namespace Ts.Application.SecurityHandlers
                 return Task.FromResult(AuthenticateResult.Fail(Unauthorized));
 
             string authValue = Request.Headers[AuthorizationKey];
-            if (string.IsNullOrEmpty(authValue)
+            if (string.IsNullOrWhiteSpace(authValue)
                 || !authValue.StartsWith($"{AuthorizationType} ", StringComparison.OrdinalIgnoreCase))
                 return Task.FromResult(AuthenticateResult.Fail(Unauthorized));
 

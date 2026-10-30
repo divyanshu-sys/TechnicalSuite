@@ -91,7 +91,7 @@
     @if (Model.Model.MainImageUrl != null)
     {
         <img class="width-100per" src="@Model.Model.MainImageUrl" alt="@Model.Model.Title" onerror="loadAlternateImage(this);" />
-        @if (!string.IsNullOrEmpty(Model.Model.MainImageSource))
+        @if (!string.IsNullOrWhiteSpace(Model.Model.MainImageSource))
         {
             <div class="txt-right font-15"><em>Image Source: @Html.Raw(Model.Model.MainImageSource)</em></div>
         }
@@ -105,7 +105,7 @@
         <article>
             @Html.Raw(Model.Model.Description)
         </article>
-        @if (!string.IsNullOrEmpty(Model.Model.BlogSource))
+        @if (!string.IsNullOrWhiteSpace(Model.Model.BlogSource))
         {
             <div class="txt-right"><em>Post Source: @Html.Raw(Model.Model.BlogSource)</em></div>
         }

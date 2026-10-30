@@ -166,7 +166,7 @@ namespace Ts.Application.Helpers
         public static DateTime GetDateTimeFromString(string date, string time)
         {
             var Date = DateTime.ParseExact(date, DateTimeFormats, CultureInfo.InvariantCulture);
-            if (string.IsNullOrEmpty(time)) return Date;
+            if (string.IsNullOrWhiteSpace(time)) return Date;
             var Time = DateTime.ParseExact(time, new[] { "h:mm tt", "hh:mm tt", "HH:mm", "H:mm" }, CultureInfo.InvariantCulture);
             Date = Date.Add(Time.TimeOfDay);
             return Date;
@@ -174,7 +174,7 @@ namespace Ts.Application.Helpers
 
         public static DateTime GetDateTimeFromString(DateTime date, string time)
         {
-            if (string.IsNullOrEmpty(time)) return date;
+            if (string.IsNullOrWhiteSpace(time)) return date;
             var Time = DateTime.ParseExact(time, new[] { "h:mm tt", "hh:mm tt", "HH:mm", "H:mm" }, CultureInfo.InvariantCulture);
             date = date.Add(Time.TimeOfDay);
             return date;

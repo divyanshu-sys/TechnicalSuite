@@ -357,7 +357,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> ChangePasswordAsync(ChangePasswordDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -417,7 +417,7 @@ namespace Ts.Service.DataServices
                 AaData = mapper.Map<List<ApplicationUserDto>>(await unitOfWork.ApplicationUserRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.ApplicationUserRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.ApplicationUserRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -431,7 +431,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<ApplicationUserDto>> RegisterUserAsync(RegisterApplicationUserDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<ApplicationUserDto>();
@@ -517,7 +517,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateForEditAsync(string editUserId, UpdateApplicationUserDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -694,7 +694,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateUserPrivilegeAsync(UpdateApplicationUserPrivilegeDto modelDto, string updateUserId, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -812,7 +812,7 @@ namespace Ts.Service.DataServices
 
         public async Task<IEnumerable<ApplicationUserDto>> GetAllByRolesAsync(IEnumerable<string> roles, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new List<ApplicationUserDto>();

@@ -77,7 +77,7 @@ namespace Ts.Client.HttpClientServices
             if (tokenHandler.ReadToken(authTokenDto.ApiToken) is JwtSecurityToken payload && payload.ValidTo < DateTime.UtcNow.AddSeconds(30)) // Token has expired
             {
                 var refreshTokenExpiryAt = payload.Claims.First(x => x.Type == "refreshexpiryat").Value;
-                var refreshTokenExpiryAtDate = string.IsNullOrEmpty(refreshTokenExpiryAt) ? (DateTime?)null : Convert.ToDateTime(refreshTokenExpiryAt);
+                var refreshTokenExpiryAtDate = string.IsNullOrWhiteSpace(refreshTokenExpiryAt) ? (DateTime?)null : Convert.ToDateTime(refreshTokenExpiryAt);
 
                 if (refreshTokenExpiryAtDate < DateTime.UtcNow.AddSeconds(30)) // RefreshToken has expired
                 {
@@ -92,8 +92,8 @@ namespace Ts.Client.HttpClientServices
                     var refreshResponseData = await refreshHttpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     if (refreshHttpResponseMessage.StatusCode == HttpStatusCode.OK)
                     {
-                        var newApiToken = !string.IsNullOrEmpty(refreshResponseData) ? JsonConvert.DeserializeObject<ApiTokenDto>(refreshResponseData)?.Token : default;
-                        if (string.IsNullOrEmpty(newApiToken)) return false;
+                        var newApiToken = !string.IsNullOrWhiteSpace(refreshResponseData) ? JsonConvert.DeserializeObject<ApiTokenDto>(refreshResponseData)?.Token : default;
+                        if (string.IsNullOrWhiteSpace(newApiToken)) return false;
                         authTokenDto.ApiToken = newApiToken;
                         CacheAuthToken(authTokenDto);
                     }
@@ -121,7 +121,7 @@ namespace Ts.Client.HttpClientServices
             var authResponseData = await authHttpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (authHttpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                var authTokenDto = !string.IsNullOrEmpty(authResponseData) ? JsonConvert.DeserializeObject<AuthTokenDto>(authResponseData) : default;
+                var authTokenDto = !string.IsNullOrWhiteSpace(authResponseData) ? JsonConvert.DeserializeObject<AuthTokenDto>(authResponseData) : default;
 
                 if (authTokenDto != null)
                     CacheAuthToken(authTokenDto);
@@ -143,13 +143,13 @@ namespace Ts.Client.HttpClientServices
         {
             var responseData = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
             else if (httpResponseMessage.StatusCode == HttpStatusCode.UnprocessableEntity)
-                response.ErrorMessage = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
+                response.ErrorMessage = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Created || httpResponseMessage.StatusCode == HttpStatusCode.Accepted || httpResponseMessage.StatusCode == HttpStatusCode.NoContent)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
                 response.ErrorMessage.Add("You are not authenticated. Please try relogin.");
@@ -161,7 +161,7 @@ namespace Ts.Client.HttpClientServices
                 cache.Remove(AuthCacheKey);
             }
             else
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
 
             return response;
         }

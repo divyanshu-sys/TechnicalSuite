@@ -26,7 +26,7 @@
                             <div class="mb-3 col-md-12">
                                 <div class="text-center">
                                     <input type="hidden" asp-for="Model.MainImageUrl" />
-                                    @if (!string.IsNullOrEmpty(Model.Model.MainImageUrl))
+                                    @if (!string.IsNullOrWhiteSpace(Model.Model.MainImageUrl))
                                     {
                                         <img width="800" class="max-w-100" src="@Model.Model.MainImageUrl" alt="Main Image" />
                                     }

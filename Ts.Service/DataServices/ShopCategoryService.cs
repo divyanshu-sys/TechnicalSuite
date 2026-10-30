@@ -34,7 +34,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<ShopCategoryDto>> CreateAsync(CreateShopCategoryDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<ShopCategoryDto>();
@@ -75,7 +75,7 @@ namespace Ts.Service.DataServices
                 AaData = mapper.Map<List<ShopCategoryDto>>(await unitOfWork.ShopCategoryRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.ShopCategoryRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.ShopCategoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -85,7 +85,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<ShopCategoryDto>> GetAllAsync()
         {
             var cachedEntity = await cache.GetStringAsync(EntityCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<ShopCategoryDto>>(cachedEntity);
 
             var entities = await unitOfWork.ShopCategoryRepo.GetAllAsync();
@@ -112,7 +112,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int ShopCategoryId, UpdateShopCategoryDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
             var responseResult = new ResponseMessageDto<bool>();
 

@@ -51,7 +51,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<ProductDto>> CreateAsync(CreateProductDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<ProductDto>();
@@ -75,7 +75,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -135,11 +135,11 @@ namespace Ts.ShopIn.Service.DataServices
             foreach (var product in responseResult.AaData)
             {
                 product.ProductWorker = applicationUsers.SingleOrDefault(x => x.Id == product.ProductWorkerId);
-                if (!string.IsNullOrEmpty(product.PublishedById))
+                if (!string.IsNullOrWhiteSpace(product.PublishedById))
                     product.PublishedBy = applicationUsers.SingleOrDefault(x => x.Id == product.PublishedById);
             }
 
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.ProductWorkerId))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value) || !string.IsNullOrWhiteSpace(modelDto.ProductWorkerId))
                 responseResult.RecordsFiltered = await unitOfWork.ProductRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -148,7 +148,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<GetUpdateProductDto>> GetForEditAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<GetUpdateProductDto>();
@@ -166,7 +166,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> PublishProductAsync(int productId, PublishProductDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -209,7 +209,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int productId, UpdateProductDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -251,7 +251,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateProductWorkerAsync(int productId, UpdateProductWorkerDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -284,7 +284,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(int productId, UpdateProductMainImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -317,7 +317,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateProductImageAsync(int productId, UpdateProductImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -399,7 +399,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteProductImageAsync(int id, string imageName, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();

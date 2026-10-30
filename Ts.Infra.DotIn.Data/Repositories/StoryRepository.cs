@@ -121,7 +121,7 @@ namespace Ts.Infra.DotIn.Data.Repositories
         {
             var queryable = dbContext.Stories.AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestModel.Search))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search))
                 queryable = queryable.Where(x => x.Title.Contains(requestModel.Search)
                 || x.Keyword1.Contains(requestModel.Search)
                 || x.Keyword2.Contains(requestModel.Search));
@@ -148,11 +148,11 @@ namespace Ts.Infra.DotIn.Data.Repositories
             var queriableEntity = dbContext.Stories.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Title.Contains(requestModel.Search.Value)
                 || x.StoryLink == requestModel.Search.Value);
 
-            if (!string.IsNullOrEmpty(requestModel.StoryWorkerId))
+            if (!string.IsNullOrWhiteSpace(requestModel.StoryWorkerId))
                 queriableEntity = queriableEntity.Where(x => x.StoryWorkerId == requestModel.StoryWorkerId);
 
             return queriableEntity;

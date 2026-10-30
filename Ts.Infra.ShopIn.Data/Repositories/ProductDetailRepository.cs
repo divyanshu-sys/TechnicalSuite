@@ -160,7 +160,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         {
             var queryable = dbContext.ProductDetails.AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestModel.Search))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search))
                 queryable = queryable.Where(x => x.Title.Contains(requestModel.Search)
                 || x.Keyword1.Contains(requestModel.Search)
                 || x.Keyword2.Contains(requestModel.Search)
@@ -197,11 +197,11 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             var queriableEntity = dbContext.ProductDetails.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Title.Contains(requestModel.Search.Value)
                 || x.ProductDetailLink == requestModel.Search.Value);
 
-            if (!string.IsNullOrEmpty(requestModel.ProductDetailWorkerId))
+            if (!string.IsNullOrWhiteSpace(requestModel.ProductDetailWorkerId))
                 queriableEntity = queriableEntity.Where(x => x.ProductDetailWorkerId == requestModel.ProductDetailWorkerId);
 
             if (requestModel.LastViewedOnStart.HasValue)

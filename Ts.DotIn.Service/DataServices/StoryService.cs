@@ -52,7 +52,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<StoryDto>> CreateAsync(CreateStoryDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<StoryDto>();
@@ -96,7 +96,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -149,7 +149,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteStoryImageAsync(int id, string imageName, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -224,11 +224,11 @@ namespace Ts.DotIn.Service.DataServices
             {
                 story.SubCategory = subCategories.SingleOrDefault(x => x.Id == story.SubCategoryId);
                 story.StoryWorker = applicationUsers.SingleOrDefault(x => x.Id == story.StoryWorkerId);
-                if (!string.IsNullOrEmpty(story.PublishedById))
+                if (!string.IsNullOrWhiteSpace(story.PublishedById))
                     story.PublishedBy = applicationUsers.SingleOrDefault(x => x.Id == story.PublishedById);
             }
 
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.StoryWorkerId))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value) || !string.IsNullOrWhiteSpace(modelDto.StoryWorkerId))
                 responseResult.RecordsFiltered = await unitOfWork.StoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -237,7 +237,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<GetUpdateStoryDto>> GetForEditAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<GetUpdateStoryDto>();
@@ -260,7 +260,7 @@ namespace Ts.DotIn.Service.DataServices
             var model = mapper.Map<StoryDataTableForViewRequest>(modelDto);
 
             var subCategories = await subCategoryService.GetAllAsync();
-            if (!string.IsNullOrEmpty(modelDto.SubCategoryName))
+            if (!string.IsNullOrWhiteSpace(modelDto.SubCategoryName))
             {
                 model.SubCategoryId = subCategories.FirstOrDefault(x => x.Name.Equals(modelDto.SubCategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (model.SubCategoryId == null)
@@ -383,7 +383,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> PublishStoryAsync(int storyId, PublishStoryDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -419,7 +419,7 @@ namespace Ts.DotIn.Service.DataServices
                     responseResult.ErrorMessage.Add("Please provide the main image of the story.");
                     return responseResult;
                 }
-                else if (string.IsNullOrEmpty(entity.Description))
+                else if (string.IsNullOrWhiteSpace(entity.Description))
                 {
                     responseResult.ErrorMessage.Add("Please provide the description of the story.");
                     return responseResult;
@@ -440,7 +440,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int storyId, UpdateStoryDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -482,7 +482,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateDescriptionAsync(int storyId, string descriptionId, UpdateStoryDescriptionDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -537,7 +537,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateStoryImageAsync(int storyId, UpdateStoryImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -620,7 +620,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(int storyId, UpdateStoryMainImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -653,7 +653,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateStoryWorkerAsync(int storyId, UpdateStoryWorkerDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -686,7 +686,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> AddDescriptionAsync(int storyId, UpdateStoryDescriptionDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -737,7 +737,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteDescriptionAsync(int storyId, string descriptionId, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
             var responseResult = new ResponseMessageDto<bool>();
 
@@ -775,7 +775,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateStoryRelativeAsync(int storyId, UpdateStoryRelativeDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -797,7 +797,7 @@ namespace Ts.DotIn.Service.DataServices
             var storyRelativeHelperModels = JsonConvert.DeserializeObject<List<StoryRelativeHelperModel>>(entity.StoryRelative?.RelativeUrl ?? "[]");
 
             var hrefLang = RelativeHrefLangConstant.GetHrefLangs()[modelDto.HrefLangId];
-            if (string.IsNullOrEmpty(hrefLang))
+            if (string.IsNullOrWhiteSpace(hrefLang))
             {
                 responseResult.ErrorMessage.Add("HrefLang is not valid.");
                 return responseResult;
@@ -848,7 +848,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteStoryRelativeAsync(int id, string hrefLang, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();

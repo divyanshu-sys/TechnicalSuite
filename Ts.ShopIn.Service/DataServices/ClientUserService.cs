@@ -346,7 +346,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> ChangePasswordAsync(ChangePasswordDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -405,7 +405,7 @@ namespace Ts.ShopIn.Service.DataServices
                 AaData = mapper.Map<List<ClientUserDto>>(await unitOfWork.ClientUserRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.ClientUserRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.ClientUserRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -490,7 +490,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateForEditAsync(string editUserId, UpdateClientUserDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();

@@ -16,10 +16,10 @@ namespace Ts.Application.Helpers
                                      "  Page: [page]/[toPage]\"" +
                                      " --footer-line --footer-font-size \"10\" --footer-spacing 1 --footer-font-name \"Segoe UI\"";
 
-            if (!string.IsNullOrEmpty(FileName))
+            if (!string.IsNullOrWhiteSpace(FileName))
                 pdf.FileName = $"{FileName}.pdf";
 
-            pdf.PageOrientation = !string.IsNullOrEmpty(Orientation) && Orientation == "Landscape"
+            pdf.PageOrientation = !string.IsNullOrWhiteSpace(Orientation) && Orientation == "Landscape"
                 ? Rotativa.AspNetCore.Options.Orientation.Landscape
                 : Rotativa.AspNetCore.Options.Orientation.Portrait;
 

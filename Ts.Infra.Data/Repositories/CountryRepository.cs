@@ -101,7 +101,7 @@ namespace Ts.Infra.Data.Repositories
             var queriableEntity = dbContext.Countries.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Name.Contains(requestModel.Search.Value)
                 || x.Code2 == requestModel.Search.Value || x.Code3 == requestModel.Search.Value);
 

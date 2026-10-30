@@ -102,7 +102,7 @@ namespace Ts.Infra.ShopIn.Data.ExternalServices
             var streamContent = new StreamContent(fileStream);
             streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             content.Add(streamContent, "file", file.FileName);
-            if (!string.IsNullOrEmpty(oldFileName))
+            if (!string.IsNullOrWhiteSpace(oldFileName))
                 content.Add(new StringContent(oldFileName), "oldFileName");
             return fileStream;
         }

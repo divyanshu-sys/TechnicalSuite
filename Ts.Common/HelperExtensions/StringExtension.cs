@@ -52,7 +52,7 @@
 
         public static string ToSpaceAfterEveryCapitalLetter(this string source)
         {
-            if (string.IsNullOrEmpty(source))
+            if (string.IsNullOrWhiteSpace(source))
                 return source;
             var result = new System.Text.StringBuilder();
             foreach (char c in source)

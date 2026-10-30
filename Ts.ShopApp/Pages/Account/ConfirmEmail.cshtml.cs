@@ -23,7 +23,7 @@ namespace Ts.ShopApp.Pages.Account
 
         public async Task<IActionResult> OnGet()
         {
-            if (!string.IsNullOrEmpty(EncUserId) && !string.IsNullOrEmpty(Token))
+            if (!string.IsNullOrWhiteSpace(EncUserId) && !string.IsNullOrWhiteSpace(Token))
             {
                 var response = await clientUserClient.ConfirmEmailAsync(new ConfirmEmailDto { EncUserId = EncUserId, Token = Token });
                 if (response.Data)

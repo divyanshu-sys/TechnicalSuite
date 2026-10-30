@@ -34,7 +34,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<SubCategoryDto>> CreateAsync(CreateSubCategoryDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<SubCategoryDto>();
@@ -75,7 +75,7 @@ namespace Ts.Service.DataServices
                 AaData = mapper.Map<List<SubCategoryDto>>(await unitOfWork.SubCategoryRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.SubCategoryRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.SubCategoryRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -85,7 +85,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<SubCategoryDto>> GetAllAsync()
         {
             var cachedEntity = await cache.GetStringAsync(EntityCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<SubCategoryDto>>(cachedEntity);
 
             var entities = await unitOfWork.SubCategoryRepo.GetAllAsync();
@@ -111,7 +111,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int subCategoryId, UpdateSubCategoryDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
             var responseResult = new ResponseMessageDto<bool>();
 

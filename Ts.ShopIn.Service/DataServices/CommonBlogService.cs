@@ -18,7 +18,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var subCategories = await subCategoryService.GetAllAsync();
 
-            if (!string.IsNullOrEmpty(modelDto.SubCategoryName))
+            if (!string.IsNullOrWhiteSpace(modelDto.SubCategoryName))
             {
                 model.SubCategoryId = subCategories.FirstOrDefault(x => x.Name.Equals(modelDto.SubCategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (model.SubCategoryId == null)

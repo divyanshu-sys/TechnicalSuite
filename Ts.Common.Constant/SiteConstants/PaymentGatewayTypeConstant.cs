@@ -31,7 +31,7 @@
 
         public static bool IsValidTransition(string oldRazorpayPaymentStatus, string newRazorpayPaymentStatus)
         {
-            bool isValidTransition = string.IsNullOrEmpty(oldRazorpayPaymentStatus)
+            bool isValidTransition = string.IsNullOrWhiteSpace(oldRazorpayPaymentStatus)
                 || (validTransitions.ContainsKey(oldRazorpayPaymentStatus)
                 && validTransitions[oldRazorpayPaymentStatus].Contains(newRazorpayPaymentStatus));
             return isValidTransition;

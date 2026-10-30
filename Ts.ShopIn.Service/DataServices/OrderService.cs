@@ -64,7 +64,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<GetRazorpayOrderDto>> CreateRazorpayOrderAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<GetRazorpayOrderDto>();
@@ -228,7 +228,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> VerifyRazorpayOrderPaymentAsync(VerifyRazorpayPaymentDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -292,7 +292,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<GetPaymentStatusDto>> GetRazorpayPaymentStatusAsync(string razorpayPaymentId, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<GetPaymentStatusDto>();
@@ -374,7 +374,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<IEnumerable<GetOrderForViewDto>> GetForListViewAsync(OrderDataTableForViewRequestDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var result = new List<GetOrderForViewDto>();
@@ -447,7 +447,7 @@ namespace Ts.ShopIn.Service.DataServices
 
         public async Task<ResponseMessageDto<DownloadDocumentDto>> GetProductDocumentDetailAsync(int orderDetailId, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<DownloadDocumentDto>();
@@ -657,7 +657,7 @@ namespace Ts.ShopIn.Service.DataServices
                 RecordsTotal = await unitOfWork.OrderRepo.GetTotalCountAsync()
             };
 
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.OrderRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;

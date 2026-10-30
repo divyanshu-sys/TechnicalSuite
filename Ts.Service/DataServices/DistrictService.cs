@@ -28,7 +28,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<DistrictDto>> CreateAsync(CreateDistrictDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<DistrictDto>();
@@ -60,7 +60,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -96,7 +96,7 @@ namespace Ts.Service.DataServices
                 AaData = mapper.Map<List<GetDistrictDataTableDto>>(await unitOfWork.DistrictRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.DistrictRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.DistrictRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -137,7 +137,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int districtId, UpdateDistrictDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();

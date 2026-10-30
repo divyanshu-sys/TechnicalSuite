@@ -57,7 +57,7 @@ namespace Ts.DotIn.Client.HttpClientServices.ClientServices
         public async Task<ResponseMessageDto<StoryVm>> GetForViewCacheAsync(string subCategoryName, string storyLink)
         {
             var cachedData = await cache.GetStringAsync(StoryCacheKey + "_" + subCategoryName + "_" + storyLink);
-            if (!string.IsNullOrEmpty(cachedData))
+            if (!string.IsNullOrWhiteSpace(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<StoryVm>>(cachedData);
 
             return await GetForViewAsync(subCategoryName, storyLink);

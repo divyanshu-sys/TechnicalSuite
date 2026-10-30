@@ -21,19 +21,19 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             var conditions = new List<string>();
             var parameters = new List<object>();
 
-            if (!string.IsNullOrEmpty(razorpayPaymentId))
+            if (!string.IsNullOrWhiteSpace(razorpayPaymentId))
             {
                 conditions.Add($"p.Razorpay_Payment_Id = {{{parameters.Count}}}");
                 parameters.Add(razorpayPaymentId);
             }
 
-            if (!string.IsNullOrEmpty(razorpayOrderId))
+            if (!string.IsNullOrWhiteSpace(razorpayOrderId))
             {
                 conditions.Add($"p.Razorpay_Order_Id = {{{parameters.Count}}}");
                 parameters.Add(razorpayOrderId);
             }
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrWhiteSpace(userId))
             {
                 conditions.Add($"o.UserId = {{{parameters.Count}}}");
                 parameters.Add(userId);

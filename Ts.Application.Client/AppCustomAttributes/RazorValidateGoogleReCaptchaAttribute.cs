@@ -36,7 +36,7 @@ namespace Ts.Application.Client.AppCustomAttributes
 
                 string reCaptcha = context.HttpContext.Request.Form["ReCaptcha"];
 
-                if (!string.IsNullOrEmpty(reCaptcha))
+                if (!string.IsNullOrWhiteSpace(reCaptcha))
                 {
                     try
                     {

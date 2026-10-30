@@ -33,11 +33,11 @@ namespace Ts.PublicComApp.Pages.WebStory
 
             var sb = new StringBuilder(Model.Keyword1);
             sb.Append("," + Model.Keyword2);
-            if (!string.IsNullOrEmpty(Model.Keyword3))
+            if (!string.IsNullOrWhiteSpace(Model.Keyword3))
                 sb.Append("," + Model.Keyword3);
-            if (!string.IsNullOrEmpty(Model.Keyword4))
+            if (!string.IsNullOrWhiteSpace(Model.Keyword4))
                 sb.Append("," + Model.Keyword4);
-            if (!string.IsNullOrEmpty(Model.Keyword5))
+            if (!string.IsNullOrWhiteSpace(Model.Keyword5))
                 sb.Append("," + Model.Keyword5);
             Keywords = sb.ToString();
 

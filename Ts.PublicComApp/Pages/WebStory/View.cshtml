@@ -151,8 +151,8 @@
                 </div>
                 <div class="text-bottom">
                     @Model.Model.PublishedOnCst
-                    @(!string.IsNullOrEmpty(Model.Model.StorySource) ? " | Source: " + Model.Model.StorySource : "")
-                    @(!string.IsNullOrEmpty(Model.Model.MainImageSource) ? " | Image: " + Model.Model.MainImageSource : "")
+                    @(!string.IsNullOrWhiteSpace(Model.Model.StorySource) ? " | Source: " + Model.Model.StorySource : "")
+                    @(!string.IsNullOrWhiteSpace(Model.Model.MainImageSource) ? " | Image: " + Model.Model.MainImageSource : "")
                 </div>
             </div>
             @for (var i = 0; i < itemCount; i++)
@@ -172,7 +172,7 @@
                         <h2>@Model.Model.StoryDescriptionHelperVms[i].Title</h2>
                         <p>@Model.Model.StoryDescriptionHelperVms[i].Description</p>
                     </div>
-                    @if (!string.IsNullOrEmpty(Model.Model.StoryDescriptionHelperVms[i].ImageSource))
+                    @if (!string.IsNullOrWhiteSpace(Model.Model.StoryDescriptionHelperVms[i].ImageSource))
                     {
                         <div class="text-bottom">
                             Image: @Model.Model.StoryDescriptionHelperVms[i].ImageSource

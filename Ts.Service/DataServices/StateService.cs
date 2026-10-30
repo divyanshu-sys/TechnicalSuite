@@ -28,7 +28,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<StateDto>> CreateAsync(CreateStateDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<StateDto>();
@@ -60,7 +60,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -96,7 +96,7 @@ namespace Ts.Service.DataServices
                 AaData = mapper.Map<List<GetStateDataTableDto>>(await unitOfWork.StateRepo.GetAllAsync(model)),
                 RecordsTotal = await unitOfWork.StateRepo.GetTotalCountAsync()
             };
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.StateRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -124,7 +124,7 @@ namespace Ts.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int stateId, UpdateStateDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();

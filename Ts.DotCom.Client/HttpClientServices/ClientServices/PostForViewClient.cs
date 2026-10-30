@@ -34,7 +34,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
         public async Task<ResponseMessageDto<IEnumerable<GetPostForListViewVm>>> DisplayItemsCacheAsync(PostDataTableForViewRequestDto model)
         {
             var cachedData = await cache.GetStringAsync(HomeCacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
+            if (!string.IsNullOrWhiteSpace(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<IEnumerable<GetPostForListViewVm>>>(cachedData);
             var response = await GetForListViewAsync(model);
 
@@ -75,7 +75,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
         public async Task<ResponseMessageDto<PostVm>> GetForViewCacheAsync(string categoryName, string subCategoryName, string postLink)
         {
             var cachedData = await cache.GetStringAsync(PostCacheKey + "_" + categoryName + "_" + subCategoryName + "_" + postLink);
-            if (!string.IsNullOrEmpty(cachedData))
+            if (!string.IsNullOrWhiteSpace(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<PostVm>>(cachedData);
 
             return await GetForViewAsync(categoryName, subCategoryName, postLink);

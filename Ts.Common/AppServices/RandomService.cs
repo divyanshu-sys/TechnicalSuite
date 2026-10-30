@@ -69,7 +69,7 @@ namespace Ts.Common.AppServices
 
         public string GenerateUserName(string text, int? length, string nextNumber)
         {
-            if (!string.IsNullOrEmpty(nextNumber))
+            if (!string.IsNullOrWhiteSpace(nextNumber))
             {
                 if (length.HasValue)
                     return $"{text.GetFirst(length.Value)}{DateTime.Now.Year}{nextNumber:D:1}";
@@ -81,7 +81,7 @@ namespace Ts.Common.AppServices
 
         public string GenerateOrderNumber(string text, int? length, string nextNumber)
         {
-            if (!string.IsNullOrEmpty(nextNumber))
+            if (!string.IsNullOrWhiteSpace(nextNumber))
             {
                 if (length.HasValue)
                     return $"{text.GetFirst(length.Value)}{DateTime.Now.Year}{nextNumber:D:1}";

@@ -116,7 +116,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         {
             var queryable = dbContext.Products.AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestModel.Search))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search))
                 queryable = queryable.Where(x => x.Title.Contains(requestModel.Search));
 
             queryable = queryable
@@ -167,10 +167,10 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             var queriableEntity = dbContext.Products.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Title.Contains(requestModel.Search.Value));
 
-            if (!string.IsNullOrEmpty(requestModel.ProductWorkerId))
+            if (!string.IsNullOrWhiteSpace(requestModel.ProductWorkerId))
                 queriableEntity = queriableEntity.Where(x => x.ProductWorkerId == requestModel.ProductWorkerId);
 
             return queriableEntity;

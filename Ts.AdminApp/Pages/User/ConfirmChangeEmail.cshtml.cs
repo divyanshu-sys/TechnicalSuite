@@ -26,7 +26,7 @@ namespace Ts.AdminApp.Pages.User
 
         public async Task<IActionResult> OnGet()
         {
-            if (!string.IsNullOrEmpty(EncEmail) && !string.IsNullOrEmpty(Token))
+            if (!string.IsNullOrWhiteSpace(EncEmail) && !string.IsNullOrWhiteSpace(Token))
             {
                 var response = await applicationUserClient.ConfirmChangeEmailAsync(new ConfirmChangeEmailDto { EncUserId = EncUserId, EncEmail = EncEmail, Token = Token });
                 if (response.Data)

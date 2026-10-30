@@ -33,7 +33,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
         public async Task<ResponseMessageDto<DisplayHomeItemsVm>> DisplayItemsCacheAsync()
         {
             var cachedData = await cache.GetStringAsync(HomeCacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
+            if (!string.IsNullOrWhiteSpace(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<DisplayHomeItemsVm>>(cachedData);
             return await DisplayItemsAsync();
         }

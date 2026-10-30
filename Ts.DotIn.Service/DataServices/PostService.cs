@@ -61,7 +61,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<PostDto>> CreateAsync(CreatePostDto modelDto, string userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<PostDto>();
@@ -105,7 +105,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeleteAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -180,11 +180,11 @@ namespace Ts.DotIn.Service.DataServices
                 post.Category = categories.SingleOrDefault(x => x.Id == post.CategoryId);
                 post.SubCategory = subCategories.SingleOrDefault(x => x.Id == post.SubCategoryId);
                 post.PostWorker = applicationUsers.SingleOrDefault(x => x.Id == post.PostWorkerId);
-                if (!string.IsNullOrEmpty(post.PublishedById))
+                if (!string.IsNullOrWhiteSpace(post.PublishedById))
                     post.PublishedBy = applicationUsers.SingleOrDefault(x => x.Id == post.PublishedById);
             }
 
-            if (!string.IsNullOrEmpty(modelDto.Search?.Value) || !string.IsNullOrEmpty(modelDto.PostWorkerId) || modelDto.LastViewedOnStart.HasValue || modelDto.LastViewedOnEnd.HasValue)
+            if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value) || !string.IsNullOrWhiteSpace(modelDto.PostWorkerId) || modelDto.LastViewedOnStart.HasValue || modelDto.LastViewedOnEnd.HasValue)
                 responseResult.RecordsFiltered = await unitOfWork.PostRepo.GetRecordsFilteredAsync(model);
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
@@ -193,7 +193,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<GetUpdatePostDto>> GetForEditAsync(int id, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<GetUpdatePostDto>();
@@ -211,7 +211,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> PublishPostAsync(int postId, PublishPostDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -240,7 +240,7 @@ namespace Ts.DotIn.Service.DataServices
                 entity.IsPublished = !entity.IsPublished;
             }
 
-            if (entity.IsPublished && string.IsNullOrEmpty(entity.Description))
+            if (entity.IsPublished && string.IsNullOrWhiteSpace(entity.Description))
             {
                 responseResult.ErrorMessage.Add("Please provide the description of the post.");
                 return responseResult;
@@ -260,7 +260,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateAsync(int postId, UpdatePostDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -302,7 +302,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateDescriptionAsync(int postId, UpdatePostDescriptionDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -335,7 +335,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdatePostWorkerAsync(int postId, UpdatePostWorkerDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -368,7 +368,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdateMainImageAsync(int postId, UpdatePostMainImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -401,7 +401,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdatePostImageAsync(int postId, UpdatePostImageDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -484,7 +484,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeletePostImageAsync(int id, string imageName, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -540,7 +540,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> UpdatePostRelativeAsync(int postId, UpdatePostRelativeDto modelDto, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -562,7 +562,7 @@ namespace Ts.DotIn.Service.DataServices
             var postRelativeHelperModels = JsonConvert.DeserializeObject<List<PostRelativeHelperModel>>(entity.PostRelative?.RelativeUrl ?? "[]");
 
             var hrefLang = RelativeHrefLangConstant.GetHrefLangs()[modelDto.HrefLangId];
-            if (string.IsNullOrEmpty(hrefLang))
+            if (string.IsNullOrWhiteSpace(hrefLang))
             {
                 responseResult.ErrorMessage.Add("HrefLang is not valid.");
                 return responseResult;
@@ -613,7 +613,7 @@ namespace Ts.DotIn.Service.DataServices
 
         public async Task<ResponseMessageDto<bool>> DeletePostRelativeAsync(int id, string hrefLang, string userId, bool isAdmin)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException(ExceptionMessageConstant.ValueNotSpecified, nameof(userId));
 
             var responseResult = new ResponseMessageDto<bool>();
@@ -666,13 +666,13 @@ namespace Ts.DotIn.Service.DataServices
             var categories = await categoryService.GetAllAsync();
             var subCategories = await subCategoryService.GetAllAsync();
 
-            if (!string.IsNullOrEmpty(modelDto.CategoryName))
+            if (!string.IsNullOrWhiteSpace(modelDto.CategoryName))
             {
                 model.CategoryId = categories.FirstOrDefault(x => x.Name.Equals(modelDto.CategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (model.CategoryId == null)
                     return dtos;
             }
-            if (!string.IsNullOrEmpty(modelDto.SubCategoryName))
+            if (!string.IsNullOrWhiteSpace(modelDto.SubCategoryName))
             {
                 model.SubCategoryId = subCategories.FirstOrDefault(x => x.Name.Equals(modelDto.SubCategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (model.SubCategoryId == null)

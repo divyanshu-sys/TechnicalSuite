@@ -28,7 +28,7 @@ namespace Ts.ShopApp.Pages.Account
             if (User.Identity.IsAuthenticated)
                 return RedirectToPage("/index");
 
-            if (string.IsNullOrEmpty(EncUserId) || string.IsNullOrEmpty(Token))
+            if (string.IsNullOrWhiteSpace(EncUserId) || string.IsNullOrWhiteSpace(Token))
                 return NotFound();
             return Page();
         }
@@ -38,7 +38,7 @@ namespace Ts.ShopApp.Pages.Account
             if (User.Identity.IsAuthenticated)
                 return RedirectToPage("/index");
 
-            if (string.IsNullOrEmpty(EncUserId) || string.IsNullOrEmpty(Token))
+            if (string.IsNullOrWhiteSpace(EncUserId) || string.IsNullOrWhiteSpace(Token))
                 return NotFound();
 
             if (!ModelState.IsValid) return Page();

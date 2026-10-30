@@ -116,7 +116,7 @@ namespace Ts.Infra.Data.Repositories
             var queriableEntity = dbContext.Users.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.FirstName.Contains(requestModel.Search.Value)
                 || x.LastName.Contains(requestModel.Search.Value) || x.UserName == requestModel.Search.Value);
 

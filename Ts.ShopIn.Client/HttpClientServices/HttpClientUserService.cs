@@ -125,7 +125,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
             if (tokenHandler.ReadToken(apiToken) is JwtSecurityToken payload && payload.ValidTo < DateTime.UtcNow.AddSeconds(30)) // Token has expired
             {
                 var refreshTokenExpiryAt = payload.Claims.First(x => x.Type == "refreshexpiryat").Value;
-                var refreshTokenExpiryAtDate = string.IsNullOrEmpty(refreshTokenExpiryAt) ? (DateTime?)null : Convert.ToDateTime(refreshTokenExpiryAt);
+                var refreshTokenExpiryAtDate = string.IsNullOrWhiteSpace(refreshTokenExpiryAt) ? (DateTime?)null : Convert.ToDateTime(refreshTokenExpiryAt);
 
                 if (refreshTokenExpiryAtDate < DateTime.UtcNow.AddSeconds(30)) // RefreshToken has expired
                 {
@@ -139,7 +139,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
                 var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    apiToken = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<ApiTokenDto>(responseData)?.Token : default;
+                    apiToken = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<ApiTokenDto>(responseData)?.Token : default;
 
                     if (tokenHandler.ReadToken(apiToken) is JwtSecurityToken payloadNew)
                     {
@@ -179,13 +179,13 @@ namespace Ts.ShopIn.Client.HttpClientServices
         {
             var responseData = await httpResponseMessage.Content.ReadAsStringAsync();
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
             else if (httpResponseMessage.StatusCode == HttpStatusCode.UnprocessableEntity)
-                response.ErrorMessage = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
+                response.ErrorMessage = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<List<string>>(responseData) : default;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Created || httpResponseMessage.StatusCode == HttpStatusCode.Accepted || httpResponseMessage.StatusCode == HttpStatusCode.NoContent)
-                response.Data = !string.IsNullOrEmpty(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
+                response.Data = !string.IsNullOrWhiteSpace(responseData) ? JsonConvert.DeserializeObject<T>(responseData) : true as dynamic;
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
                 response.ErrorMessage.Add("You are not authenticated. Please try relogin.");
@@ -195,7 +195,7 @@ namespace Ts.ShopIn.Client.HttpClientServices
                 response.ErrorMessage.Add("You are not authorised. Please try relogin.");
             else
             {
-                response.ErrorMessage.Add(!string.IsNullOrEmpty(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
+                response.ErrorMessage.Add(!string.IsNullOrWhiteSpace(responseData) ? responseData : httpResponseMessage.StatusCode.ToString());
             }
 
             return response;

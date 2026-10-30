@@ -40,7 +40,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<ExchangePolicyDto>> GetExchangePoliciesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(ExchangePolicyCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<ExchangePolicyDto>>(cachedEntity);
 
             var entities = await unitOfWork.ExchangePolicyRepo.GetAllAsync();
@@ -68,7 +68,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<DeliveryPolicyDto>> GetDeliveryPoliciesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(DeliveryPolicyCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<DeliveryPolicyDto>>(cachedEntity);
             var entities = await unitOfWork.DeliveryPolicyRepo.GetAllAsync();
             var modelDto = mapper.Map<List<DeliveryPolicyDto>>(entities);
@@ -95,7 +95,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<ReturnPolicyDto>> GetReturnPoliciesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(ReturnPolicyCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<ReturnPolicyDto>>(cachedEntity);
             var entities = await unitOfWork.ReturnPolicyRepo.GetAllAsync();
             var modelDto = mapper.Map<List<ReturnPolicyDto>>(entities);
@@ -122,7 +122,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<PaymentModeDto>> GetPaymentModesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(PaymentModeCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<PaymentModeDto>>(cachedEntity);
             var entities = await unitOfWork.PaymentModeRepo.GetAllAsync();
             var modelDto = mapper.Map<List<PaymentModeDto>>(entities);
@@ -135,7 +135,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<OrderStatusDto>> GetOrderStatusesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(OrderStatusCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<OrderStatusDto>>(cachedEntity);
             var entities = await unitOfWork.OrderStatusRepo.GetAllAsync();
             var modelDto = mapper.Map<List<OrderStatusDto>>(entities);
@@ -148,7 +148,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<PaymentGatewayTypeDto>> GetPaymentGatewayTypesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(PaymentGatewayTypeCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<PaymentGatewayTypeDto>>(cachedEntity);
             var entities = await unitOfWork.PaymentGatewayTypeRepo.GetAllAsync();
             var modelDto = mapper.Map<List<PaymentGatewayTypeDto>>(entities);
@@ -161,7 +161,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<PaymentStatusDto>> GetPaymentStatusesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(PaymentStatusCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<PaymentStatusDto>>(cachedEntity);
             var entities = await unitOfWork.PaymentStatusRepo.GetAllAsync();
             var modelDto = mapper.Map<List<PaymentStatusDto>>(entities);
@@ -174,7 +174,7 @@ namespace Ts.Service.DataServices
         public async Task<IEnumerable<CurrencyTypeDto>> GetCurrencyTypesAsync()
         {
             var cachedEntity = await cache.GetStringAsync(CurrencyTypeCacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<IEnumerable<CurrencyTypeDto>>(cachedEntity);
             var entities = await unitOfWork.CurrencyTypeRepo.GetAllAsync();
             var modelDto = mapper.Map<List<CurrencyTypeDto>>(entities);

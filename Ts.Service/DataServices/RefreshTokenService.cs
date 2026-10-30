@@ -61,7 +61,7 @@ namespace Ts.Service.DataServices
         {
             var cacheKey = $"{EntityCacheKey}_{UserIdCacheKey}_{userId}";
             var cachedEntity = await cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedEntity))
+            if (!string.IsNullOrWhiteSpace(cachedEntity))
                 return JsonConvert.DeserializeObject<RefreshTokenDto>(cachedEntity);
 
             var entity = await unitOfWork.RefreshTokenRepo.GetByUserIdAsync(userId);

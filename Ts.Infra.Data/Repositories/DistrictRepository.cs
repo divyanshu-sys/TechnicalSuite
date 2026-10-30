@@ -90,7 +90,7 @@ namespace Ts.Infra.Data.Repositories
             var queriableEntity = dbContext.Districts.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Name.Contains(requestModel.Search.Value));
 
             return queriableEntity;

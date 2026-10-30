@@ -57,7 +57,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
         public async Task<ResponseMessageDto<BlogVm>> GetForViewCacheAsync(string subCategoryName, string blogLink)
         {
             var cachedData = await cache.GetStringAsync(BlogCacheKey + "_" + subCategoryName + "_" + blogLink);
-            if (!string.IsNullOrEmpty(cachedData))
+            if (!string.IsNullOrWhiteSpace(cachedData))
                 return JsonConvert.DeserializeObject<ResponseMessageDto<BlogVm>>(cachedData);
 
             return await GetForViewAsync(subCategoryName, blogLink);

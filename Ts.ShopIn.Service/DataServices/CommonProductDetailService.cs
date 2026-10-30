@@ -22,7 +22,7 @@ namespace Ts.ShopIn.Service.DataServices
 
             var shopCategories = await shopCategoryService.GetAllAsync();
 
-            if (!string.IsNullOrEmpty(modelDto.ShopCategoryName))
+            if (!string.IsNullOrWhiteSpace(modelDto.ShopCategoryName))
             {
                 model.ShopCategoryId = shopCategories.FirstOrDefault(x => x.Name.Equals(modelDto.ShopCategoryName, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (model.ShopCategoryId == null)

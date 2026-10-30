@@ -166,7 +166,7 @@ namespace Ts.DotCom.Client.HttpClientServices.ClientServices
             content.Add(streamContent, "ImageFile", model.ImageFile.FileName);
 
             // Add the other form data
-            if (!string.IsNullOrEmpty(model.ImageSource))
+            if (!string.IsNullOrWhiteSpace(model.ImageSource))
                 content.Add(new StringContent(model.ImageSource), "ImageSource");
 
             content.Add(new StringContent(ipAddress), "IpAddress");

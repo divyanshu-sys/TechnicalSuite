@@ -122,7 +122,7 @@ namespace Ts.Infra.DotCom.Data.Repositories
         {
             var queryable = dbContext.Posts.AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestModel.Search))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search))
                 queryable = queryable.Where(x => x.Title.Contains(requestModel.Search)
                 || x.Keyword1.Contains(requestModel.Search)
                 || x.Keyword2.Contains(requestModel.Search)
@@ -156,11 +156,11 @@ namespace Ts.Infra.DotCom.Data.Repositories
             var queriableEntity = dbContext.Posts.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Title.Contains(requestModel.Search.Value)
                 || x.PostLink == requestModel.Search.Value);
 
-            if (!string.IsNullOrEmpty(requestModel.PostWorkerId))
+            if (!string.IsNullOrWhiteSpace(requestModel.PostWorkerId))
                 queriableEntity = queriableEntity.Where(x => x.PostWorkerId == requestModel.PostWorkerId);
 
             if (requestModel.LastViewedOnStart.HasValue)

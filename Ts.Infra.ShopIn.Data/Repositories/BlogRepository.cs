@@ -121,7 +121,7 @@ namespace Ts.Infra.ShopIn.Data.Repositories
         {
             var queryable = dbContext.Blogs.AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestModel.Search))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search))
                 queryable = queryable.Where(x => x.Title.Contains(requestModel.Search)
                 || x.Keyword1.Contains(requestModel.Search)
                 || x.Keyword2.Contains(requestModel.Search));
@@ -148,11 +148,11 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             var queriableEntity = dbContext.Blogs.AsQueryable();
 
             // Global Search
-            if (!string.IsNullOrEmpty(requestModel.Search?.Value))
+            if (!string.IsNullOrWhiteSpace(requestModel.Search?.Value))
                 queriableEntity = queriableEntity.Where(x => x.Title.Contains(requestModel.Search.Value)
                 || x.BlogLink == requestModel.Search.Value);
 
-            if (!string.IsNullOrEmpty(requestModel.BlogWorkerId))
+            if (!string.IsNullOrWhiteSpace(requestModel.BlogWorkerId))
                 queriableEntity = queriableEntity.Where(x => x.BlogWorkerId == requestModel.BlogWorkerId);
 
             if (requestModel.LastViewedOnStart.HasValue)
