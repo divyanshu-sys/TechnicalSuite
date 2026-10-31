@@ -20,6 +20,7 @@ using Ts.ShopIn.Dto.DataTableDtos.ProductDataTableDtos;
 using Ts.ShopIn.Dto.DataTableDtos.ProductDetailDataTableDtos;
 using Ts.ShopIn.Dto.OrderDetailDtos;
 using Ts.ShopIn.Dto.OrderDtos;
+using Ts.ShopIn.Dto.PaymentDtos;
 using Ts.ShopIn.Dto.ProductDetailDocumentDtos;
 using Ts.ShopIn.Dto.ProductDetailDtos;
 using Ts.ShopIn.Dto.ProductDetailImageDtos;
@@ -145,6 +146,11 @@ namespace Ts.ShopIn.Service.AutoMapper
             #region Order
             CreateMap<Order, GetOrderForViewDto>();
             CreateMap<Order, GetOrderDataTableDto>();
+            #endregion
+
+            #region Payment
+            CreateMap<Payment, PaymentDto>();
+            CreateMap<Payment, GetPaymentDataTableDto>();
             #endregion
 
             #region OrderDetail

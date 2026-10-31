@@ -15,8 +15,16 @@
             <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
                 <thead>
                     <tr>
-                        <th>Order Number</th>
-                        <th>Ordered On</th>
+                        <th>O. Number</th>
+                        <th>Client Name</th>
+                        <th>Tot. Qty</th>
+                        <th>Tot. Amt</th>
+                        <th>P. Gateway</th>
+                        <th>P. Status</th>
+                        <th>OrderedOn</th>
+                        <th>P. UpdatedOn</th>
+                        <th>P. History</th>
+                        <th>P. Refresh</th>
                     </tr>
                 </thead>
             </table>
@@ -33,12 +41,53 @@
                     data: 'orderNumber'
                 },
                 {
+                    data: 'clientName'
+                },
+                {
+                    data: 'totalItemCount',
+                    className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.currencyType.symbol} ${row.totalAmount}`;
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.paymentGatewayType.name ?? ""}`;
+                    }
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.paymentStatus?.name ?? ""}`;
+                    }
+                },
+                {
                     data: 'orderedOnIst',
                     className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.updatedOnIst ?? ""}`;
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `Click`;
+                    },
+                    className: 'text-center'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `Refresh`;
+                    },
+                    className: 'text-center'
                 }
             ];
 
-            table = initAjaxTable("#DataTable", [[1, 'desc']], [0], '/order/orderdotin', columns);
+            table = initAjaxTable("#DataTable", [[6, 'desc']], [0, 1, 2, 3, 4, 5, 7, 8, 9], '/order/orderdotin', columns);
         });
     </script>
 }

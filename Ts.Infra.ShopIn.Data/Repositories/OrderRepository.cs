@@ -71,7 +71,9 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                 {
                     Id = x.Payment.Id,
                     PaymentGatewayTypeId = x.Payment.PaymentGatewayTypeId,
-                    PaymentStatusId = x.Payment.PaymentStatusId
+                    PaymentStatusId = x.Payment.PaymentStatusId,
+                    CreatedOn = x.Payment.CreatedOn,
+                    UpdatedOn = x.Payment.UpdatedOn
                 }
             }).AsNoTracking().ToListAsync();
         }

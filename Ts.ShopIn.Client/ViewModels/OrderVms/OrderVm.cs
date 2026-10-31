@@ -1,6 +1,7 @@
 ﻿using Ts.Client.ViewModels;
 using Ts.Common.HelperExtensions;
 using Ts.ShopIn.Client.ViewModels.OrderDetailVms;
+using Ts.ShopIn.Client.ViewModels.PaymentVms;
 
 namespace Ts.ShopIn.Client.ViewModels.OrderVms
 {
@@ -20,5 +21,6 @@ namespace Ts.ShopIn.Client.ViewModels.OrderVms
 
         public CurrencyTypeVm CurrencyType { get; set; }
         public List<OrderDetailVm> OrderDetailsForView { get; set; }
+        public PaymentVm Payment { get; set; }
     }
 }

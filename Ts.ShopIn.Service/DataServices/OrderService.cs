@@ -657,6 +657,28 @@ namespace Ts.ShopIn.Service.DataServices
                 RecordsTotal = await unitOfWork.OrderRepo.GetTotalCountAsync()
             };
 
+            if (responseResult.AaData.Count > 0)
+            {
+                var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
+                var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
+                var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
+
+                foreach (var item in responseResult.AaData)
+                {
+                    var currencyType = currencyTypes.FirstOrDefault(x => x.Id == item.CurrencyTypeId);
+                    item.CurrencyType = currencyType;
+
+                    if (item.Payment != null)
+                    {
+                        var paymentGatewayType = paymentGatewayTypes.FirstOrDefault(x => x.Id == item.Payment.PaymentGatewayTypeId);
+                        item.Payment.PaymentGatewayType = paymentGatewayType;
+
+                        var gatewayPaymentStatus = paymentStatuses.Where(x => x.PaymentGatewayTypeId == paymentGatewayType.Id);
+                        item.Payment.PaymentStatus = gatewayPaymentStatus.FirstOrDefault(x => x.Id == item.Payment.PaymentStatusId);
+                    }
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(modelDto.Search?.Value))
                 responseResult.RecordsFiltered = await unitOfWork.OrderRepo.GetRecordsFilteredAsync(model);
             else
