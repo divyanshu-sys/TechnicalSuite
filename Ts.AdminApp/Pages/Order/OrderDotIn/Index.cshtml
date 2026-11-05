@@ -16,12 +16,18 @@
                 <thead>
                     <tr>
                         <th>O. Number</th>
+                        <th>Payment Id</th>
                         <th>Client Name</th>
-                        <th>Tot. Qty</th>
-                        <th>Tot. Amt</th>
-                        <th>P. Gateway</th>
-                        <th>P. Status</th>
+                        <th>O. Qty.</th>
+                        <th>O. Amt.</th>
                         <th>OrderedOn</th>
+                        <th>P. Gateway</th>
+                        <th>P. Method</th>
+                        <th>P. Amt.</th>
+                        <th>P. Status</th>
+                        <th>P. Refund</th>
+                        <th>P. Refund Status</th>
+                        <th>P. CreatedAt</th>
                         <th>P. UpdatedOn</th>
                         <th>P. History</th>
                         <th>P. Refresh</th>
@@ -41,6 +47,11 @@
                     data: 'orderNumber'
                 },
                 {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.pay_Payment_Id ?? ""}`;
+                    }
+                },
+                {
                     data: 'clientName'
                 },
                 {
@@ -54,17 +65,60 @@
                     className: 'text-end'
                 },
                 {
+                    data: 'orderedOnIst',
+                    className: 'text-end'
+                },
+                {
                     render: function(data, type, row, meta) {
                         return `${row.payment?.paymentGatewayType.name ?? ""}`;
                     }
                 },
                 {
                     render: function(data, type, row, meta) {
-                        return `${row.payment?.paymentStatus?.name ?? ""}`;
+                        return `${row.payment?.pay_Method ?? ""}`;
                     }
                 },
                 {
-                    data: 'orderedOnIst',
+                    render: function(data, type, row, meta) {
+                        if (row.payment?.pay_Amount) {
+                            return `${row.payment?.currencyType.symbol} ${row.payment?.pay_Amount}`;
+                        }
+                        return "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        if ('@RazorpayPaymentStatusConstant.Captured' == row.payment?.paymentStatus?.name) {
+                            return `<b class="text-success">${row.payment?.paymentStatus?.name}</b>`;
+                        }
+                        else if ('@RazorpayPaymentStatusConstant.Refunded' == row.payment?.paymentStatus?.name) {
+                            return `<b class="text-info">${row.payment?.paymentStatus?.name}</b>`;
+                        }
+                        else if ('@RazorpayPaymentStatusConstant.Failed' == row.payment?.paymentStatus?.name) {
+                            return `<b class="text-danger">${row.payment?.paymentStatus?.name}</b>`;
+                        }
+                        return `<b>${row.payment?.paymentStatus?.name ?? ""}</b>`;
+                    }
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        if (row.payment?.pay_Amount_Refunded) {
+                            return `${row.payment?.currencyType.symbol} ${row.payment?.pay_Amount_Refunded}`;
+                        }
+                        return "";
+                    },
+                    className: 'text-end'
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.pay_Refund_Status ?? ""}`;
+                    }
+                },
+                {
+                    render: function(data, type, row, meta) {
+                        return `${row.payment?.createdAtIst ?? ""}`;
+                    },
                     className: 'text-end'
                 },
                 {
@@ -75,19 +129,19 @@
                 },
                 {
                     render: function(data, type, row, meta) {
-                        return `Click`;
+                        return `<button type="button" class="btn btn-outline-primary btn-rounded")"><i class="fas fa-history"></i></button>`;
                     },
                     className: 'text-center'
                 },
                 {
                     render: function(data, type, row, meta) {
-                        return `Refresh`;
+                        return `<button type="button" class="btn btn-outline-warning btn-rounded"><i class="fas fa-sync"></i></button>`;
                     },
                     className: 'text-center'
                 }
             ];
 
-            table = initAjaxTable("#DataTable", [[6, 'desc']], [0, 1, 2, 3, 4, 5, 7, 8, 9], '/order/orderdotin', columns);
+            table = initAjaxTable("#DataTable", [[5, 'desc']], [0, 1, 2, 3, 4, 5, 7, 8, 9], '/order/orderdotin', columns);
         });
     </script>
 }

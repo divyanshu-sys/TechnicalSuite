@@ -12,7 +12,7 @@ using Ts.Infra.ShopIn.Data.Context;
 namespace Ts.Infra.ShopIn.Data.Migrations
 {
     [DbContext(typeof(ShopInDbContext))]
-    [Migration("20260504184334_One")]
+    [Migration("20261105164222_One")]
     partial class One
     {
         /// <inheritdoc />
@@ -738,44 +738,46 @@ namespace Ts.Infra.ShopIn.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("OrderId");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,3)");
-
                     b.Property<DateTime?>("CreatedOn")
                         .IsRequired()
                         .HasMaxLength(7)
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CurrencyTypeId")
+                    b.Property<decimal?>("Pay_Amount")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<decimal?>("Pay_Amount_Refunded")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<DateTime?>("Pay_Created_At")
+                        .HasMaxLength(7)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Pay_CurrencyTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Pay_Method")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Pay_Order_Id")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Pay_Payment_Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Pay_Refund_Status")
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar");
 
                     b.Property<int>("PaymentGatewayTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentStatusId")
+                    b.Property<int?>("PaymentStatusId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Razorpay_Amount_Refunded")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<long>("Razorpay_Created_At")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Razorpay_Method")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("Razorpay_Order_Id")
-                        .HasMaxLength(450)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("Razorpay_Payment_Id")
-                        .HasMaxLength(450)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("Razorpay_Refund_Status")
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasMaxLength(7)
@@ -1137,7 +1139,7 @@ namespace Ts.Infra.ShopIn.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int")
-                        .HasColumnName("ProductId");
+                        .HasColumnName("ProductDetailId");
 
                     b.Property<DateTime>("LastViewedOn")
                         .HasColumnType("datetime2");
@@ -1377,7 +1379,7 @@ namespace Ts.Infra.ShopIn.Data.Migrations
             modelBuilder.Entity("Ts.ShopIn.Domain.Models.OrderDetailStatusHistory", b =>
                 {
                     b.HasOne("Ts.ShopIn.Domain.Models.OrderDetail", "OrderDetail")
-                        .WithOne("OrderStatusHistory")
+                        .WithOne("OrderDetailStatusHistories")
                         .HasForeignKey("Ts.ShopIn.Domain.Models.OrderDetailStatusHistory", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1508,7 +1510,7 @@ namespace Ts.Infra.ShopIn.Data.Migrations
 
             modelBuilder.Entity("Ts.ShopIn.Domain.Models.OrderDetail", b =>
                 {
-                    b.Navigation("OrderStatusHistory");
+                    b.Navigation("OrderDetailStatusHistories");
                 });
 
             modelBuilder.Entity("Ts.ShopIn.Domain.Models.Payment", b =>

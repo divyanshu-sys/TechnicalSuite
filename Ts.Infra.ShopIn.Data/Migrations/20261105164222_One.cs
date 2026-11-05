@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -524,16 +525,16 @@ namespace Ts.Infra.ShopIn.Data.Migrations
                 schema: "dbo",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductDetailId = table.Column<int>(type: "int", nullable: false),
                     TotalViews = table.Column<int>(type: "int", nullable: false),
                     LastViewedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductDetailViews", x => x.ProductId);
+                    table.PrimaryKey("PK_ProductDetailViews", x => x.ProductDetailId);
                     table.ForeignKey(
-                        name: "FK_ProductDetailViews_ProductDetails_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_ProductDetailViews_ProductDetails_ProductDetailId",
+                        column: x => x.ProductDetailId,
                         principalSchema: "dbo",
                         principalTable: "ProductDetails",
                         principalColumn: "Id",
@@ -641,16 +642,16 @@ namespace Ts.Infra.ShopIn.Data.Migrations
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    CurrencyTypeId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
-                    Razorpay_Method = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true),
-                    Razorpay_Payment_Id = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true),
-                    Razorpay_Order_Id = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true),
-                    Razorpay_Amount_Refunded = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
-                    Razorpay_Refund_Status = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true),
-                    Razorpay_Created_At = table.Column<long>(type: "bigint", nullable: false),
+                    Pay_CurrencyTypeId = table.Column<int>(type: "int", nullable: true),
+                    Pay_Amount = table.Column<decimal>(type: "decimal(18,3)", nullable: true),
+                    Pay_Method = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true),
+                    Pay_Payment_Id = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: true),
+                    Pay_Order_Id = table.Column<string>(type: "varchar(450)", maxLength: 450, nullable: false),
+                    Pay_Amount_Refunded = table.Column<decimal>(type: "decimal(18,3)", nullable: true),
+                    Pay_Refund_Status = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true),
+                    Pay_Created_At = table.Column<DateTime>(type: "datetime2", maxLength: 7, nullable: true),
                     PaymentGatewayTypeId = table.Column<int>(type: "int", nullable: false),
-                    PaymentStatusId = table.Column<int>(type: "int", nullable: false),
+                    PaymentStatusId = table.Column<int>(type: "int", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", maxLength: 7, nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", maxLength: 7, nullable: true)
                 },

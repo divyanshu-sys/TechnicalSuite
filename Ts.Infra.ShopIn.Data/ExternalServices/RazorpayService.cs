@@ -140,12 +140,15 @@ namespace Ts.Infra.ShopIn.Data.ExternalServices
 
         private static RazorpayPaymentHelperModel MapPaymentToModel(dynamic payment)
         {
+            DateTimeOffset createdAtOffset = DateTimeOffset.FromUnixTimeSeconds(payment["created_at"].Value);
+
             return new RazorpayPaymentHelperModel()
             {
                 Id = payment["id"].Value,
                 OrderId = payment["order_id"].Value,
+                Amount = payment["amount"].Value,
                 Status = payment["status"].Value,
-                CreatedAt = payment["created_at"].Value,
+                CreatedAt = createdAtOffset.UtcDateTime,
                 Method = payment["method"].Value,
                 AmountRefunded = payment["amount_refunded"].Value,
                 RefundStatus = payment["refund_status"].Value,

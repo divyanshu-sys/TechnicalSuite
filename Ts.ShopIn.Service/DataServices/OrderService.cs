@@ -7,6 +7,7 @@ using Ts.Common.Constant.AppConstants;
 using Ts.Common.Constant.SiteConstants;
 using Ts.Domain.HelperModels;
 using Ts.Dto;
+using Ts.Dto.CurrencyTypeDtos;
 using Ts.Dto.OrderStatusDtos;
 using Ts.Dto.PaymentStatusDtos;
 using Ts.Service.DataInterfaces;
@@ -181,9 +182,7 @@ namespace Ts.ShopIn.Service.DataServices
                 {
                     order.Payment = new()
                     {
-                        Amount = userCartData.TotalAvailableItemAmount,
-                        CurrencyTypeId = currencyType.Id,
-                        Razorpay_Order_Id = razorpayOrder.Id,
+                        Pay_Order_Id = razorpayOrder.Id,
                         PaymentGatewayTypeId = paymentGatewayType.Id,
                         CreatedOn = currentUtcNow
                     };
@@ -243,6 +242,7 @@ namespace Ts.ShopIn.Service.DataServices
             var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
             var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
             var orderStatuses = await dropDownService.GetOrderStatusesAsync();
+            var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
 
             await unitOfWork.BeginTransactionAsync();
             try
@@ -268,9 +268,9 @@ namespace Ts.ShopIn.Service.DataServices
                 if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Failed)
                     await unitOfWork.CartRepo.DeleteByUserIdAsync(userId);
 
-                if (entity.Razorpay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                 {
-                    SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
+                    SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
                     await unitOfWork.SaveChangesAsync();
 
                     if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Authorized)
@@ -307,6 +307,7 @@ namespace Ts.ShopIn.Service.DataServices
             var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
             var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
             var orderStatuses = await dropDownService.GetOrderStatusesAsync();
+            var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
 
             await unitOfWork.BeginTransactionAsync();
             try
@@ -334,9 +335,9 @@ namespace Ts.ShopIn.Service.DataServices
 
                     var isValidTransition = RazorpayPaymentStatusConstant.IsValidTransition(oldPaymentStatus?.Name, newPaymentStatus.Name);
 
-                    if (entity.Razorpay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                    if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                     {
-                        SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
+                        SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
 
                         await unitOfWork.SaveChangesAsync();
                         await unitOfWork.CommitAsync();
@@ -512,6 +513,7 @@ namespace Ts.ShopIn.Service.DataServices
             var paymentGatewayTypes = await dropDownService.GetPaymentGatewayTypesAsync();
             var paymentStatuses = await dropDownService.GetPaymentStatusesAsync();
             var orderStatuses = await dropDownService.GetOrderStatusesAsync();
+            var currencyTypes = await dropDownService.GetCurrencyTypesAsync();
 
             await unitOfWork.BeginTransactionAsync();
             try
@@ -534,9 +536,9 @@ namespace Ts.ShopIn.Service.DataServices
 
                 var isValidTransition = RazorpayPaymentStatusConstant.IsValidTransition(oldPaymentStatus?.Name, newPaymentStatus.Name);
 
-                if (entity.Razorpay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                 {
-                    SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus);
+                    SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
 
                     await unitOfWork.SaveChangesAsync();
                     await unitOfWork.CommitAsync();
@@ -561,15 +563,18 @@ namespace Ts.ShopIn.Service.DataServices
             return responseResult;
         }
 
-        private static void SetPaymentCommon(RazorpayPaymentHelperModel razorpayPayment, OrderStatusDto orderStatus, Payment entity, PaymentStatusDto newPaymentStatus)
+        private static void SetPaymentCommon(RazorpayPaymentHelperModel razorpayPayment, OrderStatusDto orderStatus, Payment entity, PaymentStatusDto newPaymentStatus, IEnumerable<CurrencyTypeDto> currencyTypes)
         {
             var currentUtcNow = DateTime.UtcNow;
 
-            entity.Razorpay_Method = razorpayPayment.Method;
-            entity.Razorpay_Payment_Id = razorpayPayment.Id;
-            entity.Razorpay_Amount_Refunded = CommonProductDetailService.ConvertToDecimal(razorpayPayment.AmountRefunded, razorpayPayment.Currency);
-            entity.Razorpay_Refund_Status = razorpayPayment.RefundStatus;
-            entity.Razorpay_Created_At = razorpayPayment.CreatedAt;
+            entity.Pay_Amount = CommonProductDetailService.ConvertToDecimal(razorpayPayment.Amount, razorpayPayment.Currency);
+            var currencyType = currencyTypes.FirstOrDefault(x => x.Letter == razorpayPayment.Currency);
+            entity.Pay_CurrencyTypeId = currencyType.Id;
+            entity.Pay_Method = razorpayPayment.Method;
+            entity.Pay_Payment_Id = razorpayPayment.Id;
+            entity.Pay_Amount_Refunded = CommonProductDetailService.ConvertToDecimal(razorpayPayment.AmountRefunded, razorpayPayment.Currency);
+            entity.Pay_Refund_Status = razorpayPayment.RefundStatus;
+            entity.Pay_Created_At = razorpayPayment.CreatedAt;
             entity.PaymentStatusId = newPaymentStatus.Id;
             entity.UpdatedOn = currentUtcNow;
 
@@ -665,8 +670,8 @@ namespace Ts.ShopIn.Service.DataServices
 
                 foreach (var item in responseResult.AaData)
                 {
-                    var currencyType = currencyTypes.FirstOrDefault(x => x.Id == item.CurrencyTypeId);
-                    item.CurrencyType = currencyType;
+                    var orderCurrencyType = currencyTypes.FirstOrDefault(x => x.Id == item.CurrencyTypeId);
+                    item.CurrencyType = orderCurrencyType;
 
                     if (item.Payment != null)
                     {
@@ -675,6 +680,12 @@ namespace Ts.ShopIn.Service.DataServices
 
                         var gatewayPaymentStatus = paymentStatuses.Where(x => x.PaymentGatewayTypeId == paymentGatewayType.Id);
                         item.Payment.PaymentStatus = gatewayPaymentStatus.FirstOrDefault(x => x.Id == item.Payment.PaymentStatusId);
+
+                        if (item.Payment.Pay_CurrencyTypeId.HasValue)
+                        {
+                            var paymentCurrencyType = currencyTypes.FirstOrDefault(x => x.Id == item.Payment.Pay_CurrencyTypeId);
+                            item.Payment.CurrencyType = paymentCurrencyType;
+                        }
                     }
                 }
             }

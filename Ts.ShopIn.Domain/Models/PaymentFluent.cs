@@ -12,14 +12,14 @@ namespace Ts.ShopIn.Domain.Models
             builder.HasIndex(x => x.CreatedOn);
             builder.HasIndex(x => x.UpdatedOn);
 
-            builder.Property(x => x.CurrencyTypeId).IsRequired(true);
-            builder.Property(x => x.Amount).HasColumnType("decimal(18,3)").IsRequired(true);
-            builder.Property(x => x.Razorpay_Method).HasColumnType("varchar").HasMaxLength(150);
-            builder.Property(x => x.Razorpay_Payment_Id).HasColumnType("varchar").HasMaxLength(450);
-            builder.Property(x => x.Razorpay_Order_Id).HasColumnType("varchar").HasMaxLength(450);
-            builder.Property(x => x.Razorpay_Amount_Refunded).HasColumnType("decimal(18,3)").IsRequired(true);
-            builder.Property(x => x.Razorpay_Refund_Status).HasColumnType("varchar").HasMaxLength(250);
-            builder.Property(x => x.Razorpay_Created_At).HasColumnType("bigint");
+            builder.Property(x => x.Pay_CurrencyTypeId);
+            builder.Property(x => x.Pay_Amount).HasColumnType("decimal(18,3)");
+            builder.Property(x => x.Pay_Method).HasColumnType("varchar").HasMaxLength(150);
+            builder.Property(x => x.Pay_Payment_Id).HasColumnType("varchar").HasMaxLength(450);
+            builder.Property(x => x.Pay_Order_Id).HasColumnType("varchar").HasMaxLength(450).IsRequired(true);
+            builder.Property(x => x.Pay_Amount_Refunded).HasColumnType("decimal(18,3)");
+            builder.Property(x => x.Pay_Refund_Status).HasColumnType("varchar").HasMaxLength(250);
+            builder.Property(x => x.Pay_Created_At).HasColumnType("datetime2").HasMaxLength(7);
             builder.Property(x => x.PaymentGatewayTypeId).IsRequired(true);
             builder.Property(x => x.CreatedOn).HasColumnType("datetime2").HasMaxLength(7).IsRequired(true);
             builder.Property(x => x.UpdatedOn).HasColumnType("datetime2").HasMaxLength(7);

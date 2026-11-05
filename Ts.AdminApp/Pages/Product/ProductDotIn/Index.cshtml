@@ -87,7 +87,7 @@
                 {
                     data: 'isPublished',
                     render: function (data, type, row, meta) {
-                        let canPublish = @canPublish.ToString().ToLower();
+                        let canPublish = '@canPublish.ToString().ToLower()';
                         if (data) {
                             data = '<b class="text-success">True</b>';
                             if (canPublish)
@@ -113,7 +113,7 @@
                 },
                 {
                     render: function (data, type, row, meta) {
-                        let canChangeWorker = @canChangeWorker.ToString().ToLower();
+                        let canChangeWorker = '@canChangeWorker.ToString().ToLower()';
                         let name = $.trim(`${row.productWorker?.firstName ?? ""} ${row.productWorker?.lastName ?? ""}`);
                         if (canChangeWorker)
                             name += ` <a title="Change Worker" href="/product/productdotin/updateproductworker/${row.id}" class="btn btn-outline-danger btn-rounded"><i class="fas fa-exchange"></i></a>`;
@@ -133,8 +133,8 @@
                     data: 'id',
                     render: function (data, type, row, meta) {
                         let link = '';
-                        let canDelete = @canDelete.ToString().ToLower();
-                        let canUpdate = @canUpdate.ToString().ToLower();
+                        let canDelete = '@canDelete.ToString().ToLower()';
+                        let canUpdate = '@canUpdate.ToString().ToLower()';
                         if(canUpdate)
                             link += `<a href="/product/productdotin/edit/${data}" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>`;
                         if (canDelete)

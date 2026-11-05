@@ -41,7 +41,7 @@ namespace Ts.ShopIn.Client.HttpClientServices.ClientServices
                         OrderBy = new()
                     };
 
-                    if (order.Column == 6)
+                    if (order.Column == 5)
                         sort.OrderBy.OrderedOn = true;
 
                     if (order.Dir == "asc")

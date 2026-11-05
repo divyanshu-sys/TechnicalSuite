@@ -23,13 +23,13 @@ namespace Ts.Infra.ShopIn.Data.Repositories
 
             if (!string.IsNullOrWhiteSpace(razorpayPaymentId))
             {
-                conditions.Add($"p.Razorpay_Payment_Id = {{{parameters.Count}}}");
+                conditions.Add($"p.Pay_Payment_Id = {{{parameters.Count}}}");
                 parameters.Add(razorpayPaymentId);
             }
 
             if (!string.IsNullOrWhiteSpace(razorpayOrderId))
             {
-                conditions.Add($"p.Razorpay_Order_Id = {{{parameters.Count}}}");
+                conditions.Add($"p.Pay_Order_Id = {{{parameters.Count}}}");
                 parameters.Add(razorpayOrderId);
             }
 

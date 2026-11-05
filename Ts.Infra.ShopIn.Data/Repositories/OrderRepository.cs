@@ -56,26 +56,20 @@ namespace Ts.Infra.ShopIn.Data.Repositories
             if (orderQueriableEntity != null)
                 queriableEntity = orderQueriableEntity.AsQueryable();
 
-            return queriableEntity.Skip(requestModel.Start).Take(requestModel.Length).Select(x => new Order
-            {
-                Id = x.Id,
-                OrderNumber = x.OrderNumber,
-                ClientName = x.ClientName,
-                PaymentModeId = x.PaymentModeId,
-                TotalItemCount = x.TotalItemCount,
-                CurrencyTypeId = x.CurrencyTypeId,
-                TotalAmount = x.TotalAmount,
-                UserId = x.UserId,
-                OrderedOn = x.OrderedOn,
-                Payment = x.Payment == null ? null : new()
+            return queriableEntity
+                .Skip(requestModel.Start).Take(requestModel.Length).Select(x => new Order
                 {
-                    Id = x.Payment.Id,
-                    PaymentGatewayTypeId = x.Payment.PaymentGatewayTypeId,
-                    PaymentStatusId = x.Payment.PaymentStatusId,
-                    CreatedOn = x.Payment.CreatedOn,
-                    UpdatedOn = x.Payment.UpdatedOn
-                }
-            }).AsNoTracking().ToListAsync();
+                    Id = x.Id,
+                    OrderNumber = x.OrderNumber,
+                    ClientName = x.ClientName,
+                    PaymentModeId = x.PaymentModeId,
+                    TotalItemCount = x.TotalItemCount,
+                    CurrencyTypeId = x.CurrencyTypeId,
+                    TotalAmount = x.TotalAmount,
+                    UserId = x.UserId,
+                    OrderedOn = x.OrderedOn,
+                    Payment = x.Payment
+                }).AsNoTracking().ToListAsync();
         }
 
         public Task<List<Order>> GetForListViewAsync(OrderDataTableForViewRequest requestModel, string userId, int orderStatusIdFilterOut)
