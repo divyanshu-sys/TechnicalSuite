@@ -15,8 +15,8 @@
             <table width="100%" class="table-hover table compact table-striped-columns" id="DataTable">
                 <thead>
                     <tr>
-                        <th>O. Number</th>
-                        <th>Payment Id</th>
+                        <th>O. Num.</th>
+                        <th>Pay Id</th>
                         <th>Client Name</th>
                         <th>O. Qty.</th>
                         <th>O. Amt.</th>
@@ -29,8 +29,7 @@
                         <th>P. Refund Status</th>
                         <th>P. CreatedAt</th>
                         <th>P. UpdatedOn</th>
-                        <th>P. History</th>
-                        <th>P. Refresh</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
             </table>
@@ -117,7 +116,7 @@
                 },
                 {
                     render: function(data, type, row, meta) {
-                        return `${row.payment?.createdAtIst ?? ""}`;
+                        return `${row.payment?.pay_Created_AtIst ?? ""}`;
                     },
                     className: 'text-end'
                 },
@@ -129,19 +128,13 @@
                 },
                 {
                     render: function(data, type, row, meta) {
-                        return `<button type="button" class="btn btn-outline-primary btn-rounded")"><i class="fas fa-history"></i></button>`;
-                    },
-                    className: 'text-center'
-                },
-                {
-                    render: function(data, type, row, meta) {
-                        return `<button type="button" class="btn btn-outline-warning btn-rounded"><i class="fas fa-sync"></i></button>`;
+                        return `<a href="/order/orderdotin/${row.id}" class="btn btn-outline-primary btn-rounded")"><i class="fas fa-eye"></i></a>`;
                     },
                     className: 'text-center'
                 }
             ];
 
-            table = initAjaxTable("#DataTable", [[5, 'desc']], [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '/order/orderdotin', columns);
+            table = initAjaxTable("#DataTable", [[5, 'desc']], [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14], '/order/orderdotin', columns);
         });
     </script>
 }

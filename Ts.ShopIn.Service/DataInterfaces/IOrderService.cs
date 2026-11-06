@@ -18,5 +18,6 @@ namespace Ts.ShopIn.Service.DataInterfaces
         Task<decimal> GetTotalRevenue(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null);
         Task<ChartResponseDto> GetTotalSalesDataAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null);
         Task<DataTableResponseDto<GetOrderDataTableDto>> GetAllAsync(OrderDataTableRequestDto modelDto);
+        Task<GetOrderForAdminViewDto> GetAsync(int id);
     }
 }

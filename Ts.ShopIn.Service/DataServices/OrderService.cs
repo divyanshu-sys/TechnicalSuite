@@ -268,7 +268,7 @@ namespace Ts.ShopIn.Service.DataServices
                 if (newPaymentStatus.Name != RazorpayPaymentStatusConstant.Failed)
                     await unitOfWork.CartRepo.DeleteByUserIdAsync(userId);
 
-                if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                if (entity.Pay_Created_At == null || entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                 {
                     SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
                     await unitOfWork.SaveChangesAsync();
@@ -335,7 +335,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                     var isValidTransition = RazorpayPaymentStatusConstant.IsValidTransition(oldPaymentStatus?.Name, newPaymentStatus.Name);
 
-                    if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                    if (entity.Pay_Created_At == null || entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                     {
                         SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
 
@@ -536,7 +536,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                 var isValidTransition = RazorpayPaymentStatusConstant.IsValidTransition(oldPaymentStatus?.Name, newPaymentStatus.Name);
 
-                if (entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
+                if (entity.Pay_Created_At == null || entity.Pay_Created_At < razorpayPayment.CreatedAt || isValidTransition)
                 {
                     SetPaymentCommon(razorpayPayment, orderStatus, entity, newPaymentStatus, currencyTypes);
 
@@ -695,6 +695,11 @@ namespace Ts.ShopIn.Service.DataServices
             else
                 responseResult.RecordsFiltered = responseResult.RecordsTotal;
             return responseResult;
+        }
+
+        public Task<GetOrderForAdminViewDto> GetAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
