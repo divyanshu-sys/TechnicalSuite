@@ -37,14 +37,14 @@ namespace Ts.ShopIn.Service.DataServices
 
             foreach (var entity in entities)
             {
-                GetProductDetailForListViewDto dto = SetProductDetailForListViewDto(config, shopCategories, entity);
+                GetProductDetailForListViewDto dto = SetProductDetailForListViewDto(config, entity, shopCategories);
                 dtos.Add(dto);
             }
 
             return dtos;
         }
 
-        public static GetProductDetailForListViewDto SetProductDetailForListViewDto(IConfiguration config, IEnumerable<ShopCategoryDto> shopCategories, ProductDetail entity)
+        public static GetProductDetailForListViewDto SetProductDetailForListViewDto(IConfiguration config, ProductDetail entity, IEnumerable<ShopCategoryDto> shopCategories)
         {
             var productDetail = new GetProductDetailForListViewDto
             {
@@ -65,12 +65,14 @@ namespace Ts.ShopIn.Service.DataServices
             return productDetail;
         }
 
-        public static GetProductDetailForListViewDto SetProductDetailForListOrderViewDto(IConfiguration config, ProductDetail entity)
+        public static GetProductDetailForListViewDto SetProductDetailForListOrderViewDto(IConfiguration config, ProductDetail entity, IEnumerable<ShopCategoryDto> shopCategories)
         {
             var productDetail = new GetProductDetailForListViewDto
             {
                 Id = entity.Id,
                 Title = entity.Title,
+                ShopCategoryId = entity.ShopCategoryId,
+                ShopCategoryName = shopCategories.FirstOrDefault(x => x.Id == entity.ShopCategoryId).Name,
                 ProductDetailLink = entity.ProductDetailLink,
                 MainImageUrl = entity.MainImage == null ? null : $"{config.GetValue<string>("SrcApiShopIn:ProductDetailImageUrl")}/{entity.MainImage}"
             };

@@ -431,7 +431,7 @@ namespace Ts.ShopIn.Service.DataServices
                     }
 
                     if (orderDetail.ProductDetail != null)
-                        orderDetailForViewDto.ProductDetailForView = CommonProductDetailService.SetProductDetailForListOrderViewDto(configuration, orderDetail.ProductDetail);
+                        orderDetailForViewDto.ProductDetailForView = CommonProductDetailService.SetProductDetailForListOrderViewDto(configuration, orderDetail.ProductDetail, shopCategories);
                     orderForViewDto.OrderDetailsForView.Add(orderDetailForViewDto);
                 }
 

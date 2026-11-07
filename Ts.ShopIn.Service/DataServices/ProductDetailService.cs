@@ -826,7 +826,7 @@ namespace Ts.ShopIn.Service.DataServices
                 {
                     foreach (var variant in entity.ProductVariant.Product.ProductVariants)
                     {
-                        responseResult.Data.ProductVariants.Add(CommonProductDetailService.SetProductDetailForListViewDto(config, shopCategories, variant.ProductDetail));
+                        responseResult.Data.ProductVariants.Add(CommonProductDetailService.SetProductDetailForListViewDto(config, variant.ProductDetail, shopCategories));
                     }
                 }
 

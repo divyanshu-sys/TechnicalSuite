@@ -18,7 +18,7 @@ namespace Ts.ShopIn.Service.DataServices
 
                 foreach (var item in entities)
                 {
-                    var detail = CommonProductDetailService.SetProductDetailForListViewDto(configuration, shopCategories, item.ProductDetail);
+                    var detail = CommonProductDetailService.SetProductDetailForListViewDto(configuration, item.ProductDetail, shopCategories);
 
                     responseResult.TotalAvailableItemAmount += item.ItemCount * (detail.IsAvailable ? detail.Price : 0);
                     responseResult.TotalAvailableItemCount += detail.IsAvailable ? item.ItemCount : 0;
