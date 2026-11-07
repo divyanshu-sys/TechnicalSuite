@@ -105,7 +105,8 @@ namespace Ts.Infra.ShopIn.Data.Repositories
                             Id = x.ProductDetail.Id,
                             Title = x.ProductDetail.Title,
                             ProductDetailLink = x.ProductDetail.ProductDetailLink,
-                            MainImage = x.ProductDetail.MainImage
+                            MainImage = x.ProductDetail.MainImage,
+                            ShopCategoryId = x.ProductDetail.ShopCategoryId
                         }
                     }).ToList()
             })
